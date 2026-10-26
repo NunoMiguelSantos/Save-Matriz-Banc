@@ -5850,7 +5850,7 @@ sections:
       selected_color: '#64A0FF'
     - icon: mdi:fire
       label: Caldeira
-      url: /dashboard-smartphone/configcaldeira
+      url: /dashboard-smartphone/aquecimento
       icon_color: "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n     \
         \ : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.4)\";\n]]]\n"
       selected_color: "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n \
