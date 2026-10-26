@@ -1,0 +1,167 @@
+blueprint:
+  name: Zona de Aquecimento (divisão)
+  description: >
+    Uma automação por divisão. Decide se a divisão "pede calor".
+
+    - Se a divisão estiver marcada num cenário que esteja a decorrer,
+      usa o setpoint da divisão.
+    - Caso contrário, usa a temperatura mínima de conforto (comum a todas).
+    - Nunca desce abaixo da mínima de conforto.
+
+    Histerese: pede calor quando T <= alvo − histerese inferior;
+    deixa de pedir quando T >= alvo + histerese superior.
+
+    Para mais divisões: cria mais uma automação a partir desta blueprint.
+    Para mais cenários: acrescenta o cenário às duas listas (mesma ordem).
+  domain: automation
+  author: Nuno Santos
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    divisao:
+      name: Divisão
+      icon: mdi:home-thermometer
+      input:
+        temperature_sensor:
+          name: Sensor de temperatura da divisão
+          selector:
+            entity:
+              domain: sensor
+              device_class: temperature
+        setpoint_divisao:
+          name: Setpoint da divisão (input_number)
+          selector:
+            entity:
+              domain: input_number
+        pedido_calor:
+          name: Pede Calor (input_boolean de saída)
+          description: Ligado por esta automação quando a divisão precisa de calor.
+          selector:
+            entity:
+              domain: input_boolean
+    comum:
+      name: Valores comuns
+      icon: mdi:tune
+      input:
+        setpoint_min_conforto:
+          name: Temperatura mínima de conforto (input_number)
+          selector:
+            entity:
+              domain: input_number
+        hysteresis_low:
+          name: Histerese inferior (input_number)
+          description: Margem abaixo do alvo para começar a pedir calor.
+          selector:
+            entity:
+              domain: input_number
+        hysteresis_high:
+          name: Histerese superior (input_number)
+          description: Margem acima do alvo para deixar de pedir calor.
+          selector:
+            entity:
+              domain: input_number
+    cenarios:
+      name: Cenários
+      icon: mdi:calendar-clock
+      input:
+        cenarios_a_decorrer:
+          name: "Cenários — \"A Decorrer\""
+          description: >
+            O "A Decorrer" de cada cenário, por ordem (Cenário 1, 2, 3...).
+          selector:
+            entity:
+              domain: input_boolean
+              multiple: true
+              reorder: true
+        selecao_divisao:
+          name: "Esta divisão em cada cenário (vistos)"
+          description: >
+            O visto desta divisão em cada cenário, NA MESMA ORDEM da lista de cima.
+          selector:
+            entity:
+              domain: input_boolean
+              multiple: true
+              reorder: true
+
+mode: restart
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input temperature_sensor
+  - trigger: state
+    entity_id: !input setpoint_divisao
+  - trigger: state
+    entity_id: !input setpoint_min_conforto
+  - trigger: state
+    entity_id: !input hysteresis_low
+  - trigger: state
+    entity_id: !input hysteresis_high
+  - trigger: state
+    entity_id: !input cenarios_a_decorrer
+  - trigger: state
+    entity_id: !input selecao_divisao
+  - trigger: homeassistant
+    event: start
+  - trigger: time_pattern
+    minutes: "/5"
+
+variables:
+  sensor_ent: !input temperature_sensor
+  sp_ent: !input setpoint_divisao
+  min_ent: !input setpoint_min_conforto
+  lo_ent: !input hysteresis_low
+  hi_ent: !input hysteresis_high
+  cen_list: !input cenarios_a_decorrer
+  sel_list: !input selecao_divisao
+
+actions:
+  - variables:
+      temperatura: "{{ states(sensor_ent) | float(none) }}"
+      minimo: "{{ states(min_ent) | float(18) }}"
+      em_cenario: >-
+        {%- set ns = namespace(r=false) -%}
+        {%- for i in range([cen_list | count, sel_list | count] | min) -%}
+          {%- if is_state(cen_list[i], 'on') and is_state(sel_list[i], 'on') -%}
+            {%- set ns.r = true -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{ ns.r }}
+      alvo: >-
+        {%- if em_cenario | bool -%}
+          {{ [states(sp_ent) | float(minimo), minimo | float] | max }}
+        {%- else -%}
+          {{ minimo }}
+        {%- endif -%}
+      lo: "{{ states(lo_ent) | float(0.3) }}"
+      hi: "{{ states(hi_ent) | float(0.3) }}"
+
+  # Sensor sem valor → não pedir calor (seguro)
+  - if:
+      - condition: template
+        value_template: "{{ temperatura is none }}"
+    then:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: !input pedido_calor
+      - stop: "Sensor sem leitura válida."
+
+  - choose:
+      - alias: "Abaixo do alvo → pede calor"
+        conditions:
+          - condition: template
+            value_template: "{{ temperatura <= (alvo | float) - (lo | float) }}"
+        sequence:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: !input pedido_calor
+      - alias: "Acima do alvo → deixa de pedir"
+        conditions:
+          - condition: template
+            value_template: "{{ temperatura >= (alvo | float) + (hi | float) }}"
+        sequence:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: !input pedido_calor
+    # Dentro da histerese: mantém o estado atual
+    default: []

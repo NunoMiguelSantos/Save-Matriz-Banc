@@ -1,0 +1,105 @@
+blueprint:
+  name: Cenário de Aquecimento
+  description: >
+    Uma automação por cenário. Liga o "A Decorrer" do cenário quando está
+    ativo, é um dos dias escolhidos e a hora está entre o início e o fim.
+    Funciona também com horários que passam a meia-noite (ex.: 22:00 → 07:00).
+
+    As divisões de cada cenário são escolhidas com os vistos, e é a blueprint
+    "Zona de Aquecimento" que os lê.
+  domain: automation
+  author: Nuno Santos
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    cenario:
+      name: Cenário
+      icon: mdi:calendar-clock
+      input:
+        ativo:
+          name: Cenário ativo (input_boolean)
+          selector:
+            entity:
+              domain: input_boolean
+        inicio:
+          name: Hora de início (input_datetime)
+          selector:
+            entity:
+              domain: input_datetime
+        fim:
+          name: Hora de fim (input_datetime)
+          selector:
+            entity:
+              domain: input_datetime
+        a_decorrer:
+          name: A Decorrer (input_boolean de saída)
+          description: Ligado por esta automação enquanto o cenário está a decorrer.
+          selector:
+            entity:
+              domain: input_boolean
+    dias:
+      name: Dias da semana
+      icon: mdi:calendar-week
+      input:
+        seg: { name: Seg, selector: { entity: { domain: input_boolean } } }
+        ter: { name: Ter, selector: { entity: { domain: input_boolean } } }
+        qua: { name: Qua, selector: { entity: { domain: input_boolean } } }
+        qui: { name: Qui, selector: { entity: { domain: input_boolean } } }
+        sex: { name: Sex, selector: { entity: { domain: input_boolean } } }
+        sab: { name: Sáb, selector: { entity: { domain: input_boolean } } }
+        dom: { name: Dom, selector: { entity: { domain: input_boolean } } }
+
+mode: restart
+max_exceeded: silent
+
+triggers:
+  - trigger: time
+    at: !input inicio
+  - trigger: time
+    at: !input fim
+  - trigger: state
+    entity_id:
+      - !input ativo
+      - !input inicio
+      - !input fim
+      - !input seg
+      - !input ter
+      - !input qua
+      - !input qui
+      - !input sex
+      - !input sab
+      - !input dom
+  - trigger: homeassistant
+    event: start
+  # À meia-noite muda o dia da semana
+  - trigger: time
+    at: "00:00:05"
+
+variables:
+  dias:
+    - !input seg
+    - !input ter
+    - !input qua
+    - !input qui
+    - !input sex
+    - !input sab
+    - !input dom
+
+actions:
+  - if:
+      - condition: state
+        entity_id: !input ativo
+        state: "on"
+      - condition: time
+        after: !input inicio
+        before: !input fim
+      - condition: template
+        value_template: "{{ is_state(dias[now().weekday()], 'on') }}"
+    then:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: !input a_decorrer
+    else:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: !input a_decorrer

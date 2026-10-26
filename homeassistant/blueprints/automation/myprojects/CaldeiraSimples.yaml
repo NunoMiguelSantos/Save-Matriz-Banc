@@ -1,0 +1,138 @@
+blueprint:
+  name: Caldeira Simples (sem cenários)
+  description: >
+    Liga/desliga a caldeira só com base nos pedidos de calor das divisões.
+    Não tem horários nem cenários: isso fica nas blueprints "Zona de
+    Aquecimento" e "Cenário de Aquecimento".
+
+    Prioridades:
+    1) Segurança máxima → desliga sempre.
+    2) Forçar ligado → liga sempre.
+    3) Automático desligado → desliga.
+    4) Alguma divisão a pedir calor → liga. Nenhuma → desliga.
+  domain: automation
+  author: Nuno Santos
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    equipamento:
+      name: Caldeira e pedidos de calor
+      icon: mdi:water-boiler
+      input:
+        boiler_switch:
+          name: Caldeira (switch)
+          selector:
+            entity:
+              domain: switch
+        pedidos_calor:
+          name: Pedidos de calor das divisões
+          description: >
+            Os "Pede Calor" de cada divisão (criados pela blueprint Zona de
+            Aquecimento). Basta UM estar ligado para a caldeira ligar.
+            Para mais divisões, é só acrescentar aqui.
+          selector:
+            entity:
+              domain:
+                - input_boolean
+                - binary_sensor
+              multiple: true
+    modos:
+      name: Modos
+      icon: mdi:tune
+      input:
+        auto_mode:
+          name: Modo Automático
+          description: Se desligado, a caldeira fica desligada (exceto se Forçar estiver ligado).
+          selector:
+            entity:
+              domain: input_boolean
+        force_on:
+          name: Forçar Ligar Caldeira
+          description: Liga a caldeira ignorando tudo, exceto a segurança máxima.
+          selector:
+            entity:
+              domain: input_boolean
+    seguranca:
+      name: Segurança
+      icon: mdi:shield-alert
+      input:
+        safety_sensor:
+          name: Sensor de temperatura de segurança
+          selector:
+            entity:
+              domain: sensor
+              device_class: temperature
+        safety_max:
+          name: Temperatura máxima de segurança (input_number)
+          selector:
+            entity:
+              domain: input_number
+
+mode: restart
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input pedidos_calor
+  - trigger: state
+    entity_id: !input auto_mode
+  - trigger: state
+    entity_id: !input force_on
+  - trigger: state
+    entity_id: !input safety_sensor
+  - trigger: state
+    entity_id: !input safety_max
+  - trigger: homeassistant
+    event: start
+  # Verificação periódica para manter o estado coerente
+  - trigger: time_pattern
+    minutes: "/5"
+
+actions:
+  - choose:
+      - alias: "1 — Segurança máxima: desligar"
+        conditions:
+          - condition: numeric_state
+            entity_id: !input safety_sensor
+            above: !input safety_max
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: !input boiler_switch
+
+      - alias: "2 — Forçar ligado"
+        conditions:
+          - condition: state
+            entity_id: !input force_on
+            state: "on"
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: !input boiler_switch
+
+      - alias: "3 — Automático desligado"
+        conditions:
+          - condition: state
+            entity_id: !input auto_mode
+            state: "off"
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: !input boiler_switch
+
+      - alias: "4 — Há divisões a pedir calor"
+        conditions:
+          - condition: state
+            entity_id: !input pedidos_calor
+            state: "on"
+            match: any
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: !input boiler_switch
+
+    default:
+      - alias: "Nenhuma divisão pede calor"
+        action: switch.turn_off
+        target:
+          entity_id: !input boiler_switch
