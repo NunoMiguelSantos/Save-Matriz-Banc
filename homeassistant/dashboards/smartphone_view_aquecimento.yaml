@@ -309,7 +309,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen1_inicio
@@ -501,7 +501,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen2_inicio
@@ -693,7 +693,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen3_inicio
@@ -885,7 +885,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen4_inicio
@@ -1077,7 +1077,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen5_inicio
@@ -1269,7 +1269,7 @@ sections:
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
       }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
-      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
+      \ {\n  min-width: 0 !important;\n  min-height: 30px !important;\n  height: 30px !important;\n  padding: 0 9px !important;\n  font-size: 13px !important;\n  border-radius: 8px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen6_inicio
@@ -2317,8 +2317,7 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - &id001
-          type: custom:button-card
+        - type: custom:button-card
           show_icon: false
           show_name: false
           show_state: false
@@ -2908,7 +2907,17 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - *id001
+        - type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -3488,7 +3497,17 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - *id001
+        - type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -4068,7 +4087,17 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - *id001
+        - type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -4648,7 +4677,17 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - *id001
+        - type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -5228,7 +5267,17 @@ sections:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-        - *id001
+        - type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -5365,15 +5414,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_sala_setpoint
-                styles: &id002
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5383,7 +5433,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5392,7 +5442,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_sala_setpoint
                 show_icon: true
@@ -5402,8 +5451,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_sala_setpoint
-                styles: *id002
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5414,13 +5479,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_cozinha_setpoint
         show_icon: false
@@ -5452,15 +5518,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_cozinha_setpoint
-                styles: &id003
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5470,7 +5537,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5479,7 +5546,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_cozinha_setpoint
                 show_icon: true
@@ -5489,8 +5555,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_cozinha_setpoint
-                styles: *id003
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5501,13 +5583,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_suite_setpoint
         show_icon: false
@@ -5539,15 +5622,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_suite_setpoint
-                styles: &id004
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5557,7 +5641,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5566,7 +5650,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_suite_setpoint
                 show_icon: true
@@ -5576,8 +5659,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_suite_setpoint
-                styles: *id004
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5588,13 +5687,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_quarto2_setpoint
         show_icon: false
@@ -5626,15 +5726,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_quarto2_setpoint
-                styles: &id005
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5644,7 +5745,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5653,7 +5754,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_quarto2_setpoint
                 show_icon: true
@@ -5663,8 +5763,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_quarto2_setpoint
-                styles: *id005
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5675,13 +5791,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_gaming_setpoint
         show_icon: false
@@ -5713,15 +5830,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_gaming_setpoint
-                styles: &id006
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5731,7 +5849,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5740,7 +5858,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_gaming_setpoint
                 show_icon: true
@@ -5750,8 +5867,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_gaming_setpoint
-                styles: *id006
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5762,13 +5895,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_wc_geral_setpoint
         show_icon: false
@@ -5800,15 +5934,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_wc_geral_setpoint
-                styles: &id007
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5818,7 +5953,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5827,7 +5962,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_wc_geral_setpoint
                 show_icon: true
@@ -5837,8 +5971,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_wc_geral_setpoint
-                styles: *id007
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5849,13 +5999,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         entity: input_number.aq_wc_suite_setpoint
         show_icon: false
@@ -5887,15 +6038,16 @@ sections:
                   service: input_number.decrement
                   service_data:
                     entity_id: input_number.aq_wc_suite_setpoint
-                styles: &id008
+                styles:
                   card:
-                  - height: 36px
-                  - width: 36px
+                  - height: 34px
+                  - width: 34px
                   - border-radius: 10px
                   - background: rgba(255,255,255,0.06)
                   - border: none
                   - box-shadow: none
                   - padding: '0'
+                  - justify-self: center
                   icon:
                   - color: rgba(255,255,255,0.8)
                   - width: 18px
@@ -5905,7 +6057,7 @@ sections:
                 show_icon: false
                 show_name: false
                 show_label: true
-                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                label: '[[[ return `<span style="font-size:18px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
                 tap_action:
                   action: none
                 styles:
@@ -5914,7 +6066,6 @@ sections:
                   - border: none
                   - box-shadow: none
                   - padding: '0'
-                  - width: 56px
               - type: custom:button-card
                 entity: input_number.aq_wc_suite_setpoint
                 show_icon: true
@@ -5924,8 +6075,24 @@ sections:
                   service: input_number.increment
                   service_data:
                     entity_id: input_number.aq_wc_suite_setpoint
-                styles: *id008
+                styles:
+                  card:
+                  - height: 34px
+                  - width: 34px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - justify-self: center
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
                 icon: mdi:plus
+              card_mod:
+                style: '#root { gap: 2px !important; }
+
+                  '
         styles:
           card:
           - padding: 8px 10px
@@ -5936,13 +6103,14 @@ sections:
           - box-shadow: none
           grid:
           - grid-template-areas: '"info controls"'
-          - grid-template-columns: 1fr auto
+          - grid-template-columns: minmax(0, 1fr) 150px
           - align-items: center
+          - column-gap: 6px
           custom_fields:
             info:
             - justify-self: start
             controls:
-            - width: 140px
+            - width: 150px
       - type: custom:button-card
         show_icon: false
         show_name: false
