@@ -308,7 +308,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen1_inicio
@@ -466,125 +467,6 @@ sections:
         - condition: state
           entity: input_boolean.aq_cen1_ativo
           state: 'on'
-      - entity: input_boolean.aq_cen1_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen1_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen1_wc_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen1_ativo
-          state: 'on'
     grid_options:
       columns: 24
       rows: 2.5
@@ -618,7 +500,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen2_inicio
@@ -776,125 +659,6 @@ sections:
         - condition: state
           entity: input_boolean.aq_cen2_ativo
           state: 'on'
-      - entity: input_boolean.aq_cen2_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen2_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen2_wc_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen2_ativo
-          state: 'on'
     grid_options:
       columns: 24
       rows: 2.5
@@ -928,7 +692,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen3_inicio
@@ -1086,125 +851,6 @@ sections:
         - condition: state
           entity: input_boolean.aq_cen3_ativo
           state: 'on'
-      - entity: input_boolean.aq_cen3_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen3_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen3_wc_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen3_ativo
-          state: 'on'
     grid_options:
       columns: 24
       rows: 2.5
@@ -1238,7 +884,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen4_inicio
@@ -1396,125 +1043,6 @@ sections:
         - condition: state
           entity: input_boolean.aq_cen4_ativo
           state: 'on'
-      - entity: input_boolean.aq_cen4_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen4_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen4_wc_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen4_ativo
-          state: 'on'
     grid_options:
       columns: 24
       rows: 2.5
@@ -1548,7 +1076,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen5_inicio
@@ -1706,125 +1235,6 @@ sections:
         - condition: state
           entity: input_boolean.aq_cen5_ativo
           state: 'on'
-      - entity: input_boolean.aq_cen5_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen5_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen5_wc_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen5_ativo
-          state: 'on'
     grid_options:
       columns: 24
       rows: 2.5
@@ -1858,7 +1268,8 @@ sections:
       \ 22px !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(1) .bubble-sub-button-icon {\n  color: rgba(100,200,120,0.9) !important;\n\
       }\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container) .bubble-sub-button:nth-child(2) .bubble-sub-button-icon {\n  color: rgba(210,100,80,0.9) !important;\n}\n.bubble-sub-button-container:not(.bubble-sub-button-bottom-container)\
       \ .bubble-sub-button:nth-child(3) .bubble-sub-button-icon {\n  color: rgba(255,120,65,1) !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button-icon {\n  color: CadetBlue !important;\n\
-      }\n.bubble-sub-button-container {\n  width: auto;\n}\n"
+      }\n.bubble-sub-button-container {\n  width: auto;\n}\n\n.bubble-sub-button-bottom-container {\n  gap: 4px !important;\n  flex-wrap: nowrap !important;\n}\n.bubble-sub-button-bottom-container .bubble-sub-button\
+      \ {\n  min-width: 0 !important;\n  min-height: 24px !important;\n  height: 24px !important;\n  padding: 0 6px !important;\n  font-size: 11px !important;\n  border-radius: 7px !important;\n}\n"
     sub_button:
       main:
       - entity: input_datetime.aq_cen6_inicio
@@ -2012,125 +1423,6 @@ sections:
         visibility:
         - condition: state
           entity: input_boolean.aq_cen6_dom
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_sala
-        name: Sala
-        icon: mdi:sofa
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_sala
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_cozinha
-        name: Cozinha
-        icon: mdi:countertop
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_cozinha
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_suite
-        name: Suite
-        icon: mdi:bed-king
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_suite
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_quarto2
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_quarto2
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_gaming
-        name: Gaming
-        icon: mdi:controller
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_gaming
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_wc_geral
-        name: WC Geral
-        icon: mdi:shower
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_wc_geral
-          state: 'on'
-        - condition: state
-          entity: input_boolean.aq_cen6_ativo
-          state: 'on'
-      - entity: input_boolean.aq_cen6_wc_suite
-        name: WC Suite
-        icon: mdi:bathtub
-        show_background: false
-        show_icon: true
-        show_name: false
-        show_state: false
-        tap_action:
-          action: none
-        fill_width: false
-        visibility:
-        - condition: state
-          entity: input_boolean.aq_cen6_wc_suite
           state: 'on'
         - condition: state
           entity: input_boolean.aq_cen6_ativo
@@ -2784,194 +2076,259 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen1_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen1_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen1_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen1_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen1_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen1_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen1_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - &id001
+          type: custom:button-card
+          show_icon: false
+          show_name: false
+          show_state: false
+          tap_action:
+            action: none
+          styles:
+            card:
+            - background: transparent
+            - box-shadow: none
+            - border: none
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -3310,194 +2667,248 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen2_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen2_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen2_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen2_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen2_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen2_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen2_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - *id001
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -3836,194 +3247,248 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen3_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen3_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen3_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen3_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen3_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen3_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen3_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - *id001
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -4362,194 +3827,248 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen4_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen4_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen4_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen4_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen4_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen4_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen4_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - *id001
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -4888,194 +4407,248 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen5_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen5_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen5_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen5_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen5_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen5_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen5_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - *id001
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -5414,194 +4987,248 @@ sections:
         - type: custom:button-card
           entity: input_boolean.aq_cen6_sala
           name: Sala
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:sofa
         - type: custom:button-card
           entity: input_boolean.aq_cen6_cozinha
           name: Cozinha
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:countertop
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen6_suite
           name: Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bed-king
         - type: custom:button-card
           entity: input_boolean.aq_cen6_quarto2
           name: Quarto2
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:baby-face-outline
       - type: horizontal-stack
         cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen6_gaming
           name: Gaming
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:controller
         - type: custom:button-card
           entity: input_boolean.aq_cen6_wc_geral
           name: WC Geral
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:shower
+      - type: horizontal-stack
+        cards:
         - type: custom:button-card
           entity: input_boolean.aq_cen6_wc_suite
           name: WC Suite
-          show_state: false
           show_icon: true
+          show_name: true
+          show_state: false
+          layout: icon_name
+          icon: '[[[ return entity.state === ''on'' ? ''mdi:checkbox-marked-circle'' : ''mdi:checkbox-blank-circle-outline''; ]]]'
           tap_action:
             action: toggle
           styles:
             card:
-            - padding: 8px 4px
+            - padding: 10px 12px
             - border-radius: 10px
-            - font-size: 11px
-            - font-weight: 600
             - transition: 0.2s
-            - background-color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,0.18)'\n    : 'rgba(255,255,255,0.04)';\n]]]\n"
-            - border: "[[[\n  return entity.state === 'on'\n    ? '1.5px solid rgba(95,158,160,0.5)'\n    : '1.5px solid rgba(255,255,255,0.08)';\n]]]\n"
             - box-shadow: none
-            name:
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - background-color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,0.18)'' : ''rgba(255,255,255,0.04)''; ]]]'
+            - border: '[[[ return entity.state === ''on'' ? ''1.5px solid rgba(95,158,160,0.5)'' : ''1.5px solid rgba(255,255,255,0.08)''; ]]]'
+            grid:
+            - grid-template-areas: '"i n"'
+            - grid-template-columns: 24px 1fr
+            - column-gap: 8px
             icon:
             - width: 20px
-            - color: "[[[\n  return entity.state === 'on'\n    ? 'rgba(95,158,160,1)'\n    : 'rgba(255,255,255,0.3)';\n]]]\n"
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(95,158,160,1)'' : ''rgba(255,255,255,0.3)''; ]]]'
+            name:
+            - justify-self: start
+            - font-size: 13px
+            - font-weight: '600'
+            - color: '[[[ return entity.state === ''on'' ? ''rgba(255,255,255,0.9)'' : ''rgba(255,255,255,0.45)''; ]]]'
           card_mod:
             style: 'ha-card { box-shadow: none !important; }
 
               '
-          icon: mdi:bathtub
+        - *id001
       - type: custom:button-card
         show_icon: false
         show_name: false
@@ -5707,90 +5334,615 @@ sections:
           grid:
           - grid-template-areas: '"sec_label"'
           - grid-template-columns: 1fr
-      - type: custom:mushroom-number-card
+      - type: custom:button-card
         entity: input_number.aq_sala_setpoint
-        name: Sala
-        icon: mdi:sofa
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_sala_pede_calor
+        - sensor.sensorsalas_temperature
+        - input_number.aq_sala_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_sala_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.sensorsalas_temperature']?.state);\n  const cur = Number.isFinite(t) ? t.toFixed(1)\
+            \ + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)' : 'rgba(95,158,160,0.3)';\n\
+            \  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\">\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px\
+            \ solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:sofa\" style=\"--mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\"\
+            >\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\">Sala</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n\
+            \    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_sala_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_sala_setpoint
+                styles: &id002
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_sala_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_sala_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_sala_setpoint
+                styles: *id002
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_cozinha_setpoint
-        name: Cozinha
-        icon: mdi:countertop
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_cozinha_pede_calor
+        - sensor.sensorcozinha_temperature
+        - input_number.aq_cozinha_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_cozinha_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.sensorcozinha_temperature']?.state);\n  const cur = Number.isFinite(t)\
+            \ ? t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:countertop\" style=\"\
+            --mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >Cozinha</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_cozinha_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_cozinha_setpoint
+                styles: &id003
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_cozinha_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_cozinha_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_cozinha_setpoint
+                styles: *id003
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_suite_setpoint
-        name: Suite
-        icon: mdi:bed-king
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_suite_pede_calor
+        - sensor.esp_th_suite_temperatura
+        - input_number.aq_suite_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_suite_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.esp_th_suite_temperatura']?.state);\n  const cur = Number.isFinite(t) ?\
+            \ t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:bed-king\" style=\"\
+            --mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >Suite</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_suite_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_suite_setpoint
+                styles: &id004
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_suite_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_suite_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_suite_setpoint
+                styles: *id004
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_quarto2_setpoint
-        name: Quarto2
-        icon: mdi:baby-face-outline
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_quarto2_pede_calor
+        - sensor.sensorroom2_temperature
+        - input_number.aq_quarto2_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_quarto2_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.sensorroom2_temperature']?.state);\n  const cur = Number.isFinite(t)\
+            \ ? t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:baby-face-outline\"\
+            \ style=\"--mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >Quarto2</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_quarto2_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_quarto2_setpoint
+                styles: &id005
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_quarto2_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_quarto2_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_quarto2_setpoint
+                styles: *id005
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_gaming_setpoint
-        name: Gaming
-        icon: mdi:controller
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_gaming_pede_calor
+        - sensor.sensorthescritorio_temperature
+        - input_number.aq_gaming_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_gaming_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.sensorthescritorio_temperature']?.state);\n  const cur = Number.isFinite(t)\
+            \ ? t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:controller\" style=\"\
+            --mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >Gaming</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_gaming_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_gaming_setpoint
+                styles: &id006
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_gaming_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_gaming_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_gaming_setpoint
+                styles: *id006
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_wc_geral_setpoint
-        name: WC Geral
-        icon: mdi:shower
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
-      - type: custom:mushroom-number-card
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_wc_geral_pede_calor
+        - sensor.lumi_lumi_sens_temperature
+        - input_number.aq_wc_geral_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_wc_geral_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.lumi_lumi_sens_temperature']?.state);\n  const cur = Number.isFinite(t)\
+            \ ? t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:shower\" style=\"\
+            --mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >WC Geral</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_wc_geral_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_wc_geral_setpoint
+                styles: &id007
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_wc_geral_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_wc_geral_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_wc_geral_setpoint
+                styles: *id007
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
+      - type: custom:button-card
         entity: input_number.aq_wc_suite_setpoint
-        name: WC Suite
-        icon: mdi:bathtub
-        display_mode: buttons
-        primary_info: name
-        secondary_info: none
-        icon_color: deep-orange
-        layout: horizontal
-        card_mod:
-          style: "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n\
-            }\n"
+        show_icon: false
+        show_name: false
+        show_state: false
+        tap_action:
+          action: none
+        triggers_update:
+        - input_boolean.aq_wc_suite_pede_calor
+        - sensor.sensorwcsuite_temperature
+        - input_number.aq_wc_suite_setpoint
+        custom_fields:
+          info: "[[[\n  const on = states['input_boolean.aq_wc_suite_pede_calor']?.state === 'on';\n  const t = Number(states['sensor.sensorwcsuite_temperature']?.state);\n  const cur = Number.isFinite(t)\
+            \ ? t.toFixed(1) + '°' : '–';\n  const col = on ? 'rgba(255,120,65,1)' : 'CadetBlue';\n  const bg = on ? 'rgba(210,80,40,0.17)' : 'rgba(95,158,160,0.08)';\n  const bd = on ? 'rgba(255,120,65,0.5)'\
+            \ : 'rgba(95,158,160,0.3)';\n  const est = on ? '<span style=\"color:rgba(255,120,65,1);\">A aquecer</span>' : 'Em espera';\n  return `<div style=\"display:flex;align-items:center;gap:10px;\"\
+            >\n    <div style=\"width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:${bg};border:1.5px solid ${bd};flex:none;\">\n      <ha-icon icon=\"mdi:bathtub\" style=\"\
+            --mdc-icon-size:20px;color:${col};\"></ha-icon>\n    </div>\n    <div style=\"display:flex;flex-direction:column;align-items:flex-start;gap:2px;\">\n      <span style=\"font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);\"\
+            >WC Suite</span>\n      <span style=\"font-size:11px;color:rgba(255,255,255,0.45);\">Atual ${cur} · ${est}</span>\n    </div>\n  </div>`;\n]]]\n"
+          controls:
+            card:
+              type: horizontal-stack
+              cards:
+              - type: custom:button-card
+                entity: input_number.aq_wc_suite_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.aq_wc_suite_setpoint
+                styles: &id008
+                  card:
+                  - height: 36px
+                  - width: 36px
+                  - border-radius: 10px
+                  - background: rgba(255,255,255,0.06)
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  icon:
+                  - color: rgba(255,255,255,0.8)
+                  - width: 18px
+                icon: mdi:minus
+              - type: custom:button-card
+                entity: input_number.aq_wc_suite_setpoint
+                show_icon: false
+                show_name: false
+                show_label: true
+                label: '[[[ return `<span style="font-size:20px;font-weight:300;color:rgba(255,153,51,0.96);">${Number(entity.state).toFixed(1)}°</span>`; ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                  - background: transparent
+                  - border: none
+                  - box-shadow: none
+                  - padding: '0'
+                  - width: 56px
+              - type: custom:button-card
+                entity: input_number.aq_wc_suite_setpoint
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.aq_wc_suite_setpoint
+                styles: *id008
+                icon: mdi:plus
+        styles:
+          card:
+          - padding: 8px 10px
+          - margin-bottom: 6px
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.04)
+          - border: 1px solid rgba(255,255,255,0.07)
+          - box-shadow: none
+          grid:
+          - grid-template-areas: '"info controls"'
+          - grid-template-columns: 1fr auto
+          - align-items: center
+          custom_fields:
+            info:
+            - justify-self: start
+            controls:
+            - width: 140px
       - type: custom:button-card
         show_icon: false
         show_name: false
