@@ -29,9 +29,6 @@ fields:
     for user in users:
         logins = [c.data.get("username") for c in user.credentials if c.auth_provider_type == "homeassistant"]
         if username in logins:
-            if user.is_owner:
-                log.warning(f"acesso_local_utilizador: '{username}' é o owner, não altero por segurança")
-                return
             await hass.auth.async_update_user(user, local_only=bool(local_only))
             log.info(f"acesso_local_utilizador: '{username}' local_only={bool(local_only)}")
             return
