@@ -1,0 +1,450 @@
+type: picture-elements
+image: /local/floorplan/base/planta-render-escuro.png?v=1
+elements:
+- type: conditional
+  conditions:
+  - entity: light.ilm_gamingroom
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/escritorio-luz-principal-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.livarno_fita_led_level_light_color_on_off
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/escritorio-fita-secretarias-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.sensormovimentocozinha
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/cozinha-presenca-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_ilha
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/cozinha-ilha-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_bancada
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/cozinha-bancada-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.led_cozinha
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/cozinha-led-bancada-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_mesa
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/sala-jantar-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_tv
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/sala-estar-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.fita_sala
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/sala-fita-tv-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_hallquartos
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/hall-quartos-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_hallentrada
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/hall-entrada-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_room2
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/diana-luz-principal-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_suite
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/suite-luz-principal-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.rgbw_suite
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/suite-fita-cama-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_wcsuite
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/wcsuite-luz-principal-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.ilm_wcgeral
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/wcgeral-luz-principal-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: conditional
+  conditions:
+  - entity: light.sensormovimentowcgeral
+    state: 'on'
+  elements:
+  - type: image
+    image: /local/floorplan/luzes/wcgeral-luz-presenca-integrada.png?v=1
+    style:
+      left: 50%
+      top: 50%
+      width: 100%
+      pointer-events: none
+- type: state-label
+  entity: sensor.esp_th_suite_temperatura
+  prefix: '🌡 '
+  style:
+    left: 25%
+    top: 7%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: Suite · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.sensorroom2_temperature
+  prefix: '🌡 '
+  style:
+    left: 53%
+    top: 7%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: Diana · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.sensorthescritorio_temperature
+  prefix: '🌡 '
+  style:
+    left: 80%
+    top: 13.5%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: Escritório · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.sensorwcsuite_temperature
+  prefix: '🌡 '
+  style:
+    left: 16%
+    top: 26%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: WC Suite · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.lumi_lumi_sens_temperature
+  prefix: '🌡 '
+  style:
+    left: 16%
+    top: 54%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: WC Geral · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.sensorsalas_temperature
+  prefix: '🌡 '
+  style:
+    left: 60%
+    top: 34%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: Sala · temperatura
+  tap_action:
+    action: more-info
+- type: state-label
+  entity: sensor.sensorcozinha_temperature
+  prefix: '🌡 '
+  style:
+    left: 17%
+    top: 63%
+    color: '#eefaff'
+    background: rgba(5,22,31,0.92)
+    border-radius: 10px
+    padding: 3px 6px
+    font-size: clamp(12px, 1.25vw, 16px)
+    font-weight: 600
+    border: 1px solid rgba(101,216,222,0.28)
+  title: Cozinha · temperatura
+  tap_action:
+    action: more-info
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Suite
+  tap_action:
+    action: navigate
+    navigation_path: '#Suite'
+  style:
+    left: 30%
+    top: 19%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Diana
+  tap_action:
+    action: navigate
+    navigation_path: '#Room2'
+  style:
+    left: 53%
+    top: 19%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Escritório
+  tap_action:
+    action: navigate
+    navigation_path: '#GamingRoom'
+  style:
+    left: 81%
+    top: 24%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir WC Suite
+  tap_action:
+    action: navigate
+    navigation_path: '#WcSuite'
+  style:
+    left: 18%
+    top: 35%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir WC Geral
+  tap_action:
+    action: navigate
+    navigation_path: '#WcGeral'
+  style:
+    left: 18%
+    top: 47%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Sala
+  tap_action:
+    action: navigate
+    navigation_path: '#Sala'
+  style:
+    left: 80%
+    top: 50%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Cozinha
+  tap_action:
+    action: navigate
+    navigation_path: '#Cozinha'
+  style:
+    left: 20%
+    top: 77%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+- type: icon
+  icon: mdi:dots-horizontal-circle
+  title: Abrir Hall
+  tap_action:
+    action: navigate
+    navigation_path: '#Hall'
+  style:
+    left: 43%
+    top: 65%
+    color: '#65D8DE'
+    --mdc-icon-size: 36px
+    background: rgba(5,22,31,0.9)
+    border-radius: 50%
+    padding: 4px
+    z-index: 5
+grid_options:
+  columns: 21
+  rows: auto
+card_mod:
+  style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+    \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow: hidden;\
+    \ }"
+visibility:
+- condition: state
+  entity: ''
+  state: ''
