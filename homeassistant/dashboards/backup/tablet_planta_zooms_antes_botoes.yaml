@@ -1,0 +1,1799 @@
+type: vertical-stack
+cards:
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: casa
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/planta-render-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_suite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/suite-luz-principal-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.rgbw_suite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/suite-fita-cama-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_room2
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/diana-luz-principal-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_gamingroom
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/escritorio-luz-principal-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.livarno_fita_led_level_light_color_on_off
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/escritorio-fita-secretarias-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_wcsuite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/wcsuite-luz-principal-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_wcgeral
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/wcgeral-luz-principal-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.sensormovimentowcgeral
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/wcgeral-luz-presenca-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_mesa
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/sala-jantar-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_tv
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/sala-estar-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.fita_sala
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/sala-fita-tv-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.sensormovimentocozinha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/cozinha-presenca-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_ilha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/cozinha-ilha-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_bancada
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/cozinha-bancada-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.led_cozinha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/cozinha-led-bancada-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_hallquartos
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/hall-quartos-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_hallentrada
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/hall-entrada-integrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: image
+      image: /local/floorplan/base/toque-suite-1.png?v=8
+      title: Abrir Suite
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: suite
+      style:
+        left: 20.17%
+        top: 12.60%
+        width: 29.59%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-quarto-1.png?v=8
+      title: Abrir Quarto da Diana
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: quarto
+      style:
+        left: 52.05%
+        top: 12.27%
+        width: 34.18%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-escritorio-1.png?v=8
+      title: Abrir Escritório
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: escritorio
+      style:
+        left: 83.40%
+        top: 12.27%
+        width: 28.52%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-escritorio-2.png?v=8
+      title: Abrir Escritório
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: escritorio
+      style:
+        left: 78.12%
+        top: 27.02%
+        width: 39.06%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-wc_suite-1.png?v=8
+      title: Abrir WC Suite
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: wc_suite
+      style:
+        left: 14.99%
+        top: 31.18%
+        width: 19.24%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-wc_geral-1.png?v=8
+      title: Abrir WC Geral
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: wc_geral
+      style:
+        left: 14.99%
+        top: 47.88%
+        width: 19.24%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-sala-1.png?v=8
+      title: Abrir Sala
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: sala
+      style:
+        left: 65.92%
+        top: 43.55%
+        width: 63.48%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-cozinha-1.png?v=8
+      title: Abrir Cozinha
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: cozinha
+      style:
+        left: 17.82%
+        top: 77.64%
+        width: 32.71%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-cozinha-2.png?v=8
+      title: Abrir Cozinha
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: cozinha
+      style:
+        left: 36.23%
+        top: 84.96%
+        width: 4.10%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-hall_quartos-1.png?v=8
+      title: Abrir Hall dos quartos
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: hall_quartos
+      style:
+        left: 41.60%
+        top: 27.34%
+        width: 33.98%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-hall_quartos-2.png?v=8
+      title: Abrir Hall dos quartos
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: hall_quartos
+      style:
+        left: 29.39%
+        top: 44.04%
+        width: 9.57%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: image
+      image: /local/floorplan/base/toque-hall_entrada-1.png?v=8
+      title: Abrir Hall de entrada
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: hall_entrada
+      style:
+        left: 41.75%
+        top: 64.45%
+        width: 15.14%
+        opacity: 0
+        outline: none
+        -webkit-tap-highlight-color: transparent
+        pointer-events: auto
+        z-index: 2
+    - type: state-label
+      entity: sensor.esp_th_suite_temperatura
+      prefix: '🌡 '
+      style:
+        left: 25%
+        top: 7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Suite · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.sensorroom2_temperature
+      prefix: '🌡 '
+      style:
+        left: 53%
+        top: 7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Diana · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.sensorthescritorio_temperature
+      prefix: '🌡 '
+      style:
+        left: 80%
+        top: 13.5%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Escritório · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.sensorwcsuite_temperature
+      prefix: '🌡 '
+      style:
+        left: 16%
+        top: 26%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: WC Suite · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.lumi_lumi_sens_temperature
+      prefix: '🌡 '
+      style:
+        left: 16%
+        top: 54%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: WC Geral · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.sensorsalas_temperature
+      prefix: '🌡 '
+      style:
+        left: 60%
+        top: 34%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Sala · temperatura
+      tap_action:
+        action: more-info
+    - type: state-label
+      entity: sensor.sensorcozinha_temperature
+      prefix: '🌡 '
+      style:
+        left: 17%
+        top: 63%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Cozinha · temperatura
+      tap_action:
+        action: more-info
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: suite
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-suite-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_suite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-suite-suite-luz-principal.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.rgbw_suite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-suite-suite-fita-cama.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_suite
+      title: Luz principal da suite
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 53.6%
+        top: 77.4%
+        --mdc-icon-size: 56px
+        padding: 14px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.rgbw_suite
+      icon: mdi:led-strip
+      title: Fita LED da cama
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 29.2%
+        top: 51.4%
+        --mdc-icon-size: 56px
+        padding: 14px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.esp_th_suite_temperatura
+      prefix: '🌡 '
+      style:
+        left: 77.9%
+        top: 30.8%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Suite · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: climate.suite_ac_suite
+      title: Ar condicionado da suite
+      tap_action:
+        action: more-info
+      style:
+        left: 84.4%
+        top: 51.4%
+        --mdc-icon-size: 56px
+        padding: 14px
+        --state-climate-cool-color: '#55c7ff'
+        --state-climate-heat-color: '#ff9b55'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: cover.est_suite
+      title: Estore da suite
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 55.2%
+        top: 25.4%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_suite
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 64.2%
+        top: 25.4%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: quarto
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-quarto-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_room2
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-quarto-diana-luz-principal.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_room2
+      title: Luz da Diana
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 47.0%
+        top: 61.7%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.sensorroom2_temperature
+      prefix: '🌡 '
+      style:
+        left: 49.7%
+        top: 35.0%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Quarto da Diana · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: climate.quarto2_ac_quarto_bebe
+      title: Ar condicionado da Diana
+      tap_action:
+        action: more-info
+      style:
+        left: 58.0%
+        top: 47.9%
+        --mdc-icon-size: 56px
+        --state-climate-cool-color: '#55c7ff'
+        --state-climate-heat-color: '#ff9b55'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: cover.est_room2
+      title: Estore da Diana
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 47.0%
+        top: 73.7%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_room2
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 56.0%
+        top: 73.7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: escritorio
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-escritorio-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_gamingroom
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-escritorio-escritorio-luz-principal.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.livarno_fita_led_level_light_color_on_off
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-escritorio-escritorio-fita-secretarias.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_gamingroom
+      title: Luz principal do escritório
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 58.3%
+        top: 63.8%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.livarno_fita_led_level_light_color_on_off
+      icon: mdi:led-strip
+      title: Fita LED das secretárias
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 55.8%
+        top: 27.4%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.sensorthescritorio_temperature
+      prefix: '🌡 '
+      style:
+        left: 33.5%
+        top: 78.7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Escritório · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: climate.quarto_gaming_ac_gaming_room
+      title: Ar condicionado do escritório
+      tap_action:
+        action: more-info
+      style:
+        left: 73.2%
+        top: 57.2%
+        --mdc-icon-size: 56px
+        --state-climate-cool-color: '#55c7ff'
+        --state-climate-heat-color: '#ff9b55'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: cover.est_gamingroom
+      title: Estore do escritório
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 65.8%
+        top: 75.4%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_gamingroom
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 74.8%
+        top: 75.4%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: wc_suite
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-wc_suite-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_wcsuite
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-wc_suite-wcsuite-luz-principal.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_wcsuite
+      title: Luz do WC da suite
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 51.6%
+        top: 50.0%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: fan.vent_wcsuite
+      title: Extrator do WC da suite
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 71.7%
+        top: 32.1%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.sensorwcsuite_temperature
+      prefix: '🌡 '
+      style:
+        left: 49.3%
+        top: 69.4%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: WC Suite · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: cover.est_wcsuite
+      title: Estore do WC da suite
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 24.7%
+        top: 29.1%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_wcsuite
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 33.7%
+        top: 29.1%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: wc_geral
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-wc_geral-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_wcgeral
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-wc_geral-wcgeral-luz-principal.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.sensormovimentowcgeral
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-wc_geral-wcgeral-luz-presenca.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_wcgeral
+      title: Luz principal do WC geral
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 51.6%
+        top: 48.8%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.sensormovimentowcgeral
+      icon: mdi:motion-sensor
+      title: Luz de presença do WC geral
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 67.3%
+        top: 21.9%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: fan.vent_wcgeral
+      title: Extrator do WC geral
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 71.7%
+        top: 69.7%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.lumi_lumi_sens_temperature
+      prefix: '🌡 '
+      style:
+        left: 42.6%
+        top: 84.7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: WC Geral · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: cover.est_wcgeral
+      title: Estore do WC geral
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 24.7%
+        top: 33.9%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_wcgeral
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 33.7%
+        top: 33.9%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: sala
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-sala-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_mesa
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-sala-sala-jantar.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_tv
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-sala-sala-estar.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.fita_sala
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-sala-sala-fita-tv.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_mesa
+      title: Luz da mesa de jantar
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 28.8%
+        top: 61.8%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_tv
+      title: Luz da zona de estar
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 57.6%
+        top: 39.6%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.fita_sala
+      icon: mdi:led-strip
+      title: Fita LED da parede da TV
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 39.4%
+        top: 35.1%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.sensorsalas_temperature
+      prefix: '🌡 '
+      style:
+        left: 13.6%
+        top: 35.6%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Sala · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: climate.sala_de_estar_ac_sala
+      title: Ar condicionado da sala
+      tap_action:
+        action: more-info
+      style:
+        left: 84.8%
+        top: 37.6%
+        --mdc-icon-size: 56px
+        --state-climate-cool-color: '#55c7ff'
+        --state-climate-heat-color: '#ff9b55'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: cover.estore_sala
+      title: Estore da sala
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 78.8%
+        top: 53.7%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.estore_sala
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 87.8%
+        top: 53.7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: cozinha
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-cozinha-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.sensormovimentocozinha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-cozinha-cozinha-presenca.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_ilha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-cozinha-cozinha-ilha.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.ilm_bancada
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-cozinha-cozinha-bancada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: conditional
+      conditions:
+      - entity: light.led_cozinha
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-cozinha-cozinha-led-bancada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_ilha
+      title: Luz da ilha
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 62.7%
+        top: 34.5%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_bancada
+      title: Luz da bancada
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 48.6%
+        top: 51.7%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.led_cozinha
+      icon: mdi:led-strip
+      title: Fita LED da bancada
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 48.6%
+        top: 77.5%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.sensormovimentocozinha
+      icon: mdi:motion-sensor
+      title: Luz de presença da cozinha
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 56.8%
+        top: 58.0%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: sensor.sensorcozinha_temperature
+      prefix: '🌡 '
+      style:
+        left: 55.6%
+        top: 14.2%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 10px
+        padding: 3px 6px
+        font-size: clamp(12px, 1.25vw, 16px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 6
+      title: Cozinha · temperatura
+      tap_action:
+        action: more-info
+    - type: state-icon
+      entity: cover.est_cozinhagra
+      title: Estore grande da cozinha
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 26.3%
+        top: 62.7%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_cozinhagra
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 35.3%
+        top: 62.7%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    - type: state-icon
+      entity: cover.est_cozinhapeq
+      title: Estore pequeno da cozinha
+      tap_action:
+        action: more-info
+      hold_action:
+        action: toggle
+      style:
+        left: 26.3%
+        top: 18.9%
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-label
+      entity: cover.est_cozinhapeq
+      attribute: current_position
+      suffix: '%'
+      style:
+        left: 35.3%
+        top: 18.9%
+        color: '#eefaff'
+        background: rgba(5,22,31,0.92)
+        border-radius: 9px
+        padding: 2px 6px
+        font-size: clamp(11px, 1.1vw, 14px)
+        font-weight: 600
+        border: 1px solid rgba(101,216,222,0.28)
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: hall_quartos
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-hall_quartos-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_hallquartos
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-hall_quartos-hall-quartos.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_hallquartos
+      title: Luz do hall dos quartos
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 16.1%
+        top: 49.8%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+- type: conditional
+  conditions:
+  - entity: input_select.vista_planta
+    state: hall_entrada
+  card:
+    type: picture-elements
+    image: /local/floorplan/base/zoom-hall_entrada-escuro.png?v=8
+    elements:
+    - type: conditional
+      conditions:
+      - entity: light.ilm_hallentrada
+        state: 'on'
+      elements:
+      - type: image
+        image: /local/floorplan/luzes/zoom-hall_entrada-hall-entrada.png?v=8
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          pointer-events: none
+    - type: icon
+      icon: mdi:arrow-left-circle
+      title: Voltar à planta completa
+      tap_action:
+        action: call-service
+        service: input_select.select_option
+        service_data:
+          entity_id: input_select.vista_planta
+          option: casa
+      style:
+        left: 8%
+        top: 8%
+        color: '#65D8DE'
+        --mdc-icon-size: 56px
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    - type: state-icon
+      entity: light.ilm_hallentrada
+      title: Luz do hall de entrada
+      tap_action:
+        action: toggle
+      hold_action:
+        action: more-info
+      style:
+        left: 50.4%
+        top: 48.5%
+        --mdc-icon-size: 56px
+        --state-light-active-color: '#ffd58a'
+        background: rgba(5,22,31,0.9)
+        border-radius: 50%
+        padding: 14px
+        border: 1px solid rgba(101,216,222,0.28)
+        z-index: 5
+    card_mod:
+      style: "ha-card {\n  background: linear-gradient(145deg, #16343f 0%, #0b202b 100%);\n  color: #eefaff;\n  --primary-text-color: #eefaff;\n  --secondary-text-color: #b9d2dc;\n  --primary-color: #65D8DE;\n\
+        \  --accent-color: #65D8DE;\n  border: 1px solid rgba(101,216,222,0.24);\n  border-radius: 16px;\n  box-shadow: 0 6px 18px rgba(0,0,0,0.22);\n}\nha-card { background: rgba(5,22,31,0.45); overflow:\
+        \ hidden; -webkit-tap-highlight-color: transparent; }\nhui-image-element, hui-image-element:focus, hui-image-element:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent\
+        \ !important; }"
+grid_options:
+  columns: 19
+  rows: auto
