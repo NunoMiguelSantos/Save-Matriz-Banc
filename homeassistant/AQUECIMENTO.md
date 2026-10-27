@@ -31,3 +31,8 @@ Para voltar atrás é fazer o inverso.
 ## Dashboard
 
 Vista `dashboard-smartphone/aquecimento` (cópia em `dashboards/smartphone_view_aquecimento.yaml`).
+
+## Painel principal
+
+- `binary_sensor.aq_sistema_ativo` (Template helper): ligado só quando `input_boolean.cald_auto_mode` está on **e** `automation.aquecimento_caldeira_simples` está ligada.
+- Nos cartões das divisões da vista `smartphone-v3`, o primeiro sub-botão é uma chama (`mdi:fire`) que fica laranja e a pulsar quando `aq_<divisão>_pede_calor` está on **e** o sistema está ativo; caso contrário fica transparente (não mexe no layout).
