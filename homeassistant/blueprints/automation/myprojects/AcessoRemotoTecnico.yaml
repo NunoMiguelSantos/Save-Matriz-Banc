@@ -1,0 +1,112 @@
+blueprint:
+  name: Acesso Remoto do Técnico
+  description: >
+    Um interruptor controla se um utilizador do Home Assistant pode entrar de
+    fora de casa.
+
+    - Interruptor DESLIGADO → o utilizador fica "Local access only" (só rede local).
+    - Interruptor LIGADO → o utilizador pode entrar de fora.
+
+    Opcional: desligar sozinho passado X horas e avisar quando é ligado.
+
+    Requer o pyscript (HACS) com "Access hass as a global variable" ligado e o
+    ficheiro /config/pyscript/acesso_utilizadores.py (ação pyscript.acesso_local_utilizador).
+  domain: automation
+  author: Nuno Santos
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    acesso:
+      name: Acesso
+      icon: mdi:account-lock-open
+      input:
+        interruptor:
+          name: Interruptor "Acesso remoto"
+          description: input_boolean que o cliente liga/desliga.
+          selector:
+            entity:
+              domain: input_boolean
+        username:
+          name: Username do técnico
+          description: O nome de login do utilizador (Definições → Pessoas → Utilizadores → Username).
+          selector:
+            text:
+    opcoes:
+      name: Opções
+      icon: mdi:tune
+      collapsed: true
+      input:
+        horas_auto_desligar:
+          name: Desligar sozinho passado (horas)
+          description: 0 = nunca desliga sozinho.
+          default: 0
+          selector:
+            number:
+              min: 0
+              max: 72
+              step: 1
+              unit_of_measurement: h
+              mode: box
+        ao_ligar:
+          name: Ações quando o acesso é ligado
+          description: Ex. enviar uma notificação ao cliente.
+          default: []
+          selector:
+            action: {}
+        ao_desligar:
+          name: Ações quando o acesso é desligado
+          default: []
+          selector:
+            action: {}
+
+mode: restart
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input interruptor
+    to: "on"
+    id: ligado
+  - trigger: state
+    entity_id: !input interruptor
+    to: "off"
+    id: desligado
+  # Garante o estado certo depois de reiniciar o HA
+  - trigger: homeassistant
+    event: start
+    id: arranque
+
+variables:
+  interruptor_ent: !input interruptor
+  utilizador: !input username
+  horas: !input horas_auto_desligar
+
+actions:
+  - action: pyscript.acesso_local_utilizador
+    data:
+      username: "{{ utilizador }}"
+      local_only: "{{ is_state(interruptor_ent, 'off') }}"
+
+  - if:
+      - condition: trigger
+        id: ligado
+    then: !input ao_ligar
+
+  - if:
+      - condition: trigger
+        id: desligado
+    then: !input ao_desligar
+
+  # Desligar sozinho
+  - if:
+      - condition: state
+        entity_id: !input interruptor
+        state: "on"
+      - condition: template
+        value_template: "{{ horas | int(0) > 0 }}"
+    then:
+      - delay:
+          hours: "{{ horas | int(0) }}"
+      - action: input_boolean.turn_off
+        target:
+          entity_id: !input interruptor
