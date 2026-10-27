@@ -3,7 +3,8 @@ blueprint:
   description: >
     Uma automação por cenário. Liga o "A Decorrer" do cenário quando está
     ativo, é um dos dias escolhidos e a hora está entre o início e o fim.
-    Funciona também com horários que passam a meia-noite (ex.: 22:00 → 07:00).
+    Funciona também com horários que passam a meia-noite (ex.: 22:00 → 07:00);
+    nesse caso a parte depois da meia-noite conta para o dia em que o cenário começou.
 
     As divisões de cada cenário são escolhidas com os vistos, e é a blueprint
     "Zona de Aquecimento" que os lê.
@@ -76,6 +77,8 @@ triggers:
     at: "00:00:05"
 
 variables:
+  inicio_ent: !input inicio
+  fim_ent: !input fim
   dias:
     - !input seg
     - !input ter
@@ -93,8 +96,16 @@ actions:
       - condition: time
         after: !input inicio
         before: !input fim
+      # Dia do cenário: num horário que passa a meia-noite (ex. 20:00 → 02:00),
+      # a parte depois da meia-noite conta para o dia em que começou.
       - condition: template
-        value_template: "{{ is_state(dias[now().weekday()], 'on') }}"
+        value_template: >-
+          {%- set ini = states(inicio_ent) -%}
+          {%- set fim = states(fim_ent) -%}
+          {%- set agora = now().strftime('%H:%M:%S') -%}
+          {%- set wd = now().weekday() -%}
+          {%- set d = (wd + 6) % 7 if (ini > fim and agora < fim) else wd -%}
+          {{ is_state(dias[d], 'on') }}
     then:
       - action: input_boolean.turn_on
         target:
