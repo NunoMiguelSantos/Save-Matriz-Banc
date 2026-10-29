@@ -7,3 +7,15 @@ Cópia de segurança do que está instalado no Home Assistant.
 - `vista-energia-antiga-backup.json`: a vista Energia como estava antes.
 
 Helpers usados: `input_number.preco_energia`, `input_number.limite_consumo_base`, `sensor.geral_consumo_base_noite` e, por máquina, `input_boolean.*_em_ciclo`, `input_number.*_inicio_ciclo`, `input_number.*_ultimo_ciclo`, `input_number.*_kwh_ciclos_mes` e `counter.*_ciclos_mes`.
+
+## Fatura (v1.1)
+
+O modo `resumo` calcula o valor a pagar por ciclo de faturação (dia 22 a 22), com a tarifa da Iberdrola (Plano Exclusivo B):
+
+- energia a 0,1462 €/kWh e potência a 0,7526 €/dia, sem IVA;
+- desconto de 2%, mais 5% até 22/12/2026;
+- IEC, contribuição audiovisual e IVA a 6% nos primeiros 200 kWh por 30 dias, 23% no resto.
+
+Com a fatura de 22/09 a 22/10 (263 kWh), a fórmula dá exatamente os 68,53 € faturados.
+
+A tarifa altera-se com a chave `tarifa:` no cartão. `input_number.ajuste_medicao_geral` (kWh/dia) corrige a medição a menos do Shelly do contador geral. Calibrei-o com a fatura: 263 − 218,5 kWh em 30 dias dá 1,48 kWh/dia.

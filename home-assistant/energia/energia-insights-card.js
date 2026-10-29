@@ -1,5 +1,5 @@
-// energia-insights-card v1.0 — conclusões de energia a partir das estatísticas de longo prazo do HA
-const EIC_VERSION = "1.0.0";
+// energia-insights-card v1.1 — conclusões de energia a partir das estatísticas de longo prazo do HA
+const EIC_VERSION = "1.1.0";
 const C = {
   blue: "#64A0FF", green: "#4ADE80", red: "#F87171", amber: "#FBBF24",
   muted: "rgba(255,255,255,0.58)", faint: "rgba(255,255,255,0.10)",
@@ -112,46 +112,107 @@ class EnergiaInsightsCard extends HTMLElement {
     this._render();
   }
 
+  // ---------- FATURA ----------
+  get tarifa() {
+    return Object.assign({
+      energia: 0.1462,          // €/kWh sem IVA
+      potencia_dia: 0.7526,     // €/dia sem IVA
+      desconto: 0.02,           // débito direto + fatura eletrónica
+      desconto_extra: 0.05,     // promoção inicial
+      desconto_extra_ate: "2026-12-22",
+      iec: 0.001,               // €/kWh, IVA 23%
+      cav_mes: 2.85,            // contribuição audiovisual, IVA 6%
+      iva_reduzido_kwh: 200,    // kWh por 30 dias com IVA a 6%
+      iva_reduzido: 0.06, iva_normal: 0.23,
+      dia_fatura: 22,
+    }, this._config.tarifa || {});
+  }
+
+  get ajuste() {
+    const v = parseFloat(this._hass?.states[this._config.ajuste_entity || "input_number.ajuste_medicao_geral"]?.state);
+    return isFinite(v) ? v : 0;
+  }
+
+  // custo de um período de faturação com 'dias' dias e 'k' kWh, tal como na fatura
+  fatura(k, dias, ref = new Date()) {
+    const t = this.tarifa;
+    const desc = t.desconto + (ref < new Date(t.desconto_extra_ate) ? t.desconto_extra : 0);
+    const lim = t.iva_reduzido_kwh * dias / 30;
+    const k6 = Math.min(k, lim), k23 = Math.max(0, k - lim);
+    const potencia = t.potencia_dia * dias * (1 - desc) * (1 + t.iva_normal);
+    const energia = t.energia * (1 - desc) * (k6 * (1 + t.iva_reduzido) + k23 * (1 + t.iva_normal));
+    const taxas = k * t.iec * (1 + t.iva_normal) + t.cav_mes * (dias / 30) * (1 + t.iva_reduzido);
+    return { total: potencia + energia + taxas, fixos: potencia + t.cav_mes * (dias / 30) * (1 + t.iva_reduzido), energia: energia + k * t.iec * (1 + t.iva_normal) };
+  }
+
+  ciclo(now = new Date()) {
+    const d = this.tarifa.dia_fatura;
+    let ini = new Date(now.getFullYear(), now.getMonth(), d);
+    if (now < ini) ini = new Date(now.getFullYear(), now.getMonth() - 1, d);
+    const fim = new Date(ini.getFullYear(), ini.getMonth() + 1, d);
+    return { ini, fim };
+  }
+
   // ---------- RESUMO ----------
   async _loadResumo() {
-    const T = this._config.total, now = new Date(), som = startOfMonth(now), pm = addMonths(som, -1);
-    const elapsed = now - som;
-    const pmSameEnd = new Date(Math.min(+pm + elapsed, +som));
+    const T = this._config.total, now = new Date();
+    const { ini, fim } = this.ciclo(now);
+    const prevIni = new Date(ini.getFullYear(), ini.getMonth() - 1, ini.getDate());
+    const decorrido = now - ini;
     const d7 = new Date(+startOfDay(now) - 7 * 864e5);
-    const [mes, mpSame, mpFull, ult7, hoje, base] = await Promise.all([
-      this._stats([T], som, now, "day"),
-      this._stats([T], pm, pmSameEnd, "hour"),
-      this._stats([T], pm, som, "day"),
+    const [cic, antSame, antFull, ult7, hoje, base] = await Promise.all([
+      this._stats([T], ini, now, "hour"),
+      this._stats([T], prevIni, new Date(Math.min(+prevIni + decorrido, +ini)), "hour"),
+      this._stats([T], prevIni, ini, "day"),
       this._stats([T], d7, startOfDay(now), "day"),
       this._stats([T], startOfDay(now), now, "5minute"),
       this._stats([this._config.power], d7, now, "hour", ["mean"]),
     ]);
     const S = EnergiaInsightsCard.sum;
-    const mesK = S(mes, T), avg7 = S(ult7, T) / 7;
-    const restDias = daysInMonth(now) - (elapsed / 864e5);
     const means = (base[this._config.power] || []).map((r) => r.mean).filter((v) => isFinite(v)).sort((a, b) => a - b);
-    const baseW = means.length ? means[Math.floor(means.length * 0.1)] : NaN;
-    this._data = { mesK, mpSameK: S(mpSame, T), mpFullK: S(mpFull, T), hojeK: S(hoje, T), prevK: mesK + avg7 * restDias, avg7, baseW };
+    this._data = {
+      ini, fim, now, prevIni,
+      cicK: S(cic, T), antSameK: S(antSame, T), antFullK: S(antFull, T),
+      avg7: S(ult7, T) / 7, hojeK: S(hoje, T),
+      baseW: means.length ? means[Math.floor(means.length * 0.1)] : NaN,
+    };
   }
 
   _renderResumo() {
-    const d = this._data, p = this.price;
-    const delta = d.mpSameK > 0 ? (d.mesK / d.mpSameK - 1) * 100 : NaN;
+    const d = this._data, p = this.price, aj = this.ajuste;
+    const dia = 864e5;
+    const diasDec = (d.now - d.ini) / dia;
+    const diasCiclo = Math.round((d.fim - d.ini) / dia);
+    const diasAnt = Math.round((d.ini - d.prevIni) / dia);
+    // kWh corrigidos com o ajuste da medição do geral
+    const kDec = d.cicK + aj * diasDec;
+    const kPrev = kDec + (d.avg7 + aj) * (diasCiclo - diasDec);
+    const kAnt = d.antFullK + aj * diasAnt;
+    const kHoje = d.hojeK + aj * ((d.now - startOfDay(d.now)) / dia);
+    const fDec = this.fatura(kDec, diasDec, d.now);
+    const fPrev = this.fatura(kPrev, diasCiclo, d.now);
+    const fAnt = this.fatura(kAnt, diasAnt, d.prevIni);
+    const fixDia = this.fatura(0, 1, d.now).fixos;
+    const delta = d.antSameK > 0 ? (d.cicK / d.antSameK - 1) * 100 : NaN;
     const up = delta > 0;
     const dCol = !isFinite(delta) ? C.muted : up ? C.red : C.green;
     const baseAno = d.baseW * 8.76 * p;
+    const dm = (x) => `${x.getDate()}/${String(x.getMonth() + 1).padStart(2, "0")}`;
     const tiles = [
-      { icon: "mdi:calendar-month", col: C.blue, t: "Este mês", v: eur(d.mesK * p), s: kwh(d.mesK) },
-      { icon: "mdi:chart-timeline-variant-shimmer", col: "#A78BFA", t: "Previsão do mês", v: eur(d.prevK * p), s: `ao ritmo de ${eur(d.avg7 * p)}/dia` },
-      { icon: up ? "mdi:trending-up" : "mdi:trending-down", col: dCol, t: "vs mês passado", v: isFinite(delta) ? `${up ? "+" : ""}${num(delta, 0)} %` : "—", s: `mesmo período: ${eur(d.mpSameK * p)}` },
-      { icon: "mdi:cash-clock", col: C.green, t: "Hoje", v: eur(d.hojeK * p), s: kwh(d.hojeK) },
-      { icon: "mdi:power-sleep", col: C.amber, t: "Consumo base", v: isFinite(d.baseW) ? `${num(d.baseW, 0)} W` : "—", s: isFinite(baseAno) ? `≈ ${eur(baseAno, 0)}/ano sempre ligado` : "" },
-      { icon: "mdi:history", col: C.muted, t: "Mês passado", v: eur(d.mpFullK * p), s: kwh(d.mpFullK) },
+      { icon: "mdi:receipt-text-outline", col: C.blue, t: "Fatura até agora", v: eur(fDec.total), s: `${kwh(kDec)} desde ${dm(d.ini)}` },
+      { icon: "mdi:chart-timeline-variant-shimmer", col: "#A78BFA", t: "Previsão da fatura", v: eur(fPrev.total), s: `fecha a ${dm(d.fim)} · ${kwh(kPrev)}` },
+      { icon: up ? "mdi:trending-up" : "mdi:trending-down", col: dCol, t: "Consumo vs ciclo anterior", v: isFinite(delta) ? `${up ? "+" : ""}${num(delta, 0)} %` : "—", s: "no mesmo nº de dias" },
+      { icon: "mdi:cash-clock", col: C.green, t: "Hoje", v: eur(kHoje * p + fixDia), s: `${eur(fixDia)} são fixos` },
+      { icon: "mdi:lock-outline", col: C.amber, t: "Custos fixos", v: `${eur(fPrev.fixos)}`, s: "potência + audiovisual por ciclo" },
+      { icon: "mdi:history", col: C.muted, t: `Ciclo anterior (${dm(d.prevIni)}–${dm(d.ini)})`, v: eur(fAnt.total), s: `${kwh(kAnt)} · estimado` },
     ];
-    let frase = "";
-    if (isFinite(delta)) frase = up
-      ? `Estás a gastar <b style="color:${C.red}">${num(Math.abs(delta), 0)}% mais</b> do que no mesmo período do mês passado.`
-      : `Estás a gastar <b style="color:${C.green}">${num(Math.abs(delta), 0)}% menos</b> do que no mesmo período do mês passado.`;
+    const pctFix = fPrev.total > 0 ? (fPrev.fixos / fPrev.total) * 100 : 0;
+    let frase = `Dos <b>${eur(fPrev.total)}</b> previstos, <b style="color:${C.amber}">${eur(fPrev.fixos)} (${num(pctFix, 0)}%)</b> são fixos e pagas mesmo sem gastar nada.`;
+    if (isFinite(delta)) frase += up
+      ? ` Estás a gastar <b style="color:${C.red}">${num(Math.abs(delta), 0)}% mais</b> energia do que no ciclo anterior.`
+      : ` Estás a gastar <b style="color:${C.green}">${num(Math.abs(delta), 0)}% menos</b> energia do que no ciclo anterior.`;
+    if (isFinite(d.baseW)) frase += ` O consumo base (${num(d.baseW + aj * 1000 / 24, 0)} W com ajuste) custa ≈ ${eur((d.baseW + aj * 1000 / 24) * 8.76 * p, 0)}/ano.`;
+    if (aj > 0) frase += `<br><span style="color:${C.muted};font-size:11.5px">Inclui um ajuste de ${num(aj, 2)} kWh/dia ao contador geral, calibrado com a fatura.</span>`;
     return `
       <div class="tiles">${tiles.map((x) => `
         <div class="tile">
