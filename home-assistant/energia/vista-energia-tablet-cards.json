@@ -1,0 +1,756 @@
+[
+  {
+    "type": "custom:layout-card",
+    "grid_options": {
+      "columns": 48,
+      "rows": "auto"
+    },
+    "layout_type": "custom:grid-layout",
+    "layout": {
+      "grid-template-columns": "118px minmax(0, 1fr)",
+      "grid-template-areas": "\"back title\"",
+      "grid-column-gap": "12px",
+      "align-items": "stretch",
+      "margin": 0,
+      "mediaquery": {
+        "(max-width: 850px)": {
+          "grid-template-columns": "88px minmax(0, 1fr)"
+        }
+      }
+    },
+    "cards": [
+      {
+        "type": "custom:button-card",
+        "name": "Casa",
+        "icon": "mdi:chevron-left",
+        "show_name": true,
+        "show_icon": true,
+        "tap_action": {
+          "action": "navigate",
+          "navigation_path": "novo-tablet"
+        },
+        "hold_action": {
+          "action": "none"
+        },
+        "view_layout": {
+          "grid-area": "back"
+        },
+        "styles": {
+          "card": [
+            {
+              "height": "76px"
+            },
+            {
+              "padding": "0 14px"
+            },
+            {
+              "border-radius": "20px"
+            },
+            {
+              "background": "rgba(0,0,0,0.22)"
+            },
+            {
+              "border": "1px solid rgba(255,255,255,0.14)"
+            },
+            {
+              "box-shadow": "none"
+            }
+          ],
+          "grid": [
+            {
+              "grid-template-areas": "\"i n\""
+            },
+            {
+              "grid-template-columns": "30px 1fr"
+            },
+            {
+              "column-gap": "7px"
+            }
+          ],
+          "icon": [
+            {
+              "width": "27px"
+            },
+            {
+              "color": "CadetBlue"
+            }
+          ],
+          "name": [
+            {
+              "justify-self": "start"
+            },
+            {
+              "font-size": "14px"
+            },
+            {
+              "font-weight": 600
+            },
+            {
+              "color": "rgba(255,255,255,0.88)"
+            }
+          ]
+        }
+      },
+      {
+        "type": "custom:button-card",
+        "name": "Energia",
+        "label": "Fatura, custos e equipamentos",
+        "icon": "mdi:lightning-bolt",
+        "show_name": true,
+        "show_label": true,
+        "show_icon": true,
+        "tap_action": {
+          "action": "none"
+        },
+        "view_layout": {
+          "grid-area": "title"
+        },
+        "styles": {
+          "card": [
+            {
+              "height": "76px"
+            },
+            {
+              "padding": "0 20px"
+            },
+            {
+              "border-radius": "20px"
+            },
+            {
+              "background": "rgba(0,0,0,0.22)"
+            },
+            {
+              "border": "1px solid rgba(255,255,255,0.14)"
+            },
+            {
+              "box-shadow": "none"
+            }
+          ],
+          "grid": [
+            {
+              "grid-template-areas": "\"i n\" \"i l\""
+            },
+            {
+              "grid-template-columns": "52px 1fr"
+            },
+            {
+              "grid-template-rows": "1fr 1fr"
+            },
+            {
+              "column-gap": "12px"
+            }
+          ],
+          "img_cell": [
+            {
+              "width": "44px"
+            },
+            {
+              "height": "44px"
+            },
+            {
+              "border-radius": "14px"
+            },
+            {
+              "background": "rgba(95,158,160,0.15)"
+            }
+          ],
+          "icon": [
+            {
+              "width": "27px"
+            },
+            {
+              "color": "CadetBlue"
+            }
+          ],
+          "name": [
+            {
+              "align-self": "end"
+            },
+            {
+              "justify-self": "start"
+            },
+            {
+              "font-size": "22px"
+            },
+            {
+              "font-weight": 650
+            },
+            {
+              "color": "white"
+            }
+          ],
+          "label": [
+            {
+              "align-self": "start"
+            },
+            {
+              "justify-self": "start"
+            },
+            {
+              "margin-top": "3px"
+            },
+            {
+              "font-size": "13px"
+            },
+            {
+              "color": "rgba(255,255,255,0.58)"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "type": "custom:layout-card",
+    "grid_options": {
+      "columns": 48,
+      "rows": "auto"
+    },
+    "layout_type": "custom:grid-layout",
+    "layout": {
+      "grid-template-columns": "repeat(3, minmax(0, 1fr))",
+      "grid-template-areas": "\"c1 c2 c3\"",
+      "grid-gap": "12px",
+      "align-items": "start",
+      "margin": 0,
+      "mediaquery": {
+        "(max-width: 1100px)": {
+          "grid-template-columns": "repeat(2, minmax(0, 1fr))",
+          "grid-template-areas": "\"c1 c2\" \"c3 c3\""
+        },
+        "(max-width: 700px)": {
+          "grid-template-columns": "1fr",
+          "grid-template-areas": "\"c1\" \"c2\" \"c3\""
+        }
+      }
+    },
+    "cards": [
+      {
+        "type": "vertical-stack",
+        "view_layout": {
+          "grid-area": "c1"
+        },
+        "cards": [
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "resumo",
+            "title": "Fatura",
+            "icon": "mdi:receipt-text-outline",
+            "subtitle": "Valor a pagar com custos fixos, impostos e IVA, por ciclo de faturação (dia 22 a 22)."
+          },
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "perfil",
+            "title": "A que horas gastas mais",
+            "icon": "mdi:clock-outline",
+            "subtitle": "Média por hora nos últimos 30 dias."
+          },
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "tendencia",
+            "title": "Últimos 12 meses",
+            "icon": "mdi:chart-bar"
+          }
+        ]
+      },
+      {
+        "type": "vertical-stack",
+        "view_layout": {
+          "grid-area": "c2"
+        },
+        "cards": [
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "ranking",
+            "title": "Ranking de equipamentos",
+            "icon": "mdi:podium",
+            "subtitle": "Só a parte variável (preço do kWh), sem custos fixos. 'Não identificado' é o que o contador geral mede e nenhum sensor explica.",
+            "devices": [
+              {
+                "name": "Bomba de calor",
+                "stat": "sensor.bomba_de_calor_energy",
+                "icon": "mdi:heat-pump-outline"
+              },
+              {
+                "name": "Frigorífico",
+                "stat": "sensor.blitz_tomada_frigorifico_smartenergy_metering_summation_delivered",
+                "icon": "mdi:fridge-outline"
+              },
+              {
+                "name": "Tomadas cozinha",
+                "stat": "sensor.refoss_smart_energy_monitor_tomadas_cozinha_today_energy",
+                "icon": "mdi:power-socket-eu"
+              },
+              {
+                "name": "Placa elétrica",
+                "stat": "sensor.refoss_smart_energy_monitor_placa_eletrica_today_energy",
+                "icon": "mdi:stove"
+              },
+              {
+                "name": "Máq. lavar roupa",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_today_energy",
+                "icon": "mdi:washing-machine"
+              },
+              {
+                "name": "Máq. secar roupa",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_today_energy",
+                "icon": "mdi:tumble-dryer"
+              },
+              {
+                "name": "Máq. lavar louça",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_today_energy",
+                "icon": "mdi:dishwasher"
+              },
+              {
+                "name": "Tomadas sala (resto)",
+                "stat": "sensor.refoss_smart_energy_monitor_tomadas_sala_today_energy",
+                "icon": "mdi:sofa-outline",
+                "subtract": [
+                  "sensor.tomada_ac_sala_summation_delivered",
+                  "sensor.blitz_tomada_sala_smartenergy_metering_summation_delivered"
+                ]
+              },
+              {
+                "name": "AC Sala",
+                "stat": "sensor.tomada_ac_sala_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Suíte",
+                "stat": "sensor.tomada_ac_suite_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Bebé",
+                "stat": "sensor.tomada_ac_bebe_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Escritório",
+                "stat": "sensor.tomada_ac_escritorio_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "Domótica",
+                "stat": "sensor.blitz_tomada_sala_smartenergy_metering_summation_delivered",
+                "icon": "mdi:server-network"
+              },
+              {
+                "name": "Iluminação",
+                "stat": "sensor.total_iluminacao_kwh",
+                "icon": "mdi:lightbulb-group-outline"
+              },
+              {
+                "name": "Estores",
+                "stat": "sensor.total_estores_kwh",
+                "icon": "mdi:blinds-horizontal"
+              },
+              {
+                "name": "Ventilação",
+                "stat": "sensor.total_ventilacao_kwh",
+                "icon": "mdi:fan"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "vertical-stack",
+        "view_layout": {
+          "grid-area": "c3"
+        },
+        "cards": [
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "maquinas",
+            "title": "Custo por ciclo",
+            "icon": "mdi:washing-machine",
+            "subtitle": "Ciclos detetados automaticamente pela potência.",
+            "machines": [
+              {
+                "name": "Lavar roupa",
+                "icon": "mdi:washing-machine",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_today_energy",
+                "power": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_power",
+                "ultimo": "input_number.lavar_roupa_ultimo_ciclo",
+                "ciclos": "counter.lavar_roupa_ciclos_mes",
+                "kwh_ciclos": "input_number.lavar_roupa_kwh_ciclos_mes",
+                "em_ciclo": "input_boolean.lavar_roupa_em_ciclo"
+              },
+              {
+                "name": "Secar roupa",
+                "icon": "mdi:tumble-dryer",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_today_energy",
+                "power": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_power",
+                "ultimo": "input_number.secar_roupa_ultimo_ciclo",
+                "ciclos": "counter.secar_roupa_ciclos_mes",
+                "kwh_ciclos": "input_number.secar_roupa_kwh_ciclos_mes",
+                "em_ciclo": "input_boolean.secar_roupa_em_ciclo"
+              },
+              {
+                "name": "Lavar louça",
+                "icon": "mdi:dishwasher",
+                "stat": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_today_energy",
+                "power": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_power",
+                "ultimo": "input_number.lavar_louca_ultimo_ciclo",
+                "ciclos": "counter.lavar_louca_ciclos_mes",
+                "kwh_ciclos": "input_number.lavar_louca_kwh_ciclos_mes",
+                "em_ciclo": "input_boolean.lavar_louca_em_ciclo"
+              }
+            ]
+          },
+          {
+            "type": "custom:energia-insights-card",
+            "mode": "ranking",
+            "title": "Clima por divisão",
+            "icon": "mdi:air-conditioner",
+            "subtitle": "% dentro da climatização.",
+            "devices": [
+              {
+                "name": "Bomba de calor",
+                "stat": "sensor.bomba_de_calor_energy",
+                "icon": "mdi:heat-pump-outline"
+              },
+              {
+                "name": "AC Sala",
+                "stat": "sensor.tomada_ac_sala_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Suíte",
+                "stat": "sensor.tomada_ac_suite_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Bebé",
+                "stat": "sensor.tomada_ac_bebe_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              },
+              {
+                "name": "AC Escritório",
+                "stat": "sensor.tomada_ac_escritorio_summation_delivered",
+                "icon": "mdi:air-conditioner"
+              }
+            ],
+            "show_unidentified": false,
+            "percent_of": "grupo",
+            "hint": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "heading",
+    "heading": "Agora",
+    "heading_style": "title",
+    "icon": "mdi:transmission-tower",
+    "grid_options": {
+      "columns": 48,
+      "rows": "auto"
+    }
+  },
+  {
+    "type": "power-sankey",
+    "title": "Potência agora",
+    "layout": "horizontal",
+    "group_by_area": true,
+    "group_by_floor": true,
+    "grid_options": {
+      "columns": 48,
+      "rows": "auto"
+    },
+    "card_mod": {
+      "style": "ha-card {\n  min-height: 280px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n:host {\n      --ha-card-background: transparent;\n}\n"
+    }
+  },
+  {
+    "type": "heading",
+    "heading": "Alertas e definições",
+    "heading_style": "title",
+    "icon": "mdi:bell-cog-outline",
+    "grid_options": {
+      "columns": 48,
+      "rows": "auto"
+    }
+  },
+  {
+    "type": "tile",
+    "entity": "input_number.preco_energia",
+    "name": "Preço do kWh com IVA (ranking)",
+    "icon": "mdi:currency-eur",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "numeric-input",
+        "style": "buttons"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "input_number.limite_consumo_base",
+    "name": "Limite consumo base (W)",
+    "icon": "mdi:power-sleep",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "numeric-input",
+        "style": "buttons"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "input_number.ajuste_medicao_geral",
+    "name": "Correção do contador geral (kWh/dia)",
+    "icon": "mdi:tune-variant",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "numeric-input",
+        "style": "buttons"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "sensor.geral_consumo_base_noite",
+    "name": "Consumo médio últimas 3 h",
+    "icon": "mdi:power-sleep",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    }
+  },
+  {
+    "type": "tile",
+    "entity": "automation.energia_alerta_consumo_base_elevado",
+    "name": "Alerta consumo base (05:00)",
+    "icon": "mdi:power-sleep",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "automation.energia_alerta_consumo_nao_identificado",
+    "name": "Alerta consumo não identificado",
+    "icon": "mdi:help-circle-outline",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "automation.frigorifico_consumo_elevado_durante_1_hora",
+    "name": "Alerta frigorífico",
+    "icon": "mdi:fridge-alert-outline",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "automation.energia_ciclos_maquina_de_lavar_roupa",
+    "name": "Ciclos e aviso: lavar roupa",
+    "icon": "mdi:washing-machine",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "automation.energia_ciclos_maquina_de_secar_roupa",
+    "name": "Ciclos e aviso: secar roupa",
+    "icon": "mdi:tumble-dryer",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "tile",
+    "entity": "automation.energia_ciclos_maquina_de_lavar_louca",
+    "name": "Ciclos e aviso: lavar louça",
+    "icon": "mdi:dishwasher",
+    "grid_options": {
+      "columns": 16
+    },
+    "card_mod": {
+      "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+    },
+    "features": [
+      {
+        "type": "toggle"
+      }
+    ],
+    "features_position": "inline"
+  },
+  {
+    "type": "custom:navbar-card",
+    "layout": {
+      "reflect_child_state": true,
+      "auto_padding": {
+        "enabled": true,
+        "desktop_px": 105,
+        "mobile_px": 0
+      }
+    },
+    "routes": [
+      {
+        "icon": "mdi:home-outline",
+        "icon_selected": "mdi:home",
+        "label": "Casa",
+        "url": "/dashboard-tablet/novo-tablet",
+        "icon_color": "rgba(101,216,222,0.70)",
+        "selected_color": "#65D8DE"
+      },
+      {
+        "icon": "mdi:lightning-bolt-outline",
+        "icon_selected": "mdi:lightning-bolt",
+        "label": "Energia",
+        "url": "/dashboard-tablet/energypainel",
+        "icon_color": "rgba(100,160,255,0.75)",
+        "selected_color": "#64A0FF"
+      },
+      {
+        "icon": "mdi:blinds-horizontal-closed",
+        "icon_selected": "mdi:blinds-horizontal",
+        "label": "Estores",
+        "url": "/dashboard-tablet/editcovers",
+        "icon_color": "rgba(101,216,222,0.75)",
+        "selected_color": "#65D8DE"
+      },
+      {
+        "icon": "mdi:fire",
+        "label": "Caldeira",
+        "url": "/dashboard-tablet/configcaldeira",
+        "icon_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.40)\";\n]]]\n",
+        "selected_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"#65D8DE\";\n]]]\n"
+      },
+      {
+        "icon": "mdi:dishwasher",
+        "label": "Máquina da Louça",
+        "url": "/dashboard-tablet/maquina-louca",
+        "icon_color": "rgba(100,90,220,0.90)"
+      },
+      {
+        "icon": "cil:roborock-vacuum",
+        "url": "/dashboard-tablet/vacuum"
+      },
+      {
+        "icon": "mdi:dots-horizontal",
+        "label": "Mais",
+        "icon_color": "rgba(100,200,120,0.80)",
+        "selected_color": "#64C878",
+        "tap_action": {
+          "action": "open-popup"
+        },
+        "popup": [
+          {
+            "icon": "mdi:music-box-multiple",
+            "label": "Música",
+            "url": "/dashboard-tablet/musica"
+          },
+          {
+            "icon": "line-md:cog",
+            "label": "Configurações",
+            "url": "/dashboard-tablet/configs"
+          },
+          {
+            "icon": "mdi:menu",
+            "label": "Programador",
+            "tap_action": {
+              "action": "perform-action",
+              "perform_action": "input_boolean.toggle",
+              "target": {
+                "entity_id": "input_boolean.kisk_mode"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "desktop": {
+      "mode": "floating",
+      "position": "bottom",
+      "min_width": 700,
+      "show_labels": "popup_only",
+      "show_popup_label_backgrounds": false
+    },
+    "mobile": {
+      "hidden": true,
+      "mode": "floating"
+    },
+    "styles": ".navbar-card {\n  --navbar-route-icon-size: 40px;\n  --navbar-border-radius: 18px;\n\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.96) 0%,\n    rgba(15,32,45,0.98) 100%\n  ) !important;\n\n  border: 1px solid rgba(140,210,230,0.22) !important;\n  border-radius: 18px !important;\n\n  box-shadow:\n    0 6px 24px rgba(0,0,0,0.50),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 10px 14px !important;\n  gap: 12px !important;\n}\n\n/* Botões grandes */\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n\n  background: rgba(255,255,255,0.045) !important;\n  border: 1px solid rgba(255,255,255,0.09) !important;\n  border-radius: 14px !important;\n  box-shadow: none !important;\n\n  transition:\n    background 0.2s ease,\n    border-color 0.2s ease,\n    transform 0.2s ease !important;\n}\n\n/* Ícones grandes */\n.route .icon {\n  --mdc-icon-size: 40px !important;\n  width: 40px !important;\n  height: 40px !important;\n}\n\n.route .button:hover {\n  background: rgba(255,255,255,0.09) !important;\n  border-color: rgba(140,210,230,0.28) !important;\n}\n\n.route .button.active {\n  background: rgba(101,216,222,0.22) !important;\n  border-color: rgba(101,216,222,0.60) !important;\n  box-shadow: 0 0 12px rgba(101,216,222,0.12) !important;\n  transform: translateY(-2px);\n}\n\n/* Esconder os nomes na barra */\n.route .label {\n  display: none !important;\n}\n\n/* Popup Mais */\n.navbar-popup {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.98) 0%,\n    rgba(15,32,45,0.99) 100%\n  ) !important;\n\n  backdrop-filter: blur(14px) !important;\n  -webkit-backdrop-filter: blur(14px) !important;\n\n  border: 1px solid rgba(140,210,230,0.20) !important;\n  border-radius: 16px !important;\n\n  box-shadow:\n    0 8px 30px rgba(0,0,0,0.60),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 12px !important;\n}\n\n.popup-item .button {\n  width: 54px !important;\n  height: 54px !important;\n\n  background: rgba(255,255,255,0.055) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 12px !important;\n  box-shadow: none !important;\n}\n\n.popup-item .icon {\n  --mdc-icon-size: 30px !important;\n  width: 30px !important;\n  height: 30px !important;\n}\n\n/* Máquina da Louça */\n.popup-item:nth-child(1) .icon {\n  color: #A78BFA !important;\n}\n\n/* Música */\n.popup-item:nth-child(2) .icon {\n  color: #C8F560 !important;\n}\n\n/* Configurações */\n.popup-item:nth-child(3) .icon {\n  color: #65D8DE !important;\n}\n\n/* Programador */\n.popup-item:nth-child(4) .icon {\n  color: rgba(255,255,255,0.85) !important;\n}\n\n.popup-item .label {\n  display: block !important;\n  color: rgba(255,255,255,0.90) !important;\n  background: transparent !important;\n  font-size: 13px !important;\n  box-shadow: none !important;\n}\n\n/* Dar espaço real aos botões grandes */\n.route {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  flex: 0 0 70px !important;\n  overflow: visible !important;\n  box-sizing: border-box !important;\n}\n\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  margin: 0 !important;\n  box-sizing: border-box !important;\n  overflow: visible !important;\n}\n\n/* Mais espaço à volta dos botões */\n.navbar-card {\n  padding: 14px 18px !important;\n  gap: 12px !important;\n  overflow: visible !important;\n}\n\n.navbar.desktop.bottom {\n  overflow: visible !important;\n}\n",
+    "grid_options": {
+      "columns": 15,
+      "rows": "auto"
+    }
+  }
+]

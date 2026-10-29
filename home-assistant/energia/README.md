@@ -19,3 +19,8 @@ O modo `resumo` calcula o valor a pagar por ciclo de faturação (dia 22 a 22), 
 Com a fatura de 22/09 a 22/10 (263 kWh), a fórmula dá exatamente os 68,53 € faturados.
 
 A tarifa altera-se com a chave `tarifa:` no cartão. `input_number.ajuste_medicao_geral` (kWh/dia) corrige a medição a menos do Shelly do contador geral. Calibrei-o com a fatura: 263 − 218,5 kWh em 30 dias dá 1,48 kWh/dia.
+
+## Tablet
+
+- `vista-energia-tablet-cards.json`: cartões da vista **Energia** do tablet (`/dashboard-tablet/energypainel`). São 3 colunas com `layout-card`: Fatura, perfil e 12 meses; ranking; máquinas e clima. Passam a 2 colunas abaixo de 1100 px e a 1 coluna abaixo de 700 px.
+- `vista-energia-tablet-antiga-backup.json`: a vista do tablet como estava antes.
