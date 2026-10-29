@@ -1,0 +1,553 @@
+[
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "custom:button-card",
+        "name": "Energia",
+        "label": "Custos, conclusões e equipamentos",
+        "icon": "mdi:lightning-bolt",
+        "show_name": true,
+        "show_label": true,
+        "show_icon": true,
+        "tap_action": {
+          "action": "none"
+        },
+        "styles": {
+          "card": [
+            {
+              "height": "76px"
+            },
+            {
+              "padding": "0 20px"
+            },
+            {
+              "border-radius": "20px"
+            },
+            {
+              "background": "rgba(0,0,0,0.22)"
+            },
+            {
+              "border": "1px solid rgba(255,255,255,0.14)"
+            },
+            {
+              "box-shadow": "none"
+            }
+          ],
+          "grid": [
+            {
+              "grid-template-areas": "\"i n\" \"i l\""
+            },
+            {
+              "grid-template-columns": "52px 1fr"
+            },
+            {
+              "grid-template-rows": "1fr 1fr"
+            },
+            {
+              "column-gap": "12px"
+            }
+          ],
+          "img_cell": [
+            {
+              "width": "44px"
+            },
+            {
+              "height": "44px"
+            },
+            {
+              "border-radius": "14px"
+            },
+            {
+              "background": "rgba(95,158,160,0.15)"
+            }
+          ],
+          "icon": [
+            {
+              "width": "27px"
+            },
+            {
+              "color": "CadetBlue"
+            }
+          ],
+          "name": [
+            {
+              "align-self": "end"
+            },
+            {
+              "justify-self": "start"
+            },
+            {
+              "font-size": "22px"
+            },
+            {
+              "font-weight": 650
+            },
+            {
+              "color": "white"
+            }
+          ],
+          "label": [
+            {
+              "align-self": "start"
+            },
+            {
+              "justify-self": "start"
+            },
+            {
+              "margin-top": "3px"
+            },
+            {
+              "font-size": "13px"
+            },
+            {
+              "color": "rgba(255,255,255,0.58)"
+            }
+          ]
+        },
+        "grid_options": {
+          "columns": "full",
+          "rows": "auto"
+        }
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "resumo",
+        "title": "Resumo do mês",
+        "icon": "mdi:calendar-month",
+        "grid_options": {
+          "columns": "full"
+        }
+      }
+    ]
+  },
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "heading",
+        "heading": "Quem gastou mais",
+        "heading_style": "title",
+        "icon": "mdi:podium"
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "ranking",
+        "title": "Ranking de equipamentos",
+        "icon": "mdi:podium",
+        "subtitle": "Custo por equipamento no período escolhido. 'Não identificado' é o que o contador geral mede e nenhum sensor explica.",
+        "devices": [
+          {
+            "name": "Bomba de calor",
+            "stat": "sensor.bomba_de_calor_energy",
+            "icon": "mdi:heat-pump-outline"
+          },
+          {
+            "name": "Frigorífico",
+            "stat": "sensor.blitz_tomada_frigorifico_smartenergy_metering_summation_delivered",
+            "icon": "mdi:fridge-outline"
+          },
+          {
+            "name": "Tomadas cozinha",
+            "stat": "sensor.refoss_smart_energy_monitor_tomadas_cozinha_today_energy",
+            "icon": "mdi:power-socket-eu"
+          },
+          {
+            "name": "Placa elétrica",
+            "stat": "sensor.refoss_smart_energy_monitor_placa_eletrica_today_energy",
+            "icon": "mdi:stove"
+          },
+          {
+            "name": "Máq. lavar roupa",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_today_energy",
+            "icon": "mdi:washing-machine"
+          },
+          {
+            "name": "Máq. secar roupa",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_today_energy",
+            "icon": "mdi:tumble-dryer"
+          },
+          {
+            "name": "Máq. lavar louça",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_today_energy",
+            "icon": "mdi:dishwasher"
+          },
+          {
+            "name": "Tomadas sala (resto)",
+            "stat": "sensor.refoss_smart_energy_monitor_tomadas_sala_today_energy",
+            "icon": "mdi:sofa-outline",
+            "subtract": [
+              "sensor.tomada_ac_sala_summation_delivered",
+              "sensor.blitz_tomada_sala_smartenergy_metering_summation_delivered"
+            ]
+          },
+          {
+            "name": "AC Sala",
+            "stat": "sensor.tomada_ac_sala_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Suíte",
+            "stat": "sensor.tomada_ac_suite_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Bebé",
+            "stat": "sensor.tomada_ac_bebe_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Escritório",
+            "stat": "sensor.tomada_ac_escritorio_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "Domótica",
+            "stat": "sensor.blitz_tomada_sala_smartenergy_metering_summation_delivered",
+            "icon": "mdi:server-network"
+          },
+          {
+            "name": "Iluminação",
+            "stat": "sensor.total_iluminacao_kwh",
+            "icon": "mdi:lightbulb-group-outline"
+          },
+          {
+            "name": "Estores",
+            "stat": "sensor.total_estores_kwh",
+            "icon": "mdi:blinds-horizontal"
+          },
+          {
+            "name": "Ventilação",
+            "stat": "sensor.total_ventilacao_kwh",
+            "icon": "mdi:fan"
+          }
+        ],
+        "grid_options": {
+          "columns": "full"
+        }
+      }
+    ]
+  },
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "heading",
+        "heading": "Máquinas",
+        "heading_style": "title",
+        "icon": "mdi:washing-machine"
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "maquinas",
+        "title": "Custo por ciclo",
+        "icon": "mdi:washing-machine",
+        "subtitle": "Ciclos detetados automaticamente pela potência.",
+        "machines": [
+          {
+            "name": "Lavar roupa",
+            "icon": "mdi:washing-machine",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_today_energy",
+            "power": "sensor.refoss_smart_energy_monitor_maquina_de_lavar_roupa_power",
+            "ultimo": "input_number.lavar_roupa_ultimo_ciclo",
+            "ciclos": "counter.lavar_roupa_ciclos_mes",
+            "kwh_ciclos": "input_number.lavar_roupa_kwh_ciclos_mes",
+            "em_ciclo": "input_boolean.lavar_roupa_em_ciclo"
+          },
+          {
+            "name": "Secar roupa",
+            "icon": "mdi:tumble-dryer",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_today_energy",
+            "power": "sensor.refoss_smart_energy_monitor_maquina_de_secar_roupa_power",
+            "ultimo": "input_number.secar_roupa_ultimo_ciclo",
+            "ciclos": "counter.secar_roupa_ciclos_mes",
+            "kwh_ciclos": "input_number.secar_roupa_kwh_ciclos_mes",
+            "em_ciclo": "input_boolean.secar_roupa_em_ciclo"
+          },
+          {
+            "name": "Lavar louça",
+            "icon": "mdi:dishwasher",
+            "stat": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_today_energy",
+            "power": "sensor.refoss_smart_energy_monitor_maquina_lavar_louca_power",
+            "ultimo": "input_number.lavar_louca_ultimo_ciclo",
+            "ciclos": "counter.lavar_louca_ciclos_mes",
+            "kwh_ciclos": "input_number.lavar_louca_kwh_ciclos_mes",
+            "em_ciclo": "input_boolean.lavar_louca_em_ciclo"
+          }
+        ],
+        "grid_options": {
+          "columns": "full"
+        }
+      },
+      {
+        "type": "heading",
+        "heading": "Climatização",
+        "heading_style": "title",
+        "icon": "mdi:air-conditioner"
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "ranking",
+        "title": "Clima por divisão",
+        "icon": "mdi:air-conditioner",
+        "subtitle": "% dentro da climatização.",
+        "devices": [
+          {
+            "name": "Bomba de calor",
+            "stat": "sensor.bomba_de_calor_energy",
+            "icon": "mdi:heat-pump-outline"
+          },
+          {
+            "name": "AC Sala",
+            "stat": "sensor.tomada_ac_sala_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Suíte",
+            "stat": "sensor.tomada_ac_suite_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Bebé",
+            "stat": "sensor.tomada_ac_bebe_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          },
+          {
+            "name": "AC Escritório",
+            "stat": "sensor.tomada_ac_escritorio_summation_delivered",
+            "icon": "mdi:air-conditioner"
+          }
+        ],
+        "show_unidentified": false,
+        "percent_of": "grupo",
+        "grid_options": {
+          "columns": "full"
+        }
+      }
+    ]
+  },
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "heading",
+        "heading": "Tendências",
+        "heading_style": "title",
+        "icon": "mdi:chart-line"
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "perfil",
+        "title": "A que horas gastas mais",
+        "icon": "mdi:clock-outline",
+        "subtitle": "Média por hora nos últimos 30 dias.",
+        "grid_options": {
+          "columns": "full"
+        }
+      },
+      {
+        "type": "custom:energia-insights-card",
+        "mode": "tendencia",
+        "title": "Últimos 12 meses",
+        "icon": "mdi:chart-bar",
+        "grid_options": {
+          "columns": "full"
+        }
+      }
+    ]
+  },
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "heading",
+        "heading": "Agora",
+        "heading_style": "title",
+        "icon": "mdi:transmission-tower"
+      },
+      {
+        "type": "power-sankey",
+        "title": "Potência agora",
+        "layout": "horizontal",
+        "group_by_area": true,
+        "group_by_floor": true,
+        "grid_options": {
+          "columns": "full",
+          "rows": "auto"
+        },
+        "card_mod": {
+          "style": "ha-card {\n  min-height: 280px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n:host {\n      --ha-card-background: transparent;\n}\n"
+        }
+      }
+    ]
+  },
+  {
+    "type": "grid",
+    "cards": [
+      {
+        "type": "heading",
+        "heading": "Alertas e definições",
+        "heading_style": "title",
+        "icon": "mdi:bell-cog-outline"
+      },
+      {
+        "type": "tile",
+        "entity": "input_number.preco_energia",
+        "name": "Preço da energia (€/kWh)",
+        "icon": "mdi:currency-eur",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "numeric-input",
+            "style": "buttons"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "input_number.limite_consumo_base",
+        "name": "Limite consumo base (W)",
+        "icon": "mdi:power-sleep",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "numeric-input",
+            "style": "buttons"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "sensor.geral_consumo_base_noite",
+        "name": "Consumo médio últimas 3 h",
+        "icon": "mdi:power-sleep",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        }
+      },
+      {
+        "type": "tile",
+        "entity": "automation.energia_alerta_consumo_base_elevado",
+        "name": "Alerta consumo base (05:00)",
+        "icon": "mdi:power-sleep",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "automation.energia_alerta_consumo_nao_identificado",
+        "name": "Alerta consumo não identificado",
+        "icon": "mdi:help-circle-outline",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "automation.frigorifico_consumo_elevado_durante_1_hora",
+        "name": "Alerta frigorífico",
+        "icon": "mdi:fridge-alert-outline",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "automation.energia_ciclos_maquina_de_lavar_roupa",
+        "name": "Aviso fim lavar roupa",
+        "icon": "mdi:washing-machine",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "automation.energia_ciclos_maquina_de_secar_roupa",
+        "name": "Aviso fim secar roupa",
+        "icon": "mdi:tumble-dryer",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      },
+      {
+        "type": "tile",
+        "entity": "automation.energia_ciclos_maquina_de_lavar_louca",
+        "name": "Aviso fim lavar louça",
+        "icon": "mdi:dishwasher",
+        "grid_options": {
+          "columns": 12
+        },
+        "card_mod": {
+          "style": "ha-card {\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+        },
+        "features": [
+          {
+            "type": "toggle"
+          }
+        ],
+        "features_position": "inline"
+      }
+    ]
+  }
+]

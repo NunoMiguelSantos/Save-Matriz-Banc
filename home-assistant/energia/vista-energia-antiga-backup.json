@@ -1,0 +1,513 @@
+{
+  "type": "sections",
+  "title": "Energia",
+  "path": "energypainel",
+  "icon": "mdi:transmission-tower-export",
+  "subview": true,
+  "background": "radial-gradient(ellipse at top left, rgba(0, 190, 210, 0.16), transparent 55%), radial-gradient(ellipse at bottom right, rgba(0, 190, 210, 0.16), transparent 60%), linear-gradient(145deg, #091419 0%, #12282F 50%, #0B1723 100%)",
+  "max_columns": 4,
+  "sections": [
+    {
+      "type": "grid",
+      "column_span": 4,
+      "cards": [
+        {
+          "type": "custom:button-card",
+          "name": "Energia",
+          "label": "Consumo, custos e equipamentos",
+          "icon": "mdi:lightning-bolt",
+          "show_name": true,
+          "show_label": true,
+          "show_icon": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "view_layout": {
+            "grid-area": "title"
+          },
+          "styles": {
+            "card": [
+              {
+                "height": "76px"
+              },
+              {
+                "padding": "0 20px"
+              },
+              {
+                "border-radius": "20px"
+              },
+              {
+                "background": "rgba(0,0,0,0.22)"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.14)"
+              },
+              {
+                "box-shadow": "none"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "52px 1fr"
+              },
+              {
+                "grid-template-rows": "1fr 1fr"
+              },
+              {
+                "column-gap": "12px"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "background": "rgba(95,158,160,0.15)"
+              }
+            ],
+            "icon": [
+              {
+                "width": "27px"
+              },
+              {
+                "color": "CadetBlue"
+              }
+            ],
+            "name": [
+              {
+                "align-self": "end"
+              },
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "22px"
+              },
+              {
+                "font-weight": 650
+              },
+              {
+                "color": "white"
+              }
+            ],
+            "label": [
+              {
+                "align-self": "start"
+              },
+              {
+                "justify-self": "start"
+              },
+              {
+                "margin-top": "3px"
+              },
+              {
+                "font-size": "13px"
+              },
+              {
+                "color": "rgba(255,255,255,0.58)"
+              }
+            ]
+          }
+        },
+        {
+          "type": "energy-date-selection",
+          "collection_key": "energy_home",
+          "vertical_opening_direction": "down",
+          "opening_direction": "center",
+          "view_layout": {
+            "grid-area": "period"
+          },
+          "card_mod": {
+            "style": "ha-card {\n  min-height: 76px !important;\n  background: rgba(0,0,0,0.22) !important;\n  border: 1px solid rgba(255,255,255,0.14) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n}\n"
+          },
+          "grid_options": {
+            "columns": 12,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Resumo do período",
+          "heading_style": "title",
+          "icon": "mdi:calendar-range",
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:layout-card",
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          },
+          "layout_type": "custom:grid-layout",
+          "layout": {
+            "grid-template-columns": "minmax(310px, 4fr) minmax(500px, 8fr)",
+            "grid-template-areas": "\"totals history\"",
+            "grid-gap": "10px",
+            "align-items": "stretch",
+            "margin": 0,
+            "mediaquery": {
+              "(max-width: 1000px)": {
+                "grid-template-columns": "1fr",
+                "grid-template-areas": "\"totals\" \"history\""
+              }
+            }
+          },
+          "cards": [
+            {
+              "type": "energy-sources-table",
+              "collection_key": "energy_home",
+              "types": [
+                "grid"
+              ],
+              "show_only_totals": false,
+              "card_mod": {
+                "style": ":host {\n  --card-background-color: rgba(0,0,0,0.24) !important;\n}\nha-card {\n  height: 100% !important;\n  min-height: 310px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n"
+              },
+              "view_layout": {
+                "grid-area": "totals"
+              }
+            },
+            {
+              "type": "power-sources-graph",
+              "collection_key": "energy_home",
+              "title": "Evolução da potência",
+              "show_legend": true,
+              "expand_legend": false,
+              "view_layout": {
+                "grid-area": "history"
+              },
+              "card_mod": {
+                "style": "ha-card {\n  height: 100% !important;\n  min-height: 310px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n"
+              }
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "heading": "Fluxo neste momento",
+          "heading_style": "title",
+          "icon": "mdi:transmission-tower",
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "power-sankey",
+          "title": "Potência agora",
+          "layout": "horizontal",
+          "group_by_area": true,
+          "group_by_floor": true,
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          },
+          "card_mod": {
+            "style": "ha-card {\n  min-height: 280px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n:host {\n      --ha-card-background: transparent;\n}\n"
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Equipamentos no período escolhido",
+          "heading_style": "title",
+          "icon": "mdi:power-plug-outline",
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:layout-card",
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          },
+          "layout_type": "custom:grid-layout",
+          "layout": {
+            "grid-template-columns": "minmax(330px, 5fr) minmax(500px, 7fr)",
+            "grid-template-areas": "\"devices detail\"",
+            "grid-gap": "10px",
+            "align-items": "stretch",
+            "margin": 0,
+            "mediaquery": {
+              "(max-width: 1000px)": {
+                "grid-template-columns": "1fr",
+                "grid-template-areas": "\"devices\" \"detail\""
+              }
+            }
+          },
+          "cards": [
+            {
+              "type": "energy-devices-graph",
+              "collection_key": "energy_home",
+              "title": "Consumo por equipamento",
+              "expand_legend": true,
+              "hide_compound_stats": false,
+              "view_layout": {
+                "grid-area": "devices"
+              },
+              "card_mod": {
+                "style": "ha-card {\n  height: 100% !important;\n  min-height: 390px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n"
+              }
+            },
+            {
+              "type": "energy-devices-detail-graph",
+              "collection_key": "energy_home",
+              "title": "Quando foi consumida",
+              "expand_legend": true,
+              "view_layout": {
+                "grid-area": "detail"
+              },
+              "card_mod": {
+                "style": "ha-card {\n  height: 100% !important;\n  min-height: 390px !important;\n  background: rgba(0,0,0,0.24) !important;\n  border: 1px solid rgba(255,255,255,0.15) !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n}\n"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:bubble-card",
+          "card_type": "pop-up",
+          "hash": "#mais",
+          "name": "Mais",
+          "icon": "mdi:apps",
+          "button_type": "name",
+          "popup_mode": "fit-content",
+          "with_bottom_offset": false,
+          "show_header": false,
+          "performance_mode": "performance",
+          "close_on_click": true,
+          "styles": ".bubble-header .bubble-name {\n  width: 100% !important;\n  text-align: center !important;\n  font-size: 25px !important;\n  font-weight: 400 !important;\n  color: white !important;\n}\n.bubble-header {\n  padding: 0 !important;\n  margin: 0 !important;\n}\n.bubble-pop-up {\n  border-radius: 16px !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  box-shadow:\n    0 6px 18px rgba(0,0,0,0.22),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n}\n.bubble-pop-up-background {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75) 0%,\n    rgba(15,32,45,0.90) 100%\n  ) !important;\n  opacity: 1 !important;\n  border-radius: 16px !important;\n}\n",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "name",
+              "name": "Estores",
+              "icon": "mdi:blinds-horizontal-closed",
+              "button_action": {
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "/dashboard-smartphone/editcovers"
+                }
+              },
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/dashboard-smartphone/editcovers"
+              },
+              "styles": ".bubble-button-card-container {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75),\n    rgba(15,32,45,0.90)\n  ) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n}\n.bubble-icon {\n  color: #65D8DE !important;\n}\n",
+              "grid_options": {
+                "columns": 12
+              }
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "name",
+              "name": "Máquina da Louça",
+              "icon": "mdi:dishwasher",
+              "button_action": {
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "/dashboard-smartphone/maquina-louca"
+                }
+              },
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/dashboard-smartphone/maquina-louca"
+              },
+              "styles": ".bubble-button-card-container {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75),\n    rgba(15,32,45,0.90)\n  ) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n}\n.bubble-icon {\n  color: #A78BFA !important;\n}\n",
+              "grid_options": {
+                "columns": 12
+              }
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "name",
+              "name": "Música",
+              "icon": "mdi:music-box-multiple",
+              "button_action": {
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "/dashboard-smartphone/musica"
+                }
+              },
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/dashboard-smartphone/musica"
+              },
+              "visibility": [
+                {
+                  "condition": "user",
+                  "users": [
+                    "693047d606be4b99b3fc2c37f1565a3b",
+                    "8f9cb09dc643441ebe9d74a2c567fb24",
+                    "d9c05ffc90d0470a8f4acfabf013f7b4",
+                    "37856c58270d4e84b363bb5744bad78d"
+                  ]
+                }
+              ],
+              "styles": ".bubble-button-card-container {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75),\n    rgba(15,32,45,0.90)\n  ) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n}\n.bubble-icon {\n  color: #C8F560 !important;\n}\n",
+              "grid_options": {
+                "columns": 12
+              }
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "name",
+              "name": "Configurações",
+              "icon": "line-md:cog",
+              "button_action": {
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "/dashboard-smartphone/configs"
+                }
+              },
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/dashboard-smartphone/configs"
+              },
+              "visibility": [
+                {
+                  "condition": "user",
+                  "users": [
+                    "693047d606be4b99b3fc2c37f1565a3b",
+                    "8f9cb09dc643441ebe9d74a2c567fb24",
+                    "d9c05ffc90d0470a8f4acfabf013f7b4",
+                    "37856c58270d4e84b363bb5744bad78d"
+                  ]
+                }
+              ],
+              "styles": ".bubble-button-card-container {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75),\n    rgba(15,32,45,0.90)\n  ) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n}\n.bubble-icon {\n  color: var(--primary-color) !important;\n}\n",
+              "grid_options": {
+                "columns": 12
+              }
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "name",
+              "name": "Programador",
+              "icon": "mdi:menu",
+              "button_action": {
+                "tap_action": {
+                  "action": "perform-action",
+                  "perform_action": "input_boolean.toggle",
+                  "target": {
+                    "entity_id": "input_boolean.kisk_mode"
+                  }
+                }
+              },
+              "tap_action": {
+                "action": "perform-action",
+                "perform_action": "input_boolean.toggle",
+                "target": {
+                  "entity_id": "input_boolean.kisk_mode"
+                }
+              },
+              "styles": ".bubble-button-card-container {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75),\n    rgba(15,32,45,0.90)\n  ) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n}\n.bubble-icon {\n  color: #FFFFFF !important;\n}\n",
+              "grid_options": {
+                "columns": 12
+              },
+              "visibility": [
+                {
+                  "condition": "user",
+                  "users": [
+                    "8f9cb09dc643441ebe9d74a2c567fb24",
+                    "37856c58270d4e84b363bb5744bad78d",
+                    "693047d606be4b99b3fc2c37f1565a3b"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "custom:navbar-card",
+          "layout": {
+            "reflect_child_state": true,
+            "auto_padding": {
+              "enabled": true,
+              "mobile_px": 80,
+              "desktop_px": 100
+            }
+          },
+          "routes": [
+            {
+              "icon": "mdi:home",
+              "icon_selected": "mdi:home",
+              "label": "Casa",
+              "url": "/dashboard-smartphone/casa",
+              "icon_color": "#65D8DE",
+              "selected_color": "#65D8DE"
+            },
+            {
+              "icon": "mdi:lightning-bolt",
+              "icon_selected": "mdi:lightning-bolt",
+              "label": "Energia",
+              "url": "/dashboard-smartphone/energypainel",
+              "icon_color": "#64A0FF",
+              "selected_color": "#64A0FF"
+            },
+            {
+              "icon": "mdi:fire",
+              "label": "Caldeira",
+              "url": "/dashboard-smartphone/aquecimento",
+              "icon_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.4)\";\n]]]\n",
+              "selected_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.4)\";\n]]]\n"
+            },
+            {
+              "icon": "cil:roborock-vacuum",
+              "label": "Aspirador",
+              "url": "/dashboard-smartphone/vacuum",
+              "icon_color": "#3CC8B4",
+              "selected_color": "#3CC8B4"
+            },
+            {
+              "icon": "mdi:plus",
+              "label": "Mais",
+              "icon_color": "#64C878",
+              "selected_color": "#64C878",
+              "tap_action": {
+                "action": "open-popup"
+              },
+              "popup": "[[[\n  const userId = hass.user?.id;\n\n  const utilizadoresConfiguracoes = [\n    \"693047d606be4b99b3fc2c37f1565a3b\",\n    \"8f9cb09dc643441ebe9d74a2c567fb24\",\n    \"d9c05ffc90d0470a8f4acfabf013f7b4\",\n    \"37856c58270d4e84b363bb5744bad78d\"\n  ];\n\n  const utilizadoresProgramador = [\n    \"8f9cb09dc643441ebe9d74a2c567fb24\",\n    \"37856c58270d4e84b363bb5744bad78d\",\n    \"693047d606be4b99b3fc2c37f1565a3b\"\n  ];\n\n  const opcoes = [\n    {\n      icon: \"mdi:blinds-horizontal-closed\",\n      label: \"Estores\",\n      url: \"/dashboard-smartphone/editcovers\"\n    },\n    {\n      icon: \"mdi:dishwasher\",\n      label: \"Máquina da Louça\",\n      url: \"/dashboard-smartphone/maquina-louca\"\n    }\n  ];\n\n  if (utilizadoresConfiguracoes.includes(userId)) {\n    opcoes.push(\n      {\n        icon: \"mdi:music-box-multiple\",\n        label: \"Música\",\n        url: \"/dashboard-smartphone/musica\"\n      },\n      {\n        icon: \"line-md:cog\",\n        label: \"Configurações\",\n        url: \"/dashboard-smartphone/configs\"\n      }\n    );\n  }\n\n  if (utilizadoresProgramador.includes(userId)) {\n    opcoes.push({\n      icon: \"mdi:menu\",\n      label: \"Programador\",\n      tap_action: {\n        action: \"call-service\",\n        service: \"input_boolean.toggle\",\n        target: {\n          entity_id: \"input_boolean.kisk_mode\"\n        }\n      }\n    });\n  }\n\n  return opcoes;\n]]]\n"
+            }
+          ],
+          "desktop": {
+            "show_labels": true,
+            "show_popup_label_backgrounds": false
+          },
+          "mobile": {
+            "mode": "floating",
+            "show_labels": "popup_only",
+            "show_popup_label_backgrounds": false
+          },
+          "styles": "/* Fundo igual ao Bubble Card */\n.navbar-card {\n  --navbar-route-icon-size: 20px;\n\n  background: #203843 !important;\n  border: 1px solid rgba(140,210,230,0.30) !important;\n  border-radius: 16px !important;\n  box-shadow:\n    0 6px 24px rgba(0,0,0,0.55),\n    inset 0 1px 0 rgba(255,255,255,0.04) !important;\n  padding: 8px !important;\n  gap: 6px !important;\n}\n\n/* Botões compactos */\n.navbar-card .route .button {\n  height: 34px !important;\n  min-height: 34px !important;\n  width: 54px !important;\n  min-width: 0 !important;\n  box-sizing: border-box !important;\n  border-radius: 6px !important;\n  background: rgba(255,255,255,0.06) !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  box-shadow: none !important;\n}\n\n/* Casa */\n.navbar-card .route:nth-child(1) .button {\n  background: rgba(101,216,222,0.06) !important;\n  border-color: rgba(101,216,222,0.15) !important;\n}\n\n.navbar-card .route:nth-child(1) .button.active {\n  background: rgba(101,216,222,0.18) !important;\n  border-color: rgba(101,216,222,0.45) !important;\n}\n\n/* Energia */\n.navbar-card .route:nth-child(2) .button {\n  background: rgba(100,160,255,0.06) !important;\n  border-color: rgba(100,160,255,0.15) !important;\n}\n\n.navbar-card .route:nth-child(2) .button.active {\n  background: rgba(100,160,255,0.18) !important;\n  border-color: rgba(100,160,255,0.45) !important;\n}\n\n/* Caldeira: fundo discreto, ícone com cor dinâmica */\n.navbar-card .route:nth-child(3) .button {\n  background: rgba(255,255,255,0.035) !important;\n  border-color: rgba(255,255,255,0.10) !important;\n}\n\n.navbar-card .route:nth-child(3) .button.active {\n  background: rgba(255,255,255,0.09) !important;\n  border-color: rgba(255,255,255,0.30) !important;\n}\n\n/* Aspirador */\n.navbar-card .route:nth-child(4) .button {\n  background: rgba(60,200,180,0.10) !important;\n  border-color: rgba(60,200,180,0.20) !important;\n}\n\n.navbar-card .route:nth-child(4) .button.active {\n  background: rgba(60,200,180,0.20) !important;\n  border-color: rgba(60,200,180,0.45) !important;\n}\n\n/* Mais */\n.navbar-card .route:nth-child(5) .button {\n  background: rgba(100,200,120,0.06) !important;\n  border-color: rgba(100,200,120,0.15) !important;\n}\n\n.navbar-card .route:nth-child(5) .button.active {\n  background: rgba(100,200,120,0.18) !important;\n  border-color: rgba(100,200,120,0.45) !important;\n}\n\n/* Legendas no desktop */\n.navbar-card .label {\n  color: rgba(255,255,255,0.65) !important;\n  font-size: 12px !important;\n  font-weight: 500 !important;\n}\n\n.navbar-card .label.active {\n  color: rgba(255,255,255,0.95) !important;\n}\n\n/* Popup com o degradê dos Bubble Cards */\n.navbar-popup {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.95) 0%,\n    rgba(15,32,45,0.98) 100%\n  ) !important;\n  backdrop-filter: blur(14px) !important;\n  -webkit-backdrop-filter: blur(14px) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 16px !important;\n  box-shadow:\n    0 6px 18px rgba(0,0,0,0.22),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n  padding: 12px !important;\n}\n\n.popup-item .button {\n  background: rgba(255,255,255,0.06) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 10px !important;\n  box-shadow: none !important;\n}\n\n.popup-item .icon {\n  color: #65D8DE !important;\n}\n\n.popup-item .label {\n  color: rgba(255,255,255,0.90) !important;\n  background: transparent !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n}\n"
+        }
+      ]
+    }
+  ],
+  "cards": [],
+  "footer": {
+    "max_width": 1600
+  }
+}
