@@ -1,5 +1,5 @@
-// maquina-louca-card v1.1 — controlo da máquina da louça (Home Connect Alt)
-const MLC_VERSION = "1.1.0";
+// maquina-louca-card v1.2 — controlo da máquina da louça (Home Connect Alt)
+const MLC_VERSION = "1.2.0";
 const MLC = {
   blue: "#64A0FF", teal: "#65D8DE", green: "#4ADE80", amber: "#FBBF24", red: "#F87171", purple: "#A78BFA",
   muted: "rgba(255,255,255,0.58)", faint: "rgba(255,255,255,0.10)",
@@ -85,6 +85,10 @@ class MaquinaLoucaCard extends HTMLElement {
       ciclos: "counter.lavar_louca_ciclos_mes",
       kwh_ciclos: "input_number.lavar_louca_kwh_ciclos_mes",
       preco: "input_number.preco_energia",
+      // o atraso fica num helper do HA: a máquina ignora o select de atraso enquanto está em standby,
+      // por isso o atraso é enviado no próprio arranque (home_connect_alt.start_program)
+      atraso_helper: "input_number.lavar_louca_atraso",
+      device_id: (config && config.prefix) ? null : "b36bbc961e1242aac34d3d837cceaddc",
     }, config || {});
     if (!this.shadowRoot) this.attachShadow({ mode: "open" });
     this._confirmStop = 0;
@@ -94,13 +98,13 @@ class MaquinaLoucaCard extends HTMLElement {
     this._h = h;
     const c = this._c;
     const ids = [c.estado, c.porta, c.ligada, c.remoto, c.programa, c.programa_ativo, c.progresso, c.fim, c.atraso,
-      c.energia, c.agua, c.start, c.stop, c.power, c.ultimo, c.ciclos, c.kwh_ciclos, c.preco, ...OPCOES.map((o) => c.opcao(o.k))];
+      c.energia, c.agua, c.start, c.stop, c.power, c.ultimo, c.ciclos, c.kwh_ciclos, c.preco, c.atraso_helper, ...OPCOES.map((o) => c.opcao(o.k))];
     const sig = ids.map((e) => { const s = h.states[e]; return s ? s.state + s.last_changed : "-"; }).join("|");
     if (sig !== this._sig) { this._sig = sig; this._render(); }
     if (!this._tick) this._tick = setInterval(() => this._render(), 30000); // atualiza "faltam X"
   }
 
-  disconnectedCallback() { clearInterval(this._tick); this._tick = null; clearTimeout(this._pendT); }
+  disconnectedCallback() { clearInterval(this._tick); this._tick = null; }
   getCardSize() { return 8; }
   getGridOptions() { return { columns: "full", rows: "auto" }; }
 
@@ -109,22 +113,42 @@ class MaquinaLoucaCard extends HTMLElement {
   ok(e) { const v = this.val(e); return v !== undefined && v !== "unavailable" && v !== "unknown"; }
   call(domain, service, data) { this._h.callService(domain, service, data); }
 
-  // a integração só atualiza o select de atraso na próxima mensagem da máquina,
-  // por isso mostramos já o valor escolhido até ele ser confirmado (ou 2 min)
-  _delay() {
-    const real = this.val(this._c.atraso) || "0:00";
-    const p = this._pend;
-    if (p && real !== p.v && Date.now() < p.ate) return p.v;
-    this._pend = null;
-    return real;
+  // minutos de atraso escolhidos (helper partilhado entre tablet e telemóvel)
+  _delayMin() {
+    const v = parseFloat(this.val(this._c.atraso_helper));
+    if (isFinite(v)) return v;
+    const [hh, mm] = (this.val(this._c.atraso) || "0:00").split(":").map(Number);
+    return (hh || 0) * 60 + (mm || 0);
   }
 
-  _setDelay(v) {
-    this._pend = { v, ate: Date.now() + 120000 };
-    this.call("select", "select_option", { entity_id: this._c.atraso, option: v });
-    this._render();
-    clearTimeout(this._pendT);
-    this._pendT = setTimeout(() => this._render(), 120500);
+  _setDelay(min) {
+    min = Math.max(0, Math.min(1440, min));
+    if (this.st(this._c.atraso_helper)) this.call("input_number", "set_value", { entity_id: this._c.atraso_helper, value: min });
+  }
+
+  _deviceId() {
+    return this._c.device_id || this._h.entities?.[this._c.programa]?.device_id || null;
+  }
+
+  async _start() {
+    const c = this._c, min = this._delayMin(), dev = this._deviceId();
+    this._erro = null;
+    try {
+      if (min > 0 && dev) {
+        await this._h.callService("home_connect_alt", "start_program", {
+          device_id: dev,
+          program_key: this.val(c.programa),
+          options: [{ key: "BSH.Common.Option.StartInRelative", value: Math.round(min * 60) }],
+        });
+        if (this.st(c.atraso_helper)) this.call("input_number", "set_value", { entity_id: c.atraso_helper, value: 0 });
+      } else {
+        await this._h.callService("button", "press", { entity_id: c.start });
+      }
+    } catch (e) {
+      this._erro = `Não foi possível iniciar: ${e?.message || e}`;
+      setTimeout(() => { this._erro = null; this._render(); }, 15000);
+      this._render();
+    }
   }
 
   _estado() {
@@ -157,8 +181,12 @@ class MaquinaLoucaCard extends HTMLElement {
       const [hh, mm] = atr.split(":").map(Number);
       const desde = new Date(this.st(c.estado).last_changed);
       const ini = new Date(+desde + ((hh || 0) * 60 + (mm || 0)) * 60000);
-      linha1 = `Começa às <b>${hm(ini)}</b>`;
-      linha2 = ini > new Date() ? `daqui a ${dur((ini - Date.now()) / 60000)}` : "";
+      if ((hh || 0) + (mm || 0) > 0) {
+        linha1 = `Começa às <b>${hm(ini)}</b>`;
+        linha2 = ini > new Date() ? `daqui a ${dur((ini - Date.now()) / 60000)}` : "";
+      } else {
+        linha1 = "A máquina vai arrancar sozinha à hora marcada";
+      }
     } else if (e === "finished") {
       const t = new Date(this.st(c.estado).last_changed);
       linha1 = `Terminou às <b>${hm(t)}</b>`;
@@ -202,12 +230,12 @@ class MaquinaLoucaCard extends HTMLElement {
     const c = this._c;
     const porta = this.val(c.porta) === "on", remoto = this.val(c.remoto) !== "off";
     const P = this._prog(this.val(c.programa));
-    const atr = this._delay();
+    const atr = this._delayMin();
     const btn = (id, txt, icon, cls = "", dis = false) => `<button class="act ${cls}" data-a="${id}" ${dis ? "disabled" : ""}><ha-icon icon="${icon}"></ha-icon>${txt}</button>`;
     let aviso = "", bts = "";
     if (e === "ready" || e === "inactive" || e === "finished") {
       const pode = !porta && remoto && this.ok(c.start);
-      const label = atr !== "0:00" ? `Agendar ${esc(P.n)}` : `Iniciar ${esc(P.n)}`;
+      const label = atr > 0 ? `Agendar ${esc(P.n)}` : `Iniciar ${esc(P.n)}`;
       bts = btn("start", label, "mdi:play", "primary", !pode);
       if (porta) aviso = "Fecha a porta para poderes iniciar.";
       else if (!remoto) aviso = "Ativa o arranque remoto na máquina (botão Remote Start) para iniciar daqui.";
@@ -221,6 +249,7 @@ class MaquinaLoucaCard extends HTMLElement {
     } else if (e === "offline") {
       aviso = "Os controlos voltam quando a máquina estiver ligada.";
     }
+    if (this._erro) aviso = esc(this._erro);
     return `<div class="acts">${bts}</div>${aviso ? `<div class="aviso"><ha-icon icon="mdi:information-outline"></ha-icon>${aviso}</div>` : ""}`;
   }
 
@@ -253,23 +282,20 @@ class MaquinaLoucaCard extends HTMLElement {
   }
 
   _atraso(bloq) {
-    const c = this._c, s = this.st(c.atraso);
-    if (!s || s.state === "unavailable") return "";
-    const ops = s.attributes.options || [];
-    const cur = this._delay();
-    const i = Math.max(0, ops.indexOf(cur));
-    const [hh, mm] = cur.split(":").map(Number);
-    const ini = new Date(Date.now() + ((hh || 0) * 60 + (mm || 0)) * 60000);
-    const txt = cur === "0:00" ? "Começa logo que carregares em Iniciar" : `Começa às <b>${hm(ini)}</b> (daqui a ${dur((hh || 0) * 60 + (mm || 0))})`;
+    const c = this._c;
+    if (!this.st(c.atraso_helper) && !this.st(c.atraso)) return "";
+    const min = this._delayMin();
+    const ini = new Date(Date.now() + min * 60000);
+    const txt = min === 0 ? "Começa logo que carregares em Iniciar" : `Começa às <b>${hm(ini)}</b> (daqui a ${dur(min)})`;
     return `
       <div class="sec"><div class="st"><ha-icon icon="mdi:timer-outline"></ha-icon>Início diferido</div>
         <div class="delay">
-          <button class="rnd" data-delay="${i - 1}" ${bloq || i <= 0 ? "disabled" : ""}><ha-icon icon="mdi:minus"></ha-icon></button>
-          <div class="dv"><div class="dval">${cur === "0:00" ? "Agora" : dur((hh || 0) * 60 + (mm || 0))}</div><div class="dtx">${txt}</div></div>
-          <button class="rnd" data-delay="${i + 1}" ${bloq || i >= ops.length - 1 ? "disabled" : ""}><ha-icon icon="mdi:plus"></ha-icon></button>
+          <button class="rnd" data-delay="${min - 30}" ${bloq || min <= 0 ? "disabled" : ""}><ha-icon icon="mdi:minus"></ha-icon></button>
+          <div class="dv"><div class="dval">${min === 0 ? "Agora" : dur(min)}</div><div class="dtx">${txt}</div></div>
+          <button class="rnd" data-delay="${min + 30}" ${bloq || min >= 1440 ? "disabled" : ""}><ha-icon icon="mdi:plus"></ha-icon></button>
         </div>
-        <div class="quick">${["0:00", "1:00", "2:00", "4:00", "6:00", "8:00"].filter((o) => ops.includes(o)).map((o) =>
-          `<button class="q ${o === cur ? "on" : ""}" data-delayv="${o}" ${bloq ? "disabled" : ""}>${o === "0:00" ? "Agora" : "+" + o.split(":")[0] + " h"}</button>`).join("")}</div>
+        <div class="quick">${[0, 60, 120, 240, 360, 480].map((m) =>
+          `<button class="q ${m === min ? "on" : ""}" data-delay="${m}" ${bloq ? "disabled" : ""}>${m === 0 ? "Agora" : "+" + m / 60 + " h"}</button>`).join("")}</div>
       </div>`;
   }
 
@@ -325,15 +351,16 @@ class MaquinaLoucaCard extends HTMLElement {
     const R = this.shadowRoot, c = this._c;
     R.querySelectorAll("[data-prog]").forEach((b) => b.addEventListener("click", () => this.call("select", "select_option", { entity_id: c.programa, option: b.dataset.prog })));
     R.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => this.call("switch", "toggle", { entity_id: b.dataset.op })));
-    R.querySelectorAll("[data-delay]").forEach((b) => b.addEventListener("click", () => {
-      const ops = this.st(c.atraso).attributes.options || [];
-      const o = ops[+b.dataset.delay]; if (o) this._setDelay(o);
-    }));
-    R.querySelectorAll("[data-delayv]").forEach((b) => b.addEventListener("click", () => this._setDelay(b.dataset.delayv)));
+    R.querySelectorAll("[data-delay]").forEach((b) => b.addEventListener("click", () => this._setDelay(+b.dataset.delay)));
     R.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", () => {
-      if (b.dataset.a === "start") this.call("button", "press", { entity_id: c.start });
+      if (b.dataset.a === "start") this._start();
       if (b.dataset.a === "stop") {
-        if (this._confirmStop > Date.now()) { this._confirmStop = 0; this.call("button", "press", { entity_id: c.stop }); }
+        if (this._confirmStop > Date.now()) {
+          this._confirmStop = 0;
+          const dev = this._deviceId();
+          if (dev) this.call("home_connect_alt", "stop_program", { device_id: dev });
+          else this.call("button", "press", { entity_id: c.stop });
+        }
         else { this._confirmStop = Date.now() + 4000; setTimeout(() => this._render(), 4100); }
         this._render();
       }

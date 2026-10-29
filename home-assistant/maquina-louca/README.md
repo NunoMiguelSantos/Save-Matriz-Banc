@@ -8,3 +8,11 @@
 - Para usar: `type: custom:maquina-louca-card`. Para outra máquina, indica `prefix: <id>`.
 - `vista-tablet-antiga-backup.json`: a vista `/dashboard-tablet/maquina-louca` como estava antes.
 - `vista-telemovel-antiga-backup.json`: a vista `/dashboard-smartphone/maquina-louca` como estava antes. A nova tem o título, o `custom:maquina-louca-card`, o pop-up "Mais" e a barra de navegação.
+
+## Início diferido (v1.2)
+
+Com a máquina em standby, a máquina ignora o select de atraso da integração (`select.*_startinrelative`).
+
+Por isso o atraso escolhido fica em `input_number.lavar_louca_atraso` (minutos). O botão "Agendar" chama `home_connect_alt.start_program` com o programa escolhido e a opção `BSH.Common.Option.StartInRelative`, em segundos. Sem atraso, "Iniciar" usa o botão Start da integração.
+
+"Cancelar" usa `home_connect_alt.stop_program`.
