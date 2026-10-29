@@ -1,5 +1,5 @@
-// maquina-louca-card v1.0 — controlo da máquina da louça (Home Connect Alt)
-const MLC_VERSION = "1.0.0";
+// maquina-louca-card v1.1 — controlo da máquina da louça (Home Connect Alt)
+const MLC_VERSION = "1.1.0";
 const MLC = {
   blue: "#64A0FF", teal: "#65D8DE", green: "#4ADE80", amber: "#FBBF24", red: "#F87171", purple: "#A78BFA",
   muted: "rgba(255,255,255,0.58)", faint: "rgba(255,255,255,0.10)",
@@ -100,7 +100,7 @@ class MaquinaLoucaCard extends HTMLElement {
     if (!this._tick) this._tick = setInterval(() => this._render(), 30000); // atualiza "faltam X"
   }
 
-  disconnectedCallback() { clearInterval(this._tick); this._tick = null; }
+  disconnectedCallback() { clearInterval(this._tick); this._tick = null; clearTimeout(this._pendT); }
   getCardSize() { return 8; }
   getGridOptions() { return { columns: "full", rows: "auto" }; }
 
@@ -108,6 +108,24 @@ class MaquinaLoucaCard extends HTMLElement {
   val(e) { return this.st(e)?.state; }
   ok(e) { const v = this.val(e); return v !== undefined && v !== "unavailable" && v !== "unknown"; }
   call(domain, service, data) { this._h.callService(domain, service, data); }
+
+  // a integração só atualiza o select de atraso na próxima mensagem da máquina,
+  // por isso mostramos já o valor escolhido até ele ser confirmado (ou 2 min)
+  _delay() {
+    const real = this.val(this._c.atraso) || "0:00";
+    const p = this._pend;
+    if (p && real !== p.v && Date.now() < p.ate) return p.v;
+    this._pend = null;
+    return real;
+  }
+
+  _setDelay(v) {
+    this._pend = { v, ate: Date.now() + 120000 };
+    this.call("select", "select_option", { entity_id: this._c.atraso, option: v });
+    this._render();
+    clearTimeout(this._pendT);
+    this._pendT = setTimeout(() => this._render(), 120500);
+  }
 
   _estado() {
     const c = this._c;
@@ -184,7 +202,7 @@ class MaquinaLoucaCard extends HTMLElement {
     const c = this._c;
     const porta = this.val(c.porta) === "on", remoto = this.val(c.remoto) !== "off";
     const P = this._prog(this.val(c.programa));
-    const atr = this.val(c.atraso) || "0:00";
+    const atr = this._delay();
     const btn = (id, txt, icon, cls = "", dis = false) => `<button class="act ${cls}" data-a="${id}" ${dis ? "disabled" : ""}><ha-icon icon="${icon}"></ha-icon>${txt}</button>`;
     let aviso = "", bts = "";
     if (e === "ready" || e === "inactive" || e === "finished") {
@@ -238,19 +256,20 @@ class MaquinaLoucaCard extends HTMLElement {
     const c = this._c, s = this.st(c.atraso);
     if (!s || s.state === "unavailable") return "";
     const ops = s.attributes.options || [];
-    const i = Math.max(0, ops.indexOf(s.state));
-    const [hh, mm] = s.state.split(":").map(Number);
+    const cur = this._delay();
+    const i = Math.max(0, ops.indexOf(cur));
+    const [hh, mm] = cur.split(":").map(Number);
     const ini = new Date(Date.now() + ((hh || 0) * 60 + (mm || 0)) * 60000);
-    const txt = s.state === "0:00" ? "Começa logo que carregares em Iniciar" : `Começa às <b>${hm(ini)}</b> (daqui a ${dur((hh || 0) * 60 + (mm || 0))})`;
+    const txt = cur === "0:00" ? "Começa logo que carregares em Iniciar" : `Começa às <b>${hm(ini)}</b> (daqui a ${dur((hh || 0) * 60 + (mm || 0))})`;
     return `
       <div class="sec"><div class="st"><ha-icon icon="mdi:timer-outline"></ha-icon>Início diferido</div>
         <div class="delay">
           <button class="rnd" data-delay="${i - 1}" ${bloq || i <= 0 ? "disabled" : ""}><ha-icon icon="mdi:minus"></ha-icon></button>
-          <div class="dv"><div class="dval">${s.state === "0:00" ? "Agora" : dur((hh || 0) * 60 + (mm || 0))}</div><div class="dtx">${txt}</div></div>
+          <div class="dv"><div class="dval">${cur === "0:00" ? "Agora" : dur((hh || 0) * 60 + (mm || 0))}</div><div class="dtx">${txt}</div></div>
           <button class="rnd" data-delay="${i + 1}" ${bloq || i >= ops.length - 1 ? "disabled" : ""}><ha-icon icon="mdi:plus"></ha-icon></button>
         </div>
         <div class="quick">${["0:00", "1:00", "2:00", "4:00", "6:00", "8:00"].filter((o) => ops.includes(o)).map((o) =>
-          `<button class="q ${o === s.state ? "on" : ""}" data-delayv="${o}" ${bloq ? "disabled" : ""}>${o === "0:00" ? "Agora" : "+" + o.split(":")[0] + " h"}</button>`).join("")}</div>
+          `<button class="q ${o === cur ? "on" : ""}" data-delayv="${o}" ${bloq ? "disabled" : ""}>${o === "0:00" ? "Agora" : "+" + o.split(":")[0] + " h"}</button>`).join("")}</div>
       </div>`;
   }
 
@@ -308,9 +327,9 @@ class MaquinaLoucaCard extends HTMLElement {
     R.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => this.call("switch", "toggle", { entity_id: b.dataset.op })));
     R.querySelectorAll("[data-delay]").forEach((b) => b.addEventListener("click", () => {
       const ops = this.st(c.atraso).attributes.options || [];
-      const o = ops[+b.dataset.delay]; if (o) this.call("select", "select_option", { entity_id: c.atraso, option: o });
+      const o = ops[+b.dataset.delay]; if (o) this._setDelay(o);
     }));
-    R.querySelectorAll("[data-delayv]").forEach((b) => b.addEventListener("click", () => this.call("select", "select_option", { entity_id: c.atraso, option: b.dataset.delayv })));
+    R.querySelectorAll("[data-delayv]").forEach((b) => b.addEventListener("click", () => this._setDelay(b.dataset.delayv)));
     R.querySelectorAll("[data-a]").forEach((b) => b.addEventListener("click", () => {
       if (b.dataset.a === "start") this.call("button", "press", { entity_id: c.start });
       if (b.dataset.a === "stop") {
