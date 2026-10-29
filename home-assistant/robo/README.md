@@ -13,3 +13,4 @@ Alertas (automações): "Robô - Limpeza terminada", "Robô - Alerta erro ou pou
 - `vista-telemovel-antiga-backup.json`: a vista `/dashboard-smartphone/vacuum` como estava antes. A nova tem uma coluna: cabeçalho, controlo, mapa, informação, pop-up de definições, pop-up "Mais" e barra de navegação.
 
 A automação "Limpeza Vaccuminator Automatic_V2" passou a notificar com `script.notificar_todos_os_telemoveis`, em vez de `notify.mobile_app_mary_tlm`, que já não existe.
+Os três alertas do robô também notificam com `script.notificar_todos_os_telemoveis`.
