@@ -1,0 +1,2074 @@
+{
+  "type": "sections",
+  "background": "radial-gradient(ellipse at top left, rgba(0, 190, 210, 0.16), transparent 55%), radial-gradient(ellipse at bottom right, rgba(0, 190, 210, 0.16), transparent 60%), linear-gradient(145deg, #091419 0%, #12282F 50%, #0B1723 100%)",
+  "max_columns": 4,
+  "title": "Vacuum",
+  "path": "vacuum",
+  "sections": [
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:button-card",
+          "name": "Aspirador",
+          "show_icon": false,
+          "show_name": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "custom_fields": {
+            "back": {
+              "card": {
+                "type": "custom:button-card",
+                "name": null,
+                "icon": "mdi:chevron-left",
+                "show_name": true,
+                "show_icon": true,
+                "layout": "icon_name",
+                "size": "20px",
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "novo-tablet"
+                },
+                "styles": {
+                  "card": [
+                    {
+                      "height": "48px"
+                    },
+                    {
+                      "padding": "0 14px 0 8px"
+                    },
+                    {
+                      "border-radius": "14px"
+                    },
+                    {
+                      "background": "rgba(255,255,255,0.035)"
+                    },
+                    {
+                      "border": "1px solid rgba(95,158,160,0.22)"
+                    },
+                    {
+                      "box-shadow": "none"
+                    }
+                  ],
+                  "grid": [
+                    {
+                      "grid-template-areas": "\"i n\""
+                    },
+                    {
+                      "grid-template-columns": "28px auto"
+                    },
+                    {
+                      "align-items": "center"
+                    }
+                  ],
+                  "icon": [
+                    {
+                      "width": "20px"
+                    },
+                    {
+                      "color": "CadetBlue"
+                    }
+                  ],
+                  "name": [
+                    {
+                      "justify-self": "start"
+                    },
+                    {
+                      "color": "rgba(255,255,255,0.72)"
+                    },
+                    {
+                      "font-size": "14px"
+                    },
+                    {
+                      "font-weight": 500
+                    }
+                  ]
+                }
+              }
+            },
+            "subtitle": "[[[\n  const vacuum = states['vacuum.vaccuminator'];\n  const battery = states['sensor.vaccuminator_battery_level']?.state;\n  const labels = {\n    cleaning: 'A limpar',\n    paused: 'Em pausa',\n    returning: 'A regressar à base',\n    docked: 'Na base',\n    idle: 'Pronto'\n  };\n  const status = labels[vacuum?.state] || vacuum?.state || 'Indisponível';\n  return battery && battery !== 'unknown'\n    ? `${status} · ${battery}%`\n    : status;\n]]]\n",
+            "spacer": ""
+          },
+          "styles": {
+            "card": [
+              {
+                "height": "82px"
+              },
+              {
+                "padding": "0 8px"
+              },
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"back n spacer\" \"back subtitle spacer\""
+              },
+              {
+                "grid-template-columns": "110px 1fr 110px"
+              },
+              {
+                "grid-template-rows": "1fr 1fr"
+              },
+              {
+                "align-items": "center"
+              }
+            ],
+            "name": [
+              {
+                "align-self": "end"
+              },
+              {
+                "justify-self": "center"
+              },
+              {
+                "color": "rgba(255,255,255,0.92)"
+              },
+              {
+                "font-size": "22px"
+              },
+              {
+                "font-weight": 700
+              }
+            ],
+            "custom_fields": {
+              "back": [
+                {
+                  "align-self": "center"
+                },
+                {
+                  "justify-self": "start"
+                }
+              ],
+              "subtitle": [
+                {
+                  "align-self": "start"
+                },
+                {
+                  "justify-self": "center"
+                },
+                {
+                  "margin-top": "2px"
+                },
+                {
+                  "color": "CadetBlue"
+                },
+                {
+                  "font-size": "13px"
+                }
+              ],
+              "spacer": [
+                {
+                  "width": "110px"
+                }
+              ]
+            }
+          },
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:layout-card",
+          "layout_type": "custom:grid-layout",
+          "layout": {
+            "grid-template-columns": "minmax(0, 1080px)",
+            "place-content": "center",
+            "width": "100%"
+          },
+          "cards": [
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "icon": "[[[\n  return states['vacuum.vaccuminator'].state === 'cleaning' ? 'mdi:pause' : 'mdi:play';\n]]]\n",
+                  "name": "[[[\n  return states['vacuum.vaccuminator'].state === 'cleaning' ? 'Pausar' : 'Iniciar';\n]]]\n",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  if (st === 'cleaning') return 'vacuum.pause';\n  if (st === 'returning') return 'homeassistant.update_entity';\n  if (states['input_boolean.mod_total_or_area'].state === 'on')\n    return 'script.turn_on';\n  else\n    return 'vacuum.start';\n]]]\n",
+                    "service_data": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  if (st === 'cleaning' || st === 'returning') {\n    return { entity_id: 'vacuum.vaccuminator' };\n  }\n  if (states['input_boolean.mod_total_or_area'].state === 'on') {\n    return { entity_id: 'script.vaccuminator_segments' };\n  } else {\n    return { entity_id: 'vacuum.vaccuminator' };\n  }\n]]]\n"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.04)"
+                      },
+                      {
+                        "backdrop-filter": "blur(6px)"
+                      },
+                      {
+                        "padding": "10px"
+                      },
+                      {
+                        "min-height": "72px"
+                      },
+                      {
+                        "transition": "transform 0.15s ease, box-shadow 0.15s ease"
+                      },
+                      {
+                        "border": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  if (st === 'cleaning') return '1px solid rgba(255, 204, 0, 0.25)';\n  if (st === 'returning') return '1px solid rgba(255,255,255,0.08)';\n  return '1px solid rgba(76, 217, 100, 0.25)';\n]]]\n"
+                      },
+                      {
+                        "box-shadow": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  if (st === 'cleaning') return '0 0 12px rgba(255, 204, 0, 0.15)';\n  if (st === 'returning') return 'none';\n  return '0 0 12px rgba(76, 217, 100, 0.15)';\n]]]\n"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "30px"
+                      },
+                      {
+                        "color": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  if (st === 'cleaning') return '#ffcc00';\n  if (st === 'returning') return 'rgba(255,255,255,0.25)';\n  return '#4cd964';\n]]]\n"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 500
+                      },
+                      {
+                        "color": "[[[\n  const st = states['vacuum.vaccuminator'].state;\n  return st === 'returning' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.7)';\n]]]\n"
+                      }
+                    ]
+                  },
+                  "card_mod": {
+                    "style": "ha-card:active { transform: scale(0.94); }\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "icon": "mdi:stop",
+                  "name": "Parar",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "[[[\n  const canStop = !['idle','docked'].includes(states['vacuum.vaccuminator'].state);\n  return canStop ? 'vacuum.stop' : 'homeassistant.update_entity';\n]]]\n",
+                    "service_data": {
+                      "entity_id": "vacuum.vaccuminator"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.04)"
+                      },
+                      {
+                        "backdrop-filter": "blur(6px)"
+                      },
+                      {
+                        "padding": "10px"
+                      },
+                      {
+                        "min-height": "72px"
+                      },
+                      {
+                        "transition": "transform 0.15s ease, box-shadow 0.15s ease"
+                      },
+                      {
+                        "border": "[[[\n  const canStop = !['idle','docked'].includes(states['vacuum.vaccuminator'].state);\n  return canStop ? '1px solid rgba(255, 59, 48, 0.25)' : '1px solid rgba(255,255,255,0.08)';\n]]]\n"
+                      },
+                      {
+                        "box-shadow": "[[[\n  const canStop = !['idle','docked'].includes(states['vacuum.vaccuminator'].state);\n  return canStop ? '0 0 12px rgba(255, 59, 48, 0.15)' : 'none';\n]]]\n"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "30px"
+                      },
+                      {
+                        "color": "[[[\n  const canStop = !['idle','docked'].includes(states['vacuum.vaccuminator'].state);\n  return canStop ? '#ff3b30' : 'rgba(255,255,255,0.25)';\n]]]\n"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 500
+                      },
+                      {
+                        "color": "[[[\n  const canStop = !['idle','docked'].includes(states['vacuum.vaccuminator'].state);\n  return canStop ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.25)';\n]]]\n"
+                      }
+                    ]
+                  },
+                  "card_mod": {
+                    "style": "ha-card:active { transform: scale(0.94); }\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "icon": "mdi:home",
+                  "name": "Base",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "vacuum.return_to_base",
+                    "service_data": {
+                      "entity_id": "vacuum.vaccuminator"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.04)"
+                      },
+                      {
+                        "backdrop-filter": "blur(6px)"
+                      },
+                      {
+                        "border": "1px solid rgba(90, 200, 250, 0.25)"
+                      },
+                      {
+                        "box-shadow": "0 0 12px rgba(90, 200, 250, 0.15)"
+                      },
+                      {
+                        "padding": "10px"
+                      },
+                      {
+                        "min-height": "72px"
+                      },
+                      {
+                        "transition": "transform 0.15s ease, box-shadow 0.15s ease"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "color": "#5ac8fa"
+                      },
+                      {
+                        "width": "30px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 500
+                      },
+                      {
+                        "color": "rgba(255,255,255,0.7)"
+                      }
+                    ]
+                  },
+                  "card_mod": {
+                    "style": "ha-card:active { transform: scale(0.94); }\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "icon": "mdi:map-marker",
+                  "name": "Localizar",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "vacuum.locate",
+                    "service_data": {
+                      "entity_id": "vacuum.vaccuminator"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.04)"
+                      },
+                      {
+                        "backdrop-filter": "blur(6px)"
+                      },
+                      {
+                        "border": "1px solid rgba(191, 90, 242, 0.25)"
+                      },
+                      {
+                        "box-shadow": "0 0 12px rgba(191, 90, 242, 0.15)"
+                      },
+                      {
+                        "padding": "10px"
+                      },
+                      {
+                        "min-height": "72px"
+                      },
+                      {
+                        "transition": "transform 0.15s ease, box-shadow 0.15s ease"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "color": "#bf5af2"
+                      },
+                      {
+                        "width": "30px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 500
+                      },
+                      {
+                        "color": "rgba(255,255,255,0.7)"
+                      }
+                    ]
+                  },
+                  "card_mod": {
+                    "style": "ha-card:active { transform: scale(0.94); }\n"
+                  }
+                }
+              ],
+              "grid_options": {
+                "columns": 24,
+                "rows": "auto"
+              },
+              "card_mod": {
+                "style": ":host {\n  display: flex !important;\n  justify-content: center !important;\n  gap: 8px;\n}\n"
+              }
+            }
+          ],
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "custom:layout-card",
+              "layout_type": "custom:grid-layout",
+              "layout": {
+                "grid-template-columns": "repeat(2, minmax(0, 1fr))",
+                "place-content": "center",
+                "width": "100%"
+              },
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "entity": "input_boolean.mod_total_or_area",
+                  "name": "Total",
+                  "icon": "mdi:home-floor-0",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "input_boolean.turn_off",
+                    "service_data": {
+                      "entity_id": "input_boolean.mod_total_or_area"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "74px"
+                      },
+                      {
+                        "padding": "8px 14px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid rgba(255,255,255,0.08)"
+                      },
+                      {
+                        "box-shadow": "none"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "25px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 600
+                      }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(40, 167, 69, 0.9)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.8)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255,255,255,0.02)"
+                          },
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(40, 167, 69, 0.9)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "input_boolean.mod_total_or_area",
+                  "name": "Áreas",
+                  "icon": "mdi:floor-plan",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "input_boolean.turn_on",
+                    "service_data": {
+                      "entity_id": "input_boolean.mod_total_or_area"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "74px"
+                      },
+                      {
+                        "padding": "8px 14px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid rgba(255,255,255,0.08)"
+                      },
+                      {
+                        "box-shadow": "none"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "25px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "font-weight": 600
+                      }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(0, 123, 255, 0.9)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.8)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255,255,255,0.02)"
+                          },
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(0, 123, 255, 0.9)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ],
+              "grid_options": {
+                "columns": 24,
+                "rows": "auto"
+              }
+            }
+          ],
+          "grid_options": {
+            "columns": 12,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "custom:layout-card",
+              "layout_type": "custom:grid-layout",
+              "layout": {
+                "grid-template-columns": "repeat(11, minmax(0, 1fr))",
+                "gap": "6px",
+                "width": "100%"
+              },
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "icon": "mdi:select-all",
+                  "name": "Todas",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "input_boolean.turn_on",
+                    "service_data": {
+                      "entity_id": [
+                        "input_boolean.vacuum_area_1",
+                        "input_boolean.vacuum_area_2",
+                        "input_boolean.vacuum_area_3",
+                        "input_boolean.vacuum_area_4",
+                        "input_boolean.vacuum_area_5",
+                        "input_boolean.vacuum_area_6",
+                        "input_boolean.vacuum_area_7",
+                        "input_boolean.vacuum_area_8",
+                        "input_boolean.vacuum_area_9",
+                        "input_boolean.vacuum_area_10"
+                      ]
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "background": "rgba(40, 167, 69, 0.8)"
+                      },
+                      {
+                        "color": "white"
+                      }
+                    ]
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_8",
+                  "icon": "mdi:briefcase-outline",
+                  "name": "Escritório"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_1",
+                  "icon": "mdi:baby-face-outline",
+                  "name": "Quarto bebé"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_9",
+                  "icon": "mdi:bed-king-outline",
+                  "name": "Suite"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_7",
+                  "icon": "mdi:shower",
+                  "name": "WC Suite"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_10",
+                  "icon": "mdi:door-open",
+                  "name": "Hall Quartos"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_2",
+                  "icon": "mdi:stove",
+                  "name": "Cozinha"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_4",
+                  "icon": "mdi:toilet",
+                  "name": "WC Geral"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_3",
+                  "icon": "mdi:door",
+                  "name": "Hall Entrada"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_5",
+                  "icon": "mdi:silverware-fork-knife",
+                  "name": "Sala Jantar"
+                },
+                {
+                  "type": "custom:button-card",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(95, 158, 160, 0.16)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "CadetBlue"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 255, 255, 0.02)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.08) !important;\n  border-radius: 16px !important;\n  height: 74px !important;\n}\n"
+                  },
+                  "entity": "input_boolean.vacuum_area_6",
+                  "icon": "mdi:sofa-outline",
+                  "name": "Sala Estar"
+                }
+              ],
+              "grid_options": {
+                "columns": 35,
+                "rows": "auto"
+              },
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "input_boolean.mod_total_or_area",
+                  "state": "on"
+                }
+              ],
+              "card_mod": {
+                "style": ":host {\n  display: block !important;\n  width: 100% !important;\n  margin: 0px 0 0 !important;\n  padding: 0 !important;\n}\n"
+              }
+            }
+          ],
+          "grid_options": {
+            "columns": 36,
+            "rows": "auto"
+          },
+          "visibility": [
+            {
+              "condition": "state",
+              "entity": "input_boolean.mod_total_or_area",
+              "state": "on"
+            }
+          ]
+        }
+      ],
+      "column_span": 4
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:vertical-stack-in-card",
+          "cards": [
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.vaccuminator_battery_level",
+                  "name": {
+                    "type": "floor"
+                  },
+                  "hide_state": false,
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "icon_tap_action": {
+                    "action": "none"
+                  },
+                  "features_position": "bottom",
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.vaccuminator_current_room",
+                  "name": {
+                    "type": "floor"
+                  },
+                  "color": "accent",
+                  "show_entity_picture": false,
+                  "hide_state": false,
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "icon_tap_action": {
+                    "action": "none"
+                  },
+                  "features_position": "bottom",
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                  }
+                }
+              ],
+              "grid_options": {
+                "columns": 48,
+                "rows": "auto"
+              }
+            },
+            {
+              "type": "custom:gap-card",
+              "height": 33
+            },
+            {
+              "type": "custom:valetudo-map-card",
+              "entity": "vacuum.vaccuminator",
+              "vacuum": "vaccuminator",
+              "title": null,
+              "show_title": false,
+              "show_status": false,
+              "show_toolbar": false,
+              "show_start_button": false,
+              "show_pause_button": false,
+              "show_stop_button": false,
+              "show_home_button": false,
+              "show_locate_button": false,
+              "show_buttons": false,
+              "card_mod": {
+                "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n  padding: 0 !important;\n}\n"
+              },
+              "grid_options": {
+                "columns": 24,
+                "rows": "auto"
+              }
+            },
+            {
+              "type": "custom:gap-card",
+              "height": 63
+            }
+          ],
+          "card_mod": {
+            "style": "ha-card {\n  border-radius: 22px !important;\n  border: 1.5px solid rgba(95,158,160,0.24) !important;\n  background: linear-gradient(\n              315deg,\n              rgba(38,72,85,0.75) 0%,\n              rgba(15,32,45,0.90) 100%\n            ) !important;\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+          }
+        }
+      ],
+      "column_span": 1
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:vertical-stack-in-card",
+          "cards": [
+            {
+              "type": "custom:mushroom-title-card",
+              "title": "Geral",
+              "alignment": "center",
+              "card_mod": {
+                "style": "ha-card {\n // border-radius: 22px !important;\n  border: 1.5px solid rgba(95,158,160,0.24) !important;\n  background: linear-gradient(\n              315deg,\n              rgba(38,72,85,0.75) 0%,\n              rgba(15,32,45,0.90) 100%\n            ) !important;\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+              }
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "vertical-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-select-card",
+                      "entity": "select.vaccuminator_cleaning_mode",
+                      "icon": "",
+                      "fill_container": false,
+                      "name": "Modo Limpeza",
+                      "icon_color": "#5F9EA0",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "layout": "horizontal",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "conditional",
+                      "conditions": [
+                        {
+                          "condition": "state",
+                          "entity": "select.vaccuminator_cleaning_mode",
+                          "state_not": "sweeping"
+                        }
+                      ],
+                      "card": {
+                        "type": "tile",
+                        "entity": "number.vaccuminator_wetness_level",
+                        "name": "Humidade",
+                        "icon": "",
+                        "color": "#5F9EA0",
+                        "show_entity_picture": false,
+                        "hide_state": true,
+                        "vertical": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "icon_tap_action": {
+                          "action": "none"
+                        },
+                        "features": [
+                          {
+                            "type": "numeric-input",
+                            "style": "buttons"
+                          }
+                        ],
+                        "features_position": "inline",
+                        "card_mod": {
+                          "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                        }
+                      }
+                    },
+                    {
+                      "type": "conditional",
+                      "conditions": [
+                        {
+                          "condition": "state",
+                          "entity": "select.vaccuminator_cleaning_mode",
+                          "state_not": "mopping"
+                        }
+                      ],
+                      "card": {
+                        "type": "custom:mushroom-select-card",
+                        "entity": "select.vaccuminator_suction_level",
+                        "icon": "",
+                        "fill_container": false,
+                        "name": "Sucção",
+                        "icon_color": "#5F9EA0",
+                        "primary_info": "name",
+                        "secondary_info": "none",
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "double_tap_action": {
+                          "action": "none"
+                        },
+                        "layout": "horizontal",
+                        "card_mod": {
+                          "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                        }
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-select-card",
+                      "entity": "select.vaccuminator_cleaning_route",
+                      "icon": "",
+                      "fill_container": false,
+                      "name": "Estilo da Rota",
+                      "icon_color": "#5F9EA0",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "layout": "horizontal",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "entity": "switch.vaccuminator_max_suction_power",
+                      "name": "Maxima Sucção",
+                      "icon_color": "red",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "layout": "horizontal",
+                      "secondary_info": "none",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "name": "Bloqueio Crianças",
+                      "icon_color": "red",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "layout": "horizontal",
+                      "secondary_info": "none",
+                      "entity": "switch.vaccuminator_child_lock",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "grid_options": {
+            "columns": 18,
+            "rows": "auto"
+          },
+          "card_mod": {
+            "style": "ha-card {\n  border-radius: 22px !important;\n  border: 1.5px solid rgba(95,158,160,0.24) !important;\n  background: linear-gradient(\n              315deg,\n              rgba(38,72,85,0.75) 0%,\n              rgba(15,32,45,0.90) 100%\n            ) !important;\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+          }
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:vertical-stack-in-card",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Mopa",
+                  "alignment": "center",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n // border-radius: 22px !important;\n  border: 1.5px solid rgba(95,158,160,0.24) !important;\n  background: linear-gradient(\n              315deg,\n              rgba(38,72,85,0.75) 0%,\n              rgba(15,32,45,0.90) 100%\n            ) !important;\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "vertical-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-select-card",
+                      "entity": "select.vaccuminator_mop_extend_frequency",
+                      "icon": "",
+                      "fill_container": false,
+                      "name": " Utilização Mopa",
+                      "icon_color": "#5F9EA0",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "layout": "horizontal",
+                      "grid_options": {
+                        "columns": 12,
+                        "rows": "auto"
+                      },
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "custom:mushroom-select-card",
+                      "entity": "select.vaccuminator_self_clean_frequency",
+                      "icon": "",
+                      "fill_container": false,
+                      "name": "Freq. de Limpeza",
+                      "icon_color": "#5F9EA0",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "layout": "horizontal",
+                      "grid_options": {
+                        "columns": 12,
+                        "rows": "auto"
+                      },
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-select-card",
+                      "entity": "select.vaccuminator_drying_time",
+                      "icon": "",
+                      "fill_container": false,
+                      "name": "Secagem Mopa",
+                      "icon_color": "#5F9EA0",
+                      "primary_info": "name",
+                      "secondary_info": "none",
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "double_tap_action": {
+                        "action": "none"
+                      },
+                      "layout": "horizontal",
+                      "grid_options": {
+                        "columns": 12,
+                        "rows": "auto"
+                      },
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "vertical-stack",
+                      "cards": [
+                        {
+                          "type": "conditional",
+                          "conditions": [
+                            {
+                              "condition": "state",
+                              "entity": "select.vaccuminator_self_clean_frequency",
+                              "state": "by_area"
+                            }
+                          ],
+                          "card": {
+                            "type": "tile",
+                            "entity": "number.vaccuminator_self_clean_area",
+                            "name": "Limpeza da Mopa",
+                            "icon": "",
+                            "color": "#5F9EA0",
+                            "show_entity_picture": false,
+                            "hide_state": true,
+                            "vertical": false,
+                            "tap_action": {
+                              "action": "none"
+                            },
+                            "icon_tap_action": {
+                              "action": "none"
+                            },
+                            "features": [
+                              {
+                                "type": "numeric-input",
+                                "style": "buttons"
+                              }
+                            ],
+                            "features_position": "inline",
+                            "card_mod": {
+                              "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                            }
+                          },
+                          "grid_options": {
+                            "columns": 24,
+                            "rows": "auto"
+                          }
+                        },
+                        {
+                          "type": "conditional",
+                          "conditions": [
+                            {
+                              "condition": "state",
+                              "entity": "select.vaccuminator_self_clean_frequency",
+                              "state": "by_time"
+                            }
+                          ],
+                          "card": {
+                            "type": "tile",
+                            "entity": "number.vaccuminator_self_clean_time",
+                            "name": "Limpeza da Mopa",
+                            "icon": "",
+                            "color": "#5F9EA0",
+                            "show_entity_picture": false,
+                            "hide_state": true,
+                            "vertical": false,
+                            "tap_action": {
+                              "action": "none"
+                            },
+                            "icon_tap_action": {
+                              "action": "none"
+                            },
+                            "features": [
+                              {
+                                "type": "numeric-input",
+                                "style": "buttons"
+                              }
+                            ],
+                            "features_position": "inline",
+                            "card_mod": {
+                              "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                            }
+                          },
+                          "grid_options": {
+                            "columns": 24,
+                            "rows": "auto"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "select.vaccuminator_carpet_cleaning",
+                  "icon": "",
+                  "fill_container": false,
+                  "name": "Mopa no Tapete",
+                  "icon_color": "#5F9EA0",
+                  "primary_info": "name",
+                  "secondary_info": "none",
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "double_tap_action": {
+                    "action": "none"
+                  },
+                  "layout": "horizontal",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-entity-card",
+                      "name": "Foçar Secagem",
+                      "icon_color": "dark-grey",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "layout": "horizontal",
+                      "secondary_info": "none",
+                      "entity": "button.vaccuminator_manual_drying",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.vaccuminator_mop_pad",
+                      "name": "Mopa",
+                      "color": "brown",
+                      "show_entity_picture": false,
+                      "hide_state": false,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n        border-radius: 22px !important;\n        border: 1.5px solid rgba(95,158,160,0.24) !important;\n        background: linear-gradient(\n                    315deg,\n                    rgba(38,72,85,0.75) 0%,\n                    rgba(15,32,45,0.90) 100%\n                  ) !important;\n        box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+              }
+            }
+          ],
+          "grid_options": {
+            "columns": 18,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:vertical-stack-in-card",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Tapetes",
+                  "alignment": "center",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n // border-radius: 22px !important;\n  border: 1.5px solid rgba(95,158,160,0.24) !important;\n  background: linear-gradient(\n              315deg,\n              rgba(38,72,85,0.75) 0%,\n              rgba(15,32,45,0.90) 100%\n            ) !important;\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "custom:mushroom-entity-card",
+                          "name": "Boost ",
+                          "icon_color": "light-green",
+                          "tap_action": {
+                            "action": "toggle"
+                          },
+                          "layout": "horizontal",
+                          "secondary_info": "none",
+                          "entity": "switch.vaccuminator_carpet_boost",
+                          "card_mod": {
+                            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                          }
+                        },
+                        {
+                          "type": "custom:mushroom-entity-card",
+                          "name": "Girar Escova",
+                          "icon_color": "light-green",
+                          "tap_action": {
+                            "action": "toggle"
+                          },
+                          "layout": "horizontal",
+                          "secondary_info": "none",
+                          "entity": "switch.vaccuminator_side_brush_carpet_rotate",
+                          "card_mod": {
+                            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                          }
+                        },
+                        {
+                          "type": "custom:mushroom-entity-card",
+                          "name": "Limpeza Intensa",
+                          "icon_color": "light-green",
+                          "tap_action": {
+                            "action": "toggle"
+                          },
+                          "layout": "horizontal",
+                          "secondary_info": "none",
+                          "entity": "switch.vaccuminator_intensive_carpet_cleaning",
+                          "card_mod": {
+                            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                          }
+                        },
+                        {
+                          "type": "custom:mushroom-entity-card",
+                          "name": "Tapetes 1º",
+                          "icon_color": "light-green",
+                          "tap_action": {
+                            "action": "toggle"
+                          },
+                          "layout": "horizontal",
+                          "secondary_info": "none",
+                          "entity": "switch.vaccuminator_clean_carpets_first",
+                          "card_mod": {
+                            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:gap-card",
+                  "height": 13
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n    border-radius: 22px !important;\n    border: 1.5px solid rgba(95,158,160,0.24) !important;\n    background: linear-gradient(\n                315deg,\n                rgba(38,72,85,0.75) 0%,\n                rgba(15,32,45,0.90) 100%\n              ) !important;\n    box-shadow: 2px 2px 8px rgba(0,0,0,0.58) !important;\n}\n"
+              }
+            }
+          ],
+          "grid_options": {
+            "columns": 36,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:gap-card",
+          "height": 33,
+          "grid_options": {
+            "columns": 36,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:navbar-card",
+          "layout": {
+            "reflect_child_state": true,
+            "auto_padding": {
+              "enabled": true,
+              "desktop_px": 105,
+              "mobile_px": 0
+            }
+          },
+          "routes": [
+            {
+              "icon": "mdi:home-outline",
+              "icon_selected": "mdi:home",
+              "label": "Casa",
+              "url": "/dashboard-tablet/novo-tablet",
+              "icon_color": "rgba(101,216,222,0.70)",
+              "selected_color": "#65D8DE"
+            },
+            {
+              "icon": "mdi:lightning-bolt-outline",
+              "icon_selected": "mdi:lightning-bolt",
+              "label": "Energia",
+              "url": "/dashboard-tablet/energypainel",
+              "icon_color": "rgba(100,160,255,0.75)",
+              "selected_color": "#64A0FF"
+            },
+            {
+              "icon": "mdi:blinds-horizontal-closed",
+              "icon_selected": "mdi:blinds-horizontal",
+              "label": "Estores",
+              "url": "/dashboard-tablet/editcovers",
+              "icon_color": "rgba(101,216,222,0.75)",
+              "selected_color": "#65D8DE"
+            },
+            {
+              "icon": "mdi:fire",
+              "label": "Caldeira",
+              "url": "/dashboard-tablet/configcaldeira",
+              "icon_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.40)\";\n]]]\n",
+              "selected_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"#65D8DE\";\n]]]\n"
+            },
+            {
+              "icon": "mdi:dishwasher",
+              "label": "Máquina da Louça",
+              "url": "/dashboard-tablet/maquina-louca",
+              "icon_color": "rgba(100,90,220,0.90)"
+            },
+            {
+              "icon": "cil:roborock-vacuum",
+              "url": "/dashboard-tablet/vacuum"
+            },
+            {
+              "icon": "mdi:dots-horizontal",
+              "label": "Mais",
+              "icon_color": "rgba(100,200,120,0.80)",
+              "selected_color": "#64C878",
+              "tap_action": {
+                "action": "open-popup"
+              },
+              "popup": [
+                {
+                  "icon": "mdi:music-box-multiple",
+                  "label": "Música",
+                  "url": "/dashboard-tablet/musica"
+                },
+                {
+                  "icon": "line-md:cog",
+                  "label": "Configurações",
+                  "url": "/dashboard-tablet/configs"
+                },
+                {
+                  "icon": "mdi:menu",
+                  "label": "Programador",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "input_boolean.toggle",
+                    "target": {
+                      "entity_id": "input_boolean.kisk_mode"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "desktop": {
+            "mode": "floating",
+            "position": "bottom",
+            "min_width": 700,
+            "show_labels": "popup_only",
+            "show_popup_label_backgrounds": false
+          },
+          "mobile": {
+            "hidden": true,
+            "mode": "floating"
+          },
+          "styles": ".navbar-card {\n  --navbar-route-icon-size: 40px;\n  --navbar-border-radius: 18px;\n\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.96) 0%,\n    rgba(15,32,45,0.98) 100%\n  ) !important;\n\n  border: 1px solid rgba(140,210,230,0.22) !important;\n  border-radius: 18px !important;\n\n  box-shadow:\n    0 6px 24px rgba(0,0,0,0.50),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 10px 14px !important;\n  gap: 12px !important;\n}\n\n/* Botões grandes */\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n\n  background: rgba(255,255,255,0.045) !important;\n  border: 1px solid rgba(255,255,255,0.09) !important;\n  border-radius: 14px !important;\n  box-shadow: none !important;\n\n  transition:\n    background 0.2s ease,\n    border-color 0.2s ease,\n    transform 0.2s ease !important;\n}\n\n/* Ícones grandes */\n.route .icon {\n  --mdc-icon-size: 40px !important;\n  width: 40px !important;\n  height: 40px !important;\n}\n\n.route .button:hover {\n  background: rgba(255,255,255,0.09) !important;\n  border-color: rgba(140,210,230,0.28) !important;\n}\n\n.route .button.active {\n  background: rgba(101,216,222,0.22) !important;\n  border-color: rgba(101,216,222,0.60) !important;\n  box-shadow: 0 0 12px rgba(101,216,222,0.12) !important;\n  transform: translateY(-2px);\n}\n\n/* Esconder os nomes na barra */\n.route .label {\n  display: none !important;\n}\n\n/* Popup Mais */\n.navbar-popup {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.98) 0%,\n    rgba(15,32,45,0.99) 100%\n  ) !important;\n\n  backdrop-filter: blur(14px) !important;\n  -webkit-backdrop-filter: blur(14px) !important;\n\n  border: 1px solid rgba(140,210,230,0.20) !important;\n  border-radius: 16px !important;\n\n  box-shadow:\n    0 8px 30px rgba(0,0,0,0.60),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 12px !important;\n}\n\n.popup-item .button {\n  width: 54px !important;\n  height: 54px !important;\n\n  background: rgba(255,255,255,0.055) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 12px !important;\n  box-shadow: none !important;\n}\n\n.popup-item .icon {\n  --mdc-icon-size: 30px !important;\n  width: 30px !important;\n  height: 30px !important;\n}\n\n/* Máquina da Louça */\n.popup-item:nth-child(1) .icon {\n  color: #A78BFA !important;\n}\n\n/* Música */\n.popup-item:nth-child(2) .icon {\n  color: #C8F560 !important;\n}\n\n/* Configurações */\n.popup-item:nth-child(3) .icon {\n  color: #65D8DE !important;\n}\n\n/* Programador */\n.popup-item:nth-child(4) .icon {\n  color: rgba(255,255,255,0.85) !important;\n}\n\n.popup-item .label {\n  display: block !important;\n  color: rgba(255,255,255,0.90) !important;\n  background: transparent !important;\n  font-size: 13px !important;\n  box-shadow: none !important;\n}\n\n/* Dar espaço real aos botões grandes */\n.route {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  flex: 0 0 70px !important;\n  overflow: visible !important;\n  box-sizing: border-box !important;\n}\n\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  margin: 0 !important;\n  box-sizing: border-box !important;\n  overflow: visible !important;\n}\n\n/* Mais espaço à volta dos botões */\n.navbar-card {\n  padding: 14px 18px !important;\n  gap: 12px !important;\n  overflow: visible !important;\n}\n\n.navbar.desktop.bottom {\n  overflow: visible !important;\n}\n",
+          "grid_options": {
+            "columns": 21,
+            "rows": "auto"
+          }
+        }
+      ],
+      "column_span": 3
+    }
+  ],
+  "cards": [],
+  "header": {
+    "layout": null,
+    "badges_position": null,
+    "badges_wrap": null
+  },
+  "subview": true,
+  "footer": {
+    "card": {
+      "type": "horizontal-stack",
+      "cards": [
+        {
+          "type": "tile",
+          "entity": "sensor.vaccuminator_dust_bag_status",
+          "name": "Saco",
+          "icon": "phu:garbage-residual",
+          "color": "red",
+          "hide_state": false,
+          "vertical": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "icon_tap_action": {
+            "action": "none"
+          },
+          "features_position": "bottom",
+          "visibility": [
+            {
+              "condition": "state",
+              "entity": "sensor.vaccuminator_dust_bag_status",
+              "state_not": "installed"
+            }
+          ],
+          "card_mod": {
+            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+          }
+        },
+        {
+          "type": "tile",
+          "visibility": [
+            {
+              "condition": "state",
+              "entity": "sensor.vaccuminator_detergent_status",
+              "state_not": "installed"
+            }
+          ],
+          "entity": "sensor.vaccuminator_detergent_status",
+          "name": "Detergente",
+          "icon": "fa6-solid:jug-detergent",
+          "color": "red",
+          "hide_state": false,
+          "vertical": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "icon_tap_action": {
+            "action": "none"
+          },
+          "features_position": "bottom",
+          "card_mod": {
+            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+          }
+        },
+        {
+          "type": "tile",
+          "visibility": [
+            {
+              "condition": "state",
+              "entity": "sensor.vaccuminator_dirty_water_tank_status",
+              "state_not": "installed"
+            }
+          ],
+          "entity": "sensor.vaccuminator_dirty_water_tank_status",
+          "name": "Água Suja",
+          "icon": "",
+          "color": "red",
+          "hide_state": false,
+          "vertical": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "icon_tap_action": {
+            "action": "none"
+          },
+          "features_position": "bottom",
+          "card_mod": {
+            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+          }
+        },
+        {
+          "type": "tile",
+          "visibility": [
+            {
+              "condition": "state",
+              "entity": "sensor.vaccuminator_clean_water_tank_status",
+              "state_not": "installed"
+            }
+          ],
+          "entity": "sensor.vaccuminator_clean_water_tank_status",
+          "name": "Água Limpa",
+          "icon": "",
+          "color": "red",
+          "hide_state": false,
+          "vertical": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "icon_tap_action": {
+            "action": "none"
+          },
+          "features_position": "bottom",
+          "card_mod": {
+            "style": "ha-card {\n  box-shadow: none !important;\n  border: none !important;\n  background: none !important;\n}\n"
+          }
+        }
+      ],
+      "grid_options": {
+        "columns": 48,
+        "rows": "auto"
+      }
+    },
+    "max_width": 640
+  },
+  "icon": "bha:roborock"
+}
