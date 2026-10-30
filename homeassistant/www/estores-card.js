@@ -1,6 +1,6 @@
-// estores-card v1.2 — estores e automatismos dos estores (tablet), em português
+// estores-card v1.3 — estores e automatismos dos estores (tablet), em português
 // Lê e escreve os helpers da blueprint CoverAutomatic_v4 (est_esq1..4).
-const EST_VERSION = "1.2.0";
+const EST_VERSION = "1.3.0";
 
 const EST_DEFAULT = {
   back: "/dashboard-tablet/novo-tablet",
@@ -160,7 +160,7 @@ const ED_CSS = `
     .stepper{width:100%}.stepper output{min-width:0;flex:1;font-size:16px}.stepper button{min-width:40px;padding:0 6px}
     .daypick{gap:4px;flex-wrap:nowrap}.daypick button{width:auto;flex:1;height:42px;font-size:12px;border-radius:12px}
     .tnow{flex-wrap:wrap;gap:8px 12px}.tnow .v{font-size:22px}.tnow .st{margin-left:0;white-space:normal}
-    .edf small{display:none}.ok{flex:1}
+    .edf .hint{display:none}.ok{flex:1}
   }
 `;
 
@@ -189,8 +189,9 @@ class EstoresCard extends HTMLElement {
     this._portal = null;
     this._pushed = false;
     // Gesto/botão "voltar" fecha o editor em vez de sair da página
+    // (igual aos popups do Bubble Card: o editor vive enquanto o URL tiver #estores-editar)
     this._onPop = () => {
-      if (this._edit && !(history.state && history.state.estoresEd)) {
+      if (this._edit && location.hash !== "#estores-editar") {
         this._pushed = false;
         this._closeEd();
       }
@@ -226,18 +227,23 @@ class EstoresCard extends HTMLElement {
   connectedCallback() {
     this._timer = setInterval(() => this._render(), 60000);
     window.addEventListener("popstate", this._onPop);
+    window.addEventListener("hashchange", this._onPop);
+    window.addEventListener("location-changed", this._onPop);
   }
   disconnectedCallback() {
     clearInterval(this._timer);
     window.removeEventListener("popstate", this._onPop);
+    window.removeEventListener("hashchange", this._onPop);
+    window.removeEventListener("location-changed", this._onPop);
     this._pushed = false;
     this._closeEd();
   }
   _openEd(i) {
     this._edit = i;
     if (!this._pushed) {
-      history.pushState({ ...(history.state || {}), estoresEd: true }, "", location.pathname + location.search + "#estores-editar");
       this._pushed = true;
+      history.pushState(history.state, "", location.pathname + location.search + "#estores-editar");
+      window.dispatchEvent(new CustomEvent("location-changed", { detail: { replace: false } }));
     }
     this._renderEd();
   }
@@ -481,7 +487,7 @@ class EstoresCard extends HTMLElement {
           <div class="ends"><span>Fechado</span><span>Aberto</span></div>
           <div class="row"><button class="quick" data-pq="0">0%</button><button class="quick" data-pq="25">25%</button><button class="quick" data-pq="50">50%</button><button class="quick" data-pq="75">75%</button><button class="quick" data-pq="100">100%</button></div></div>
         </div></div>
-        <div class="edf"><small>As alterações ficam guardadas logo.</small><button class="ok" data-close>Concluído</button></div>
+        <div class="edf"><small><span class="hint">As alterações ficam guardadas logo. · </span>v${EST_VERSION}</small><button class="ok" data-close>Concluído</button></div>
       </div></div>`;
     const ed = this._portal.shadowRoot.querySelector(".ed");
     if (ed) ed.scrollTop = scroll;
