@@ -1,0 +1,255 @@
+blueprint:
+  name: Ventilação WC (humidade + manual)
+  description: >
+    Liga o extrator de uma casa de banho pela humidade, enquanto a luz está acesa.
+
+    - Luz acesa: liga acima do limite de humidade e desliga abaixo de
+      (limite − margem).
+    - Luz apagada: nunca liga sozinho. Se estiver ligado, continua pelo menos
+      o "tempo após apagar a luz" e só desliga quando a humidade baixar.
+    - Ordem manual (botão físico, tablet, telemóvel, voz): a automação deixa
+      de mexer no extrator até a luz acender ou apagar. Se ligares à mão com a
+      luz apagada, desliga sozinho passado o "tempo após apagar a luz".
+    - Segurança: nunca fica ligado mais do que o tempo máximo.
+
+    Uma ordem conta como manual quando a mudança no extrator não veio desta
+    nem de outra automação (o botão físico do PLC também conta).
+  domain: automation
+  author: Nuno Santos
+  source_url: https://github.com/nunomiguelsantos/save-matriz-banc/blob/main/homeassistant/blueprints/automation/myprojects/VentilacaoWC.yaml
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    equipamentos:
+      name: Equipamentos
+      icon: mdi:fan
+      input:
+        luz_wc:
+          name: Luz da casa de banho
+          selector:
+            entity:
+              domain: light
+        ventilacao:
+          name: Extrator
+          selector:
+            entity:
+              domain: fan
+        humidade:
+          name: Sensor de humidade
+          selector:
+            entity:
+              domain: sensor
+              device_class: humidity
+        override_boolean:
+          name: Modo manual (input_boolean)
+          description: Fica ligado enquanto houver uma ordem manual a respeitar.
+          selector:
+            entity:
+              domain: input_boolean
+    ajustes:
+      name: Ajustes
+      icon: mdi:tune
+      input:
+        humidade_limite:
+          name: Limite de humidade (input_number)
+          description: Acima deste valor, com a luz acesa, o extrator liga.
+          selector:
+            entity:
+              domain: input_number
+        margem:
+          name: Margem da humidade
+          description: Só desliga quando a humidade descer abaixo de (limite − margem).
+          default: 5
+          selector:
+            number:
+              min: 0
+              max: 20
+              step: 0.5
+              unit_of_measurement: "%"
+        tempo_apos_luz:
+          name: Tempo após apagar a luz (input_number, minutos)
+          description: Tempo mínimo que o extrator continua depois de apagar a luz.
+          selector:
+            entity:
+              domain: input_number
+        tempo_max:
+          name: Tempo máximo ligado
+          description: Segurança. Ao fim deste tempo desliga sempre.
+          default: 60
+          selector:
+            number:
+              min: 10
+              max: 240
+              step: 5
+              unit_of_measurement: min
+
+mode: queued
+max: 10
+max_exceeded: silent
+
+trigger_variables:
+  tempo_ent: !input tempo_apos_luz
+  tempo_max_min: !input tempo_max
+
+triggers:
+  - trigger: state
+    entity_id: !input luz_wc
+    to: "on"
+    id: luz_on
+  - trigger: state
+    entity_id: !input luz_wc
+    to: "off"
+    id: luz_off
+  - trigger: state
+    entity_id: !input luz_wc
+    to: "off"
+    for:
+      minutes: "{{ states(tempo_ent) | int(10) }}"
+    id: avaliar
+  - trigger: state
+    entity_id: !input ventilacao
+    to: "on"
+    for:
+      minutes: "{{ states(tempo_ent) | int(10) }}"
+    id: vent_tempo
+  - trigger: state
+    entity_id: !input ventilacao
+    to: "on"
+    for:
+      minutes: "{{ tempo_max_min | int(60) }}"
+    id: vent_max
+  - trigger: state
+    entity_id: !input ventilacao
+    not_from: [unavailable, unknown]
+    not_to: [unavailable, unknown]
+    id: vent_mudou
+  - trigger: state
+    entity_id: !input humidade
+    id: avaliar
+  - trigger: state
+    entity_id: !input humidade_limite
+    id: avaliar
+  - trigger: homeassistant
+    event: start
+    id: avaliar
+  - trigger: time_pattern
+    minutes: "/5"
+    id: avaliar
+
+variables:
+  luz_ent: !input luz_wc
+  vent_ent: !input ventilacao
+  hum_ent: !input humidade
+  lim_ent: !input humidade_limite
+  ovr_ent: !input override_boolean
+  margem: !input margem
+
+actions:
+  # 1) Eventos: ordem manual, segurança e mudanças da luz
+  - choose:
+      - alias: "Mudança no extrator que não veio de uma automação → ordem manual"
+        conditions:
+          - condition: trigger
+            id: vent_mudou
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ trigger.to_state.context.parent_id is none }}"
+            then:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: !input override_boolean
+          - stop: "Mudança do extrator tratada."
+      - alias: "Tempo máximo → desliga sempre"
+        conditions:
+          - condition: trigger
+            id: vent_max
+        sequence:
+          - action: fan.turn_off
+            target:
+              entity_id: !input ventilacao
+          - action: input_boolean.turn_off
+            target:
+              entity_id: !input override_boolean
+          - stop: "Tempo máximo atingido."
+      - alias: "Luz acendeu ou apagou → volta ao automático"
+        conditions:
+          - condition: trigger
+            id: [luz_on, luz_off]
+        sequence:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: !input override_boolean
+      - alias: "Ligado à mão com a luz apagada → passado o tempo volta ao automático"
+        conditions:
+          - condition: trigger
+            id: vent_tempo
+          - condition: state
+            entity_id: !input luz_wc
+            state: "off"
+        sequence:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: !input override_boolean
+
+  # 2) Com ordem manual ativa, não mexe em nada
+  - condition: state
+    entity_id: !input override_boolean
+    state: "off"
+
+  # 3) Controlo automático
+  - variables:
+      hum: "{{ states(hum_ent) | float(none) }}"
+      lim: "{{ states(lim_ent) | float(80) }}"
+      tempo: "{{ states(tempo_ent) | float(10) }}"
+      luz_off_min: >-
+        {%- if is_state(luz_ent, 'off') -%}
+          {{ ((now() - states[luz_ent].last_changed).total_seconds() / 60) | round(1) }}
+        {%- else -%}0{%- endif -%}
+  - condition: template
+    value_template: "{{ hum is not none }}"
+  - choose:
+      - alias: "Luz acesa e humidade alta → liga"
+        conditions:
+          - condition: state
+            entity_id: !input luz_wc
+            state: "on"
+          - condition: state
+            entity_id: !input ventilacao
+            state: "off"
+          - condition: template
+            value_template: "{{ hum > lim }}"
+        sequence:
+          - action: fan.turn_on
+            target:
+              entity_id: !input ventilacao
+      - alias: "Luz acesa e humidade baixa → desliga"
+        conditions:
+          - condition: state
+            entity_id: !input luz_wc
+            state: "on"
+          - condition: state
+            entity_id: !input ventilacao
+            state: "on"
+          - condition: template
+            value_template: "{{ hum < lim - (margem | float) }}"
+        sequence:
+          - action: fan.turn_off
+            target:
+              entity_id: !input ventilacao
+      - alias: "Luz apagada há tempo suficiente e humidade baixa → desliga"
+        conditions:
+          - condition: state
+            entity_id: !input luz_wc
+            state: "off"
+          - condition: state
+            entity_id: !input ventilacao
+            state: "on"
+          - condition: template
+            value_template: "{{ (luz_off_min | float) >= (tempo | float) and hum < lim - (margem | float) }}"
+        sequence:
+          - action: fan.turn_off
+            target:
+              entity_id: !input ventilacao
+    # Nos outros casos mantém como está
+    default: []
