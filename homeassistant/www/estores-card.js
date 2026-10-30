@@ -1,6 +1,6 @@
-// estores-card v1.1 — estores e automatismos dos estores (tablet), em português
+// estores-card v1.2 — estores e automatismos dos estores (tablet), em português
 // Lê e escreve os helpers da blueprint CoverAutomatic_v4 (est_esq1..4).
-const EST_VERSION = "1.1.0";
+const EST_VERSION = "1.2.0";
 
 const EST_DEFAULT = {
   back: "/dashboard-tablet/novo-tablet",
@@ -187,6 +187,14 @@ class EstoresCard extends HTMLElement {
     this._busy = false;
     this._edit = null; // índice do esquema em edição
     this._portal = null;
+    this._pushed = false;
+    // Gesto/botão "voltar" fecha o editor em vez de sair da página
+    this._onPop = () => {
+      if (this._edit && !(history.state && history.state.estoresEd)) {
+        this._pushed = false;
+        this._closeEd();
+      }
+    };
     this.shadowRoot.addEventListener("click", (e) => this._onClick(e));
     this.shadowRoot.addEventListener("pointerdown", (e) => this._onDown(e));
     this.shadowRoot.addEventListener("pointermove", (e) => this._onMove(e));
@@ -217,10 +225,21 @@ class EstoresCard extends HTMLElement {
 
   connectedCallback() {
     this._timer = setInterval(() => this._render(), 60000);
+    window.addEventListener("popstate", this._onPop);
   }
   disconnectedCallback() {
     clearInterval(this._timer);
+    window.removeEventListener("popstate", this._onPop);
+    this._pushed = false;
     this._closeEd();
+  }
+  _openEd(i) {
+    this._edit = i;
+    if (!this._pushed) {
+      history.pushState({ ...(history.state || {}), estoresEd: true }, "", location.pathname + location.search + "#estores-editar");
+      this._pushed = true;
+    }
+    this._renderEd();
   }
 
   set hass(hass) {
@@ -475,6 +494,11 @@ class EstoresCard extends HTMLElement {
       this._portal.remove();
       this._portal = null;
     }
+    // Fechado por botão/fora: retira a entrada que o editor pôs no histórico
+    if (this._pushed) {
+      this._pushed = false;
+      history.back();
+    }
   }
   _endRange() {
     if (this._busy && !this._portal?.shadowRoot?.activeElement?.matches?.("input[type=text]")) {
@@ -509,8 +533,7 @@ class EstoresCard extends HTMLElement {
       const i = Number(t.dataset.sw);
       this._bool(`input_boolean.${this._p(i)}_enable`, !this._esq(i).on);
     } else if (t.dataset.edit) {
-      this._edit = Number(t.dataset.edit);
-      this._renderEd();
+      this._openEd(Number(t.dataset.edit));
     } else if (t.dataset.cv && e.detail === 0) {
       // teclado (Enter/Espaço): abre ou fecha
       this._toggleCover(Number(t.dataset.cv));
