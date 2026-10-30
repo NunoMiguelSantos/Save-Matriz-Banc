@@ -7,13 +7,15 @@ blueprint:
       (limite − margem).
     - Luz apagada: nunca liga sozinho. Se estiver ligado, continua pelo menos
       o "tempo após apagar a luz" e só desliga quando a humidade baixar.
-    - Ordem manual (botão físico, tablet, telemóvel, voz): a automação deixa
-      de mexer no extrator até a luz acender ou apagar. Se ligares à mão com a
-      luz apagada, desliga sozinho passado o "tempo após apagar a luz".
+    - Ligar à mão (botão físico, tablet, telemóvel, voz): fica ligado
+      exatamente o "tempo após apagar a luz" (ex.: 10 min para tirar cheiros) e
+      depois desliga, sem olhar à humidade nem à luz.
+    - Desligar à mão: a automação respeita até a luz acender ou apagar.
+    - Depois de apagar a luz, seca no máximo o "tempo máximo a secar".
     - Segurança: nunca fica ligado mais do que o tempo máximo.
 
-    Uma ordem conta como manual quando a mudança no extrator não veio desta
-    nem de outra automação (o botão físico do PLC também conta).
+    Uma ordem conta como manual quando vem de uma pessoa (app, tablet, voz)
+    ou do botão físico.
   domain: automation
   author: Nuno Santos
   source_url: https://github.com/nunomiguelsantos/save-matriz-banc/blob/main/homeassistant/blueprints/automation/myprojects/VentilacaoWC.yaml
@@ -40,6 +42,12 @@ blueprint:
             entity:
               domain: sensor
               device_class: humidity
+        botao:
+          name: Botão físico (binary_sensor)
+          description: A entrada do botão físico do extrator. Qualquer mudança conta como ordem manual.
+          selector:
+            entity:
+              domain: binary_sensor
         override_boolean:
           name: Modo manual (input_boolean)
           description: Fica ligado enquanto houver uma ordem manual a respeitar.
@@ -72,6 +80,16 @@ blueprint:
           selector:
             entity:
               domain: input_number
+        tempo_secar:
+          name: Tempo máximo a secar
+          description: Depois de apagar a luz, desliga ao fim deste tempo mesmo que a humidade ainda esteja alta.
+          default: 30
+          selector:
+            number:
+              min: 5
+              max: 120
+              step: 5
+              unit_of_measurement: min
         tempo_max:
           name: Tempo máximo ligado
           description: Segurança. Ao fim deste tempo desliga sempre.
@@ -90,6 +108,7 @@ max_exceeded: silent
 trigger_variables:
   tempo_ent: !input tempo_apos_luz
   tempo_max_min: !input tempo_max
+  secar_min: !input tempo_secar
 
 triggers:
   - trigger: state
@@ -124,6 +143,17 @@ triggers:
     not_to: [unavailable, unknown]
     id: vent_mudou
   - trigger: state
+    entity_id: !input botao
+    not_from: [unavailable, unknown]
+    not_to: [unavailable, unknown]
+    id: botao
+  - trigger: state
+    entity_id: !input luz_wc
+    to: "off"
+    for:
+      minutes: "{{ secar_min | int(30) }}"
+    id: secar
+  - trigger: state
     entity_id: !input humidade
     id: avaliar
   - trigger: state
@@ -147,19 +177,28 @@ variables:
 actions:
   # 1) Eventos: ordem manual, segurança e mudanças da luz
   - choose:
-      - alias: "Mudança no extrator que não veio de uma automação → ordem manual"
+      - alias: "Mudança no extrator feita por uma pessoa → ordem manual"
         conditions:
           - condition: trigger
             id: vent_mudou
         sequence:
           - if:
               - condition: template
-                value_template: "{{ trigger.to_state.context.parent_id is none }}"
+                value_template: "{{ trigger.to_state.context.user_id is not none }}"
             then:
               - action: input_boolean.turn_on
                 target:
                   entity_id: !input override_boolean
           - stop: "Mudança do extrator tratada."
+      - alias: "Botão físico → ordem manual"
+        conditions:
+          - condition: trigger
+            id: botao
+        sequence:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: !input override_boolean
+          - stop: "Botão físico tratado."
       - alias: "Tempo máximo → desliga sempre"
         conditions:
           - condition: trigger
@@ -172,25 +211,47 @@ actions:
             target:
               entity_id: !input override_boolean
           - stop: "Tempo máximo atingido."
-      - alias: "Luz acendeu ou apagou → volta ao automático"
+      - alias: "Desligado à mão e a luz mudou → volta ao automático"
         conditions:
           - condition: trigger
             id: [luz_on, luz_off]
-        sequence:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: !input override_boolean
-      - alias: "Ligado à mão com a luz apagada → passado o tempo volta ao automático"
-        conditions:
-          - condition: trigger
-            id: vent_tempo
           - condition: state
-            entity_id: !input luz_wc
+            entity_id: !input ventilacao
             state: "off"
         sequence:
           - action: input_boolean.turn_off
             target:
               entity_id: !input override_boolean
+      - alias: "Ligado à mão → passado o tempo desliga (sem olhar à humidade nem à luz)"
+        conditions:
+          - condition: trigger
+            id: vent_tempo
+          - condition: state
+            entity_id: !input override_boolean
+            state: "on"
+        sequence:
+          - action: fan.turn_off
+            target:
+              entity_id: !input ventilacao
+          - action: input_boolean.turn_off
+            target:
+              entity_id: !input override_boolean
+          - stop: "Ordem manual terminada."
+      - alias: "Luz apagada há o tempo máximo a secar → desliga"
+        conditions:
+          - condition: trigger
+            id: secar
+          - condition: state
+            entity_id: !input override_boolean
+            state: "off"
+          - condition: state
+            entity_id: !input ventilacao
+            state: "on"
+        sequence:
+          - action: fan.turn_off
+            target:
+              entity_id: !input ventilacao
+          - stop: "Tempo máximo a secar atingido."
 
   # 2) Com ordem manual ativa, não mexe em nada
   - condition: state
