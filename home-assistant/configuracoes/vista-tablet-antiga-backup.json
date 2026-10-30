@@ -1,0 +1,2274 @@
+{
+  "type": "sections",
+  "background": "radial-gradient(ellipse at top left, rgba(0, 190, 210, 0.16), transparent 55%), radial-gradient(ellipse at bottom right, rgba(0, 190, 210, 0.16), transparent 60%), linear-gradient(145deg, #091419 0%, #12282F 50%, #0B1723 100%)",
+  "max_columns": 4,
+  "title": "Configurações",
+  "path": "configs",
+  "icon": "el:cog",
+  "sections": [
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:button-card",
+          "name": "Configurações",
+          "show_icon": false,
+          "show_name": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "none"
+          },
+          "custom_fields": {
+            "back": {
+              "card": {
+                "type": "custom:button-card",
+                "name": "Casa",
+                "icon": "mdi:chevron-left",
+                "show_name": true,
+                "show_icon": true,
+                "layout": "icon_name",
+                "size": "20px",
+                "tap_action": {
+                  "action": "navigate",
+                  "navigation_path": "novo-tablet"
+                },
+                "styles": {
+                  "card": [
+                    {
+                      "height": "48px"
+                    },
+                    {
+                      "padding": "0 14px 0 8px"
+                    },
+                    {
+                      "border-radius": "14px"
+                    },
+                    {
+                      "background": "rgba(255,255,255,0.035)"
+                    },
+                    {
+                      "border": "1px solid rgba(95,158,160,0.22)"
+                    },
+                    {
+                      "box-shadow": "none"
+                    }
+                  ],
+                  "grid": [
+                    {
+                      "grid-template-areas": "\"i n\""
+                    },
+                    {
+                      "grid-template-columns": "28px auto"
+                    },
+                    {
+                      "align-items": "center"
+                    }
+                  ],
+                  "icon": [
+                    {
+                      "width": "20px"
+                    },
+                    {
+                      "color": "CadetBlue"
+                    }
+                  ],
+                  "name": [
+                    {
+                      "justify-self": "start"
+                    },
+                    {
+                      "color": "rgba(255,255,255,0.72)"
+                    },
+                    {
+                      "font-size": "14px"
+                    },
+                    {
+                      "font-weight": 500
+                    }
+                  ]
+                }
+              }
+            },
+            "subtitle": "Automações, servidor, tablet e baterias",
+            "spacer": ""
+          },
+          "styles": {
+            "card": [
+              {
+                "height": "82px"
+              },
+              {
+                "padding": "0 8px"
+              },
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"back n spacer\" \"back subtitle spacer\""
+              },
+              {
+                "grid-template-columns": "110px 1fr 110px"
+              },
+              {
+                "grid-template-rows": "1fr 1fr"
+              },
+              {
+                "align-items": "center"
+              }
+            ],
+            "name": [
+              {
+                "align-self": "end"
+              },
+              {
+                "justify-self": "center"
+              },
+              {
+                "color": "rgba(255,255,255,0.92)"
+              },
+              {
+                "font-size": "22px"
+              },
+              {
+                "font-weight": 700
+              }
+            ],
+            "custom_fields": {
+              "back": [
+                {
+                  "align-self": "center"
+                },
+                {
+                  "justify-self": "start"
+                }
+              ],
+              "subtitle": [
+                {
+                  "align-self": "start"
+                },
+                {
+                  "justify-self": "center"
+                },
+                {
+                  "margin-top": "2px"
+                },
+                {
+                  "color": "CadetBlue"
+                },
+                {
+                  "font-size": "13px"
+                }
+              ],
+              "spacer": [
+                {
+                  "width": "110px"
+                }
+              ]
+            }
+          },
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:navbar-card",
+          "layout": {
+            "reflect_child_state": true,
+            "auto_padding": {
+              "enabled": true,
+              "desktop_px": 105,
+              "mobile_px": 0
+            }
+          },
+          "routes": [
+            {
+              "icon": "mdi:home-outline",
+              "icon_selected": "mdi:home",
+              "label": "Casa",
+              "url": "/dashboard-tablet/novo-tablet",
+              "icon_color": "rgba(101,216,222,0.70)",
+              "selected_color": "#65D8DE"
+            },
+            {
+              "icon": "mdi:lightning-bolt-outline",
+              "icon_selected": "mdi:lightning-bolt",
+              "label": "Energia",
+              "url": "/dashboard-tablet/energypainel",
+              "icon_color": "rgba(100,160,255,0.75)",
+              "selected_color": "#64A0FF"
+            },
+            {
+              "icon": "mdi:blinds-horizontal-closed",
+              "icon_selected": "mdi:blinds-horizontal",
+              "label": "Estores",
+              "url": "/dashboard-tablet/editcovers",
+              "icon_color": "rgba(101,216,222,0.75)",
+              "selected_color": "#65D8DE"
+            },
+            {
+              "icon": "mdi:fire",
+              "label": "Caldeira",
+              "url": "/dashboard-tablet/configcaldeira",
+              "icon_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"rgba(255,255,255,0.40)\";\n]]]\n",
+              "selected_color": "[[[\n  if (hass.states[\"switch.caldeira_caldeira\"]?.state === \"on\") {\n    return hass.states[\"input_boolean.cald_force_override\"]?.state === \"on\"\n      ? \"#FF5A5A\"\n      : \"#B22222\";\n  }\n\n  return hass.states[\"input_boolean.cald_auto_mode\"]?.state === \"on\"\n    ? \"#4682B4\"\n    : \"#65D8DE\";\n]]]\n"
+            },
+            {
+              "icon": "mdi:dishwasher",
+              "label": "Máquina da Louça",
+              "url": "/dashboard-tablet/maquina-louca",
+              "icon_color": "rgba(100,90,220,0.90)"
+            },
+            {
+              "icon": "cil:roborock-vacuum",
+              "url": "/dashboard-tablet/vacuum"
+            },
+            {
+              "icon": "mdi:dots-horizontal",
+              "label": "Mais",
+              "icon_color": "rgba(100,200,120,0.80)",
+              "selected_color": "#64C878",
+              "tap_action": {
+                "action": "open-popup"
+              },
+              "popup": [
+                {
+                  "icon": "mdi:music-box-multiple",
+                  "label": "Música",
+                  "url": "/dashboard-tablet/musica"
+                },
+                {
+                  "icon": "line-md:cog",
+                  "label": "Configurações",
+                  "url": "/dashboard-tablet/configs"
+                },
+                {
+                  "icon": "mdi:menu",
+                  "label": "Programador",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "input_boolean.toggle",
+                    "target": {
+                      "entity_id": "input_boolean.kisk_mode"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "desktop": {
+            "mode": "floating",
+            "position": "bottom",
+            "min_width": 700,
+            "show_labels": "popup_only",
+            "show_popup_label_backgrounds": false
+          },
+          "mobile": {
+            "hidden": true,
+            "mode": "floating"
+          },
+          "styles": ".navbar-card {\n  --navbar-route-icon-size: 40px;\n  --navbar-border-radius: 18px;\n\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.96) 0%,\n    rgba(15,32,45,0.98) 100%\n  ) !important;\n\n  border: 1px solid rgba(140,210,230,0.22) !important;\n  border-radius: 18px !important;\n\n  box-shadow:\n    0 6px 24px rgba(0,0,0,0.50),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 10px 14px !important;\n  gap: 12px !important;\n}\n\n/* Botões grandes */\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n\n  background: rgba(255,255,255,0.045) !important;\n  border: 1px solid rgba(255,255,255,0.09) !important;\n  border-radius: 14px !important;\n  box-shadow: none !important;\n\n  transition:\n    background 0.2s ease,\n    border-color 0.2s ease,\n    transform 0.2s ease !important;\n}\n\n/* Ícones grandes */\n.route .icon {\n  --mdc-icon-size: 40px !important;\n  width: 40px !important;\n  height: 40px !important;\n}\n\n.route .button:hover {\n  background: rgba(255,255,255,0.09) !important;\n  border-color: rgba(140,210,230,0.28) !important;\n}\n\n.route .button.active {\n  background: rgba(101,216,222,0.22) !important;\n  border-color: rgba(101,216,222,0.60) !important;\n  box-shadow: 0 0 12px rgba(101,216,222,0.12) !important;\n  transform: translateY(-2px);\n}\n\n/* Esconder os nomes na barra */\n.route .label {\n  display: none !important;\n}\n\n/* Popup Mais */\n.navbar-popup {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.98) 0%,\n    rgba(15,32,45,0.99) 100%\n  ) !important;\n\n  backdrop-filter: blur(14px) !important;\n  -webkit-backdrop-filter: blur(14px) !important;\n\n  border: 1px solid rgba(140,210,230,0.20) !important;\n  border-radius: 16px !important;\n\n  box-shadow:\n    0 8px 30px rgba(0,0,0,0.60),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n\n  padding: 12px !important;\n}\n\n.popup-item .button {\n  width: 54px !important;\n  height: 54px !important;\n\n  background: rgba(255,255,255,0.055) !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  border-radius: 12px !important;\n  box-shadow: none !important;\n}\n\n.popup-item .icon {\n  --mdc-icon-size: 30px !important;\n  width: 30px !important;\n  height: 30px !important;\n}\n\n/* Máquina da Louça */\n.popup-item:nth-child(1) .icon {\n  color: #A78BFA !important;\n}\n\n/* Música */\n.popup-item:nth-child(2) .icon {\n  color: #C8F560 !important;\n}\n\n/* Configurações */\n.popup-item:nth-child(3) .icon {\n  color: #65D8DE !important;\n}\n\n/* Programador */\n.popup-item:nth-child(4) .icon {\n  color: rgba(255,255,255,0.85) !important;\n}\n\n.popup-item .label {\n  display: block !important;\n  color: rgba(255,255,255,0.90) !important;\n  background: transparent !important;\n  font-size: 13px !important;\n  box-shadow: none !important;\n}\n\n/* Dar espaço real aos botões grandes */\n.route {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  flex: 0 0 70px !important;\n  overflow: visible !important;\n  box-sizing: border-box !important;\n}\n\n.route .button {\n  width: 70px !important;\n  min-width: 70px !important;\n  height: 60px !important;\n  min-height: 60px !important;\n  margin: 0 !important;\n  box-sizing: border-box !important;\n  overflow: visible !important;\n}\n\n/* Mais espaço à volta dos botões */\n.navbar-card {\n  padding: 14px 18px !important;\n  gap: 12px !important;\n  overflow: visible !important;\n}\n\n.navbar.desktop.bottom {\n  overflow: visible !important;\n}\n",
+          "grid_options": {
+            "columns": 15,
+            "rows": "auto"
+          }
+        }
+      ],
+      "column_span": 4
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "heading",
+          "heading": "Controlos",
+          "heading_style": "title",
+          "icon": "mdi:tune-variant",
+          "grid_options": {
+            "columns": 48
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Servidor",
+          "heading_style": "subtitle",
+          "icon": "mdi:home-assistant"
+        },
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "custom:button-card",
+              "name": "Perfil",
+              "icon": "mdi:account-supervisor",
+              "show_name": true,
+              "show_state": false,
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/profile"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "border-radius": "14px"
+                  },
+                  {
+                    "height": "70px"
+                  },
+                  {
+                    "background": "rgba(255,255,255,0.02)"
+                  },
+                  {
+                    "border": "1.5px solid rgba(180,180,200,0.3)"
+                  },
+                  {
+                    "box-shadow": "none"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "24px"
+                  },
+                  {
+                    "color": "rgba(255,255,255,0.85)"
+                  }
+                ],
+                "name": [
+                  {
+                    "font-size": "11px"
+                  },
+                  {
+                    "font-weight": 600
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 3,
+                "rows": "auto"
+              }
+            },
+            {
+              "type": "custom:button-card",
+              "name": "Reiniciar HA",
+              "label": "Segurar: servidor",
+              "icon": "mdi:restart",
+              "show_name": true,
+              "show_label": true,
+              "show_state": false,
+              "tap_action": {
+                "action": "perform-action",
+                "perform_action": "homeassistant.restart",
+                "target": {},
+                "confirmation": {
+                  "text": "Reiniciar o Home Assistant (~30s)?"
+                }
+              },
+              "hold_action": {
+                "action": "perform-action",
+                "perform_action": "hassio.host_reboot",
+                "target": {},
+                "confirmation": {
+                  "text": "Reiniciar o servidor completo (~2min)?"
+                }
+              },
+              "styles": {
+                "card": [
+                  {
+                    "border-radius": "14px"
+                  },
+                  {
+                    "height": "70px"
+                  },
+                  {
+                    "background": "rgba(255,255,255,0.02)"
+                  },
+                  {
+                    "border": "1.5px solid rgba(255, 193, 7, 0.4)"
+                  },
+                  {
+                    "box-shadow": "none"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "24px"
+                  },
+                  {
+                    "color": "rgba(255, 193, 7, 0.9)"
+                  }
+                ],
+                "name": [
+                  {
+                    "font-size": "11px"
+                  },
+                  {
+                    "font-weight": 600
+                  }
+                ],
+                "label": [
+                  {
+                    "font-size": "9px"
+                  },
+                  {
+                    "color": "rgba(255,255,255,0.40)"
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 3,
+                "rows": "auto"
+              }
+            },
+            {
+              "type": "custom:button-card",
+              "name": "Desligar",
+              "icon": "mdi:power",
+              "show_name": true,
+              "show_state": false,
+              "tap_action": {
+                "action": "perform-action",
+                "perform_action": "hassio.host_shutdown",
+                "target": {},
+                "confirmation": {
+                  "text": "Desligar Servidor?"
+                }
+              },
+              "hold_action": {
+                "action": "none"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "border-radius": "14px"
+                  },
+                  {
+                    "height": "70px"
+                  },
+                  {
+                    "background": "rgba(255,255,255,0.02)"
+                  },
+                  {
+                    "border": "1.5px solid rgba(220, 53, 69, 0.5)"
+                  },
+                  {
+                    "box-shadow": "none"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "24px"
+                  },
+                  {
+                    "color": "rgba(220, 53, 69, 0.9)"
+                  }
+                ],
+                "name": [
+                  {
+                    "font-size": "11px"
+                  },
+                  {
+                    "font-weight": 600
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 3,
+                "rows": "auto"
+              }
+            }
+          ],
+          "visibility": [
+            {
+              "condition": "user",
+              "users": [
+                "01c1a4ec939b466dbfe71183c81abb49",
+                "d99aa86ee2564e06ab4a34bbbe4f45aa",
+                "8f9cb09dc643441ebe9d74a2c567fb24",
+                "37856c58270d4e84b363bb5744bad78d",
+                "693047d606be4b99b3fc2c37f1565a3b"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "custom:gap-card",
+          "height": 10,
+          "grid_options": {
+            "columns": 48,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Tablet",
+          "heading_style": "subtitle",
+          "icon": "famicons:tablet-landscape-outline"
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "entity": "switch.lenovo_screen",
+                  "name": "Ecrã",
+                  "icon": "mdi:tablet",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "height": "80px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-weight": "bold"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "26px"
+                      }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255, 193, 7, 0.9)"
+                          },
+                          {
+                            "color": "white"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255,255,255,0.9)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "value": "off",
+                      "styles": {
+                        "card": [
+                          {
+                            "background": "rgba(255,255,255,0.02)"
+                          },
+                          {
+                            "color": "rgba(255,255,255,0.6)"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "color": "rgba(255, 193, 7, 0.9)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "button.lenovo_restart_browser",
+                  "name": "Reiniciar navegador",
+                  "icon": "mdi:refresh",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "button.press",
+                    "service_data": {
+                      "entity_id": "button.lenovo_restart_browser"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "height": "80px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.02)"
+                      },
+                      {
+                        "border": "1.5px solid rgba(0, 123, 255, 0.4)"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-weight": "bold"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "rgba(255,255,255,0.85)"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "26px"
+                      },
+                      {
+                        "color": "rgba(0, 123, 255, 0.9)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "button.lenovo_restart_device",
+                  "name": "Reiniciar Tablet",
+                  "icon": "mdi:restart",
+                  "confirmation": {
+                    "text": "Reiniciar o tablet?"
+                  },
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "button.press",
+                    "service_data": {
+                      "entity_id": "button.lenovo_restart_device"
+                    }
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "height": "80px"
+                      },
+                      {
+                        "background": "rgba(255,255,255,0.02)"
+                      },
+                      {
+                        "border": "1.5px solid rgba(220, 53, 69, 0.5)"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "font-weight": "bold"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "rgba(255,255,255,0.85)"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "26px"
+                      },
+                      {
+                        "color": "rgba(220, 53, 69, 0.9)"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "tile",
+              "entity": "number.lenovo_screen_brightness",
+              "name": "Brilho do Ecrã",
+              "icon": "mdi:brightness-6",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "slider"
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n  box-shadow: none !important;\n  background: rgba(255, 255, 255, 0.02) !important;\n}\n"
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "number.lenovo_screensaver_timer",
+              "name": "Tempo do protetor de ecrã",
+              "icon": "mdi:timer-outline",
+              "features": [
+                {
+                  "style": "buttons",
+                  "type": "numeric-input"
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n  box-shadow: none !important;\n  background: rgba(255, 255, 255, 0.02) !important;\n}\n"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "heading",
+          "heading": "Automações",
+          "heading_style": "title",
+          "icon": "mdi:home-automation",
+          "grid_options": {
+            "columns": 48
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Vaccuminator",
+          "heading_style": "subtitle",
+          "icon": "cil:roborock-vacuum-map"
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.limpeza_vaccuminator_automatic_v2",
+          "name": "Cenários Semanais",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "icon": "mdi:robot-vacuum",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              },
+              {
+                "letter-spacing": "0.2px"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "state": [
+            {
+              "value": "on",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "extra_styles": "@keyframes rotating {\n  from { transform: rotate(0deg); }\n  to { transform: rotate(360deg); }\n}\n",
+          "grid_options": {
+            "columns": 12,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "WC Geral",
+          "heading_style": "subtitle",
+          "icon": "mdi:toilet"
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.controlo_ventilacao_wc_geral",
+          "name": "Ventilação Automática",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:fan",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:fan-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes spin {\n  from { transform: rotate(0deg); }\n  to { transform: rotate(360deg); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.sensor_movimento_wcgeral",
+          "name": "Sensor de Movimento",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:motion-sensor",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:motion-sensor-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes pulse {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.15); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "WC Suite",
+          "heading_style": "subtitle",
+          "icon": "mdi:shower"
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.controlo_ventilacao_wc_suite",
+          "name": "Ventilação Automática",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:fan",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:fan-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes spin2 {\n  from { transform: rotate(0deg); }\n  to { transform: rotate(360deg); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.sensor_movimento_cozinha",
+          "name": "Sensor de Movimento",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:motion-sensor",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:motion-sensor-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes pulse {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.15); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Cozinha",
+          "heading_style": "subtitle",
+          "icon": "fa6-solid:kitchen-set",
+          "grid_options": {
+            "columns": 6
+          }
+        },
+        {
+          "type": "heading",
+          "heading": "Hall Entrada",
+          "heading_style": "subtitle",
+          "icon": "mdi:door",
+          "grid_options": {
+            "columns": 6
+          }
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.sensor_movimento_cozinha",
+          "name": "Sensor de Movimento",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:motion-sensor",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:motion-sensor-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes pulse {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.15); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        },
+        {
+          "type": "custom:button-card",
+          "entity": "automation.motionsensorhallentrada",
+          "name": "Sensor de Movimento",
+          "show_name": true,
+          "show_state": true,
+          "state_display": "[[[ return entity.state === 'on' ? 'Ativa' : 'Desligada'; ]]]\n",
+          "size": "42%",
+          "tap_action": {
+            "action": "toggle"
+          },
+          "state": [
+            {
+              "value": "on",
+              "icon": "mdi:motion-sensor",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(40, 167, 69, 0.12)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgb(76, 217, 100)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.9)"
+                  }
+                ]
+              }
+            },
+            {
+              "value": "off",
+              "icon": "mdi:motion-sensor-off",
+              "styles": {
+                "card": [
+                  {
+                    "background": "rgba(255,255,255,0.04)"
+                  }
+                ],
+                "icon": [
+                  {
+                    "color": "rgba(255,255,255,0.35)"
+                  }
+                ],
+                "name": [
+                  {
+                    "color": "rgba(255,255,255,0.55)"
+                  }
+                ]
+              }
+            }
+          ],
+          "styles": {
+            "card": [
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px"
+              },
+              {
+                "height": "96px"
+              },
+              {
+                "border": "1px solid rgba(255,255,255,0.08)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "display": "flex"
+              },
+              {
+                "flex-direction": "column"
+              },
+              {
+                "align-items": "center"
+              },
+              {
+                "justify-content": "center"
+              }
+            ],
+            "name": [
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "padding-top": "6px"
+              },
+              {
+                "text-align": "center"
+              }
+            ],
+            "state": [
+              {
+                "padding-top": "3px"
+              },
+              {
+                "font-size": "10px"
+              },
+              {
+                "color": "rgba(255,255,255,0.46)"
+              }
+            ]
+          },
+          "extra_styles": "@keyframes pulse3 {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.15); }\n}\n",
+          "grid_options": {
+            "columns": 6,
+            "rows": 1.5
+          }
+        }
+      ],
+      "column_span": 1
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "heading",
+          "heading": "Estado das baterias",
+          "heading_style": "title",
+          "icon": "mdi:home-battery",
+          "grid_options": {
+            "columns": 36
+          }
+        },
+        {
+          "type": "custom:battery-state-card",
+          "title": "🔋 Bateria fraca",
+          "entities": [
+            {
+              "entity": "sensor.btn_sonoff_escritorio_battery",
+              "name": "Botão Escritório"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_sala2_power",
+              "name": "Botão Sala"
+            },
+            {
+              "entity": "sensor.tab_7_pro_battery_level",
+              "name": "Tablet Bebé"
+            },
+            {
+              "entity": "sensor.sonoff_janela_suite_bateria",
+              "name": "Sensor Janela Suite"
+            },
+            {
+              "entity": "sensor.aquara_vibracao_bateria",
+              "name": "Sensor Vibração"
+            },
+            {
+              "entity": "sensor.ikea_button_battery",
+              "name": "Botão IKEA Suite Mary"
+            },
+            {
+              "entity": "sensor.sensorcozinha_battery",
+              "name": "Sensor TH Cozinha"
+            },
+            {
+              "entity": "sensor.sensorroom2_battery",
+              "name": "Sensor TH Quarto Bebé"
+            },
+            {
+              "entity": "sensor.sensorsalas_battery",
+              "name": "Sensor TH Salas"
+            },
+            {
+              "entity": "sensor.sensorthescritorio_battery",
+              "name": "Sensor TH Escritório"
+            },
+            {
+              "entity": "sensor.sensorwcsuite_battery",
+              "name": "Sensor WC Suite"
+            },
+            {
+              "entity": "sensor.shelly_flood_battery",
+              "name": "Sensor Inundação Bomba de Calor"
+            },
+            {
+              "entity": "sensor.silvercrest_sensor_movimento_power",
+              "name": "Sensor Movimento Hall Entrada"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_suite_mary_power",
+              "name": "Botão Xiaomi Suite Mary"
+            },
+            {
+              "entity": "sensor.xiaomi_cozinha_power",
+              "name": "Botão Fita Led Cozinha"
+            },
+            {
+              "entity": "sensor.lumi_lumi_sens_power",
+              "name": "Sensor TH Wc Geral"
+            },
+            {
+              "entity": "sensor.sonoff_porta_rua_bateria",
+              "name": "Sensor Porta da Rua"
+            },
+            {
+              "entity": "sensor.sonoff_janela_sala_bateria",
+              "name": "Sensor Janela Sala"
+            },
+            {
+              "entity": "sensor.lenovo_battery",
+              "name": "Tablet Lenovo"
+            }
+          ],
+          "sort": [
+            "state"
+          ],
+          "style": "ha-card {\n  overflow: hidden;\n  border-radius: 20px;\n  background: rgba(220,53,69,0.045);\n  border: 1px solid rgba(220,53,69,0.34);\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.38);\n}\n",
+          "filter": {
+            "exclude": [
+              {
+                "name": "state",
+                "operator": ">=",
+                "value": 20
+              },
+              {
+                "name": "state",
+                "value": "unavailable"
+              },
+              {
+                "name": "state",
+                "value": "unknown"
+              }
+            ]
+          },
+          "grid_options": {
+            "columns": 12,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:battery-state-card",
+          "title": "✅ Baterias OK",
+          "entities": [
+            {
+              "entity": "sensor.btn_sonoff_escritorio_battery",
+              "name": "Botão Escritório"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_sala2_power",
+              "name": "Botão Sala"
+            },
+            {
+              "entity": "sensor.tab_7_pro_battery_level",
+              "name": "Tablet Bebé"
+            },
+            {
+              "entity": "sensor.sonoff_janela_suite_bateria",
+              "name": "Sensor Janela Suite"
+            },
+            {
+              "entity": "sensor.aquara_vibracao_bateria",
+              "name": "Sensor Vibração"
+            },
+            {
+              "entity": "sensor.ikea_button_battery",
+              "name": "Botão IKEA Suite Mary"
+            },
+            {
+              "entity": "sensor.sensorcozinha_battery",
+              "name": "Sensor TH Cozinha"
+            },
+            {
+              "entity": "sensor.sensorroom2_battery",
+              "name": "Sensor TH Quarto Bebé"
+            },
+            {
+              "entity": "sensor.sensorsalas_battery",
+              "name": "Sensor TH Salas"
+            },
+            {
+              "entity": "sensor.sensorthescritorio_battery",
+              "name": "Sensor TH Escritório"
+            },
+            {
+              "entity": "sensor.sensorwcsuite_battery",
+              "name": "Sensor WC Suite"
+            },
+            {
+              "entity": "sensor.shelly_flood_battery",
+              "name": "Sensor Inundação Bomba de Calor"
+            },
+            {
+              "entity": "sensor.silvercrest_sensor_movimento_power",
+              "name": "Sensor Movimento Hall Entrada"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_suite_mary_power",
+              "name": "Botão Xiaomi Suite Mary"
+            },
+            {
+              "entity": "sensor.xiaomi_cozinha_power",
+              "name": "Botão Fita Led Cozinha"
+            },
+            {
+              "entity": "sensor.lumi_lumi_sens_power",
+              "name": "Sensor TH Wc Geral"
+            },
+            {
+              "entity": "sensor.sonoff_porta_rua_bateria",
+              "name": "Sensor Porta da Rua"
+            },
+            {
+              "entity": "sensor.sonoff_janela_sala_bateria",
+              "name": "Sensor Janela Sala"
+            },
+            {
+              "entity": "sensor.lenovo_battery",
+              "name": "Tablet Lenovo"
+            }
+          ],
+          "sort": [
+            "state"
+          ],
+          "style": "ha-card {\n  overflow: hidden;\n  border-radius: 20px;\n  background: rgba(40,167,69,0.035);\n  border: 1px solid rgba(40,167,69,0.24);\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.32);\n}\n",
+          "filter": {
+            "exclude": [
+              {
+                "name": "state",
+                "operator": "<",
+                "value": 20
+              },
+              {
+                "name": "state",
+                "value": "unavailable"
+              },
+              {
+                "name": "state",
+                "value": "unknown"
+              }
+            ]
+          },
+          "grid_options": {
+            "columns": 12,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:battery-state-card",
+          "title": "🔌 Desconectados",
+          "entities": [
+            {
+              "entity": "sensor.btn_sonoff_escritorio_battery",
+              "name": "Botão Escritório"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_sala2_power",
+              "name": "Botão Sala"
+            },
+            {
+              "entity": "sensor.tab_7_pro_battery_level",
+              "name": "Tablet Bebé"
+            },
+            {
+              "entity": "sensor.sonoff_janela_suite_bateria",
+              "name": "Sensor Janela Suite"
+            },
+            {
+              "entity": "sensor.aquara_vibracao_bateria",
+              "name": "Sensor Vibração"
+            },
+            {
+              "entity": "sensor.ikea_button_battery",
+              "name": "Botão IKEA Suite Mary"
+            },
+            {
+              "entity": "sensor.sensorcozinha_battery",
+              "name": "Sensor TH Cozinha"
+            },
+            {
+              "entity": "sensor.sensorroom2_battery",
+              "name": "Sensor TH Quarto Bebé"
+            },
+            {
+              "entity": "sensor.sensorsalas_battery",
+              "name": "Sensor TH Salas"
+            },
+            {
+              "entity": "sensor.sensorthescritorio_battery",
+              "name": "Sensor TH Escritório"
+            },
+            {
+              "entity": "sensor.sensorwcsuite_battery",
+              "name": "Sensor WC Suite"
+            },
+            {
+              "entity": "sensor.shelly_flood_battery",
+              "name": "Sensor Inundação Bomba de Calor"
+            },
+            {
+              "entity": "sensor.silvercrest_sensor_movimento_power",
+              "name": "Sensor Movimento Hall Entrada"
+            },
+            {
+              "entity": "sensor.xiaomi_botao_suite_mary_power",
+              "name": "Botão Xiaomi Suite Mary"
+            },
+            {
+              "entity": "sensor.xiaomi_cozinha_power",
+              "name": "Botão Fita Led Cozinha"
+            },
+            {
+              "entity": "sensor.lumi_lumi_sens_power",
+              "name": "Sensor TH Wc Geral"
+            },
+            {
+              "entity": "sensor.sonoff_porta_rua_bateria",
+              "name": "Sensor Porta da Rua"
+            },
+            {
+              "entity": "sensor.sonoff_janela_sala_bateria",
+              "name": "Sensor Janela Sala"
+            },
+            {
+              "entity": "sensor.lenovo_battery",
+              "name": "Tablet Lenovo"
+            }
+          ],
+          "style": "ha-card {\n  overflow: hidden;\n  border-radius: 20px;\n  background: rgba(255,193,7,0.035);\n  border: 1px solid rgba(255,193,7,0.30);\n  box-shadow: 2px 2px 8px rgba(0,0,0,0.36);\n}\n",
+          "filter": {
+            "exclude": [
+              {
+                "name": "state",
+                "operator": ">=",
+                "value": 0
+              }
+            ]
+          },
+          "grid_options": {
+            "columns": 12,
+            "rows": "auto"
+          }
+        }
+      ],
+      "column_span": 1
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "heading",
+          "heading": "Alteração Cenarios",
+          "heading_style": "title",
+          "icon": "hue:scene-read",
+          "grid_options": {
+            "columns": 48
+          },
+          "badges": []
+        },
+        {
+          "type": "custom:bubble-card",
+          "card_type": "button",
+          "button_type": "name",
+          "entity": "scene.morningworkroutin",
+          "name": "Rotina dos estores",
+          "icon": "mdi:blinds-horizontal",
+          "card_layout": "normal",
+          "scrolling_effect": false,
+          "show_icon": true,
+          "show_name": false,
+          "force_icon": true,
+          "tap_action": {
+            "action": "navigate",
+            "navigation_path": "#ConfigEstoresCenario1"
+          },
+          "hold_action": {
+            "action": "none"
+          },
+          "double_tap_action": {
+            "action": "none"
+          },
+          "button_action": {
+            "tap_action": {
+              "action": "navigate",
+              "navigation_path": "#ConfigEstoresCenario1",
+              "hold_action": {
+                "action": "none"
+              },
+              "double_tap_action": {
+                "action": "none"
+              }
+            }
+          },
+          "styles": ":host {\n  display: block !important;\n  width: 86px !important;\n  min-width: 86px !important;\n  max-width: 86px !important;\n  margin: 0 auto !important;\n  --bubble-button-main-background-color: rgba(0,0,0,0.06);\n  --bubble-button-background-color: transparent;\n  --bubble-button-box-shadow: none;\n  --bubble-button-border-radius: 16px;\n}\nha-card {\n  width: 86px !important;\n  height: 86px !important;\n  box-sizing: border-box !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  border-radius: 16px !important;\n  border: 1px solid rgba(140,210,230,0.16) !important;\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75) 0%,\n    rgba(15,32,45,0.90) 100%\n  ) !important;\n  box-shadow:\n    0 6px 18px rgba(0,0,0,0.22),\n    inset 0 1px 0 rgba(255,255,255,0.06) !important;\n  transition: transform 160ms ease;\n  -webkit-tap-highlight-color: transparent;\n}\n.bubble-button-card-container {\n  width: 100% !important;\n  height: 86px !important;\n  min-height: 86px !important;\n  box-sizing: border-box !important;\n  padding: 0 !important;\n  background: rgba(0,0,0,0.06) !important;\n  border: 1px solid rgba(185,210,225,0.14) !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n  transition: background-color 160ms ease, border-color 160ms ease;\n}\n.bubble-background {\n  background: transparent !important;\n}\n.bubble-wrapper {\n  justify-content: center !important;\n  align-items: center !important;\n  padding: 0 !important;\n  background: transparent !important;\n}\n.bubble-content-container {\n  display: contents !important;\n}\n.bubble-name-container,\n.bubble-sub-button-container {\n  display: none !important;\n}\n.bubble-icon-container {\n  width: 64px !important;\n  height: 64px !important;\n  min-width: 64px !important;\n  min-height: 64px !important;\n  flex: 0 0 64px !important;\n  margin: 0 !important;\n  border-radius: 12px !important;\n  background: transparent !important;\n  box-shadow: none !important;\n}\n.bubble-icon {\n  --mdc-icon-size: 58px !important;\n  opacity: 1 !important;\n  color: #00CED1 !important;\n}\n@media (hover: hover) {\n  .bubble-button-card-container:hover {\n    background: rgba(185,210,225,0.10) !important;\n    border-color: rgba(185,210,225,0.24) !important;\n  }\n}\nha-card:active {\n  transform: scale(0.95);\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-card,\n  .bubble-button-card-container {\n    transition: none !important;\n  }\n  ha-card:active {\n    transform: none !important;\n  }\n}\n",
+          "grid_options": {
+            "columns": 4,
+            "rows": "auto"
+          }
+        },
+        {
+          "type": "custom:bubble-card",
+          "card_type": "pop-up",
+          "hash": "#ConfigEstoresCenario1",
+          "show_header": false,
+          "scrolling_effect": false,
+          "show_icon": false,
+          "show_name": false,
+          "bg_color": "#5F9EA0",
+          "bg_opacity": "10",
+          "margin_top_mobile": "0px",
+          "card_layout": "normal",
+          "button_type": "name",
+          "sub_button": {
+            "main": [],
+            "bottom": []
+          },
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Configurar Cenário",
+                  "subtitle": "Cenário 1 · Posições dos estores",
+                  "alignment": "center",
+                  "card_mod": {
+                    "style": "ha-card {\n  padding-bottom: 4px !important;\n}\n.title {\n  font-size: 18px !important;\n  font-weight: 600 !important;\n  color: rgba(255,255,255,0.85) !important;\n}\n.subtitle {\n  font-size: 12px !important;\n  color: rgba(95,158,160,0.85) !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "show_icon": false,
+                  "show_name": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "custom_fields": {
+                    "sec_label": "[[[return `<div style=\"font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:8px;\">Posições guardadas</div>\n<div style=\"font-size:12px;line-height:1.6;color:rgba(255,255,255,0.55);white-space:normal;\">0% fechado · 100% aberto<br>As alterações ficam guardadas automaticamente.</div>`;]]]\n"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "background": "transparent"
+                      },
+                      {
+                        "box-shadow": "none"
+                      },
+                      {
+                        "border": "none"
+                      },
+                      {
+                        "padding": "4px 0 8px 0"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"sec_label\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      }
+                    ],
+                    "custom_fields": {
+                      "sec_label": [
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "white-space": "normal"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_cozinhagra",
+                      "name": "Cozinha Grande",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_cozinhapeq",
+                      "name": "Cozinha Pequena",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_gamingroom",
+                      "name": "Gaming Room",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_room2",
+                      "name": "Diana",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_sala",
+                      "name": "Sala",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_suite",
+                      "name": "Suite",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_wcsuite",
+                      "name": "WC Suite",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "input_number.est_cen1_wcgeral",
+                      "name": "WC Geral",
+                      "icon": "mdi:window-shutter",
+                      "color": "#5F9EA0",
+                      "hide_state": true,
+                      "vertical": false,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "icon_tap_action": {
+                        "action": "none"
+                      },
+                      "features": [
+                        {
+                          "style": "buttons",
+                          "type": "numeric-input"
+                        }
+                      ],
+                      "features_position": "bottom",
+                      "card_mod": {
+                        "style": "ha-card {\n  box-shadow: none !important;\n  border: 1px solid rgba(255,255,255,0.07) !important;\n  background: rgba(255,255,255,0.04) !important;\n  border-radius: 12px !important;\n}\n"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "grid_options": {
+                "rows": "auto",
+                "columns": 12
+              }
+            }
+          ],
+          "styles": ".bubble-pop-up-background {\n  background: linear-gradient(\n    315deg,\n    rgba(38,72,85,0.75) 0%,\n    rgba(15,32,45,0.90) 100%\n  ) !important;\n  opacity: 1 !important;\n  border-radius: 16px !important;\n}\n"
+        }
+      ],
+      "column_span": 1
+    }
+  ],
+  "subview": true,
+  "cards": []
+}
