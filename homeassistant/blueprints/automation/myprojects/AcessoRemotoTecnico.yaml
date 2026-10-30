@@ -47,6 +47,19 @@ blueprint:
               step: 1
               unit_of_measurement: h
               mode: box
+        atraso_arranque:
+          name: Espera após arrancar o HA (minutos)
+          description: >
+            Tempo para o pyscript (HACS) acabar de arrancar antes de aplicar o
+            acesso. Só conta quando o HA arranca.
+          default: 5
+          selector:
+            number:
+              min: 0
+              max: 30
+              step: 1
+              unit_of_measurement: min
+              mode: box
         ao_ligar:
           name: Ações quando o acesso é ligado
           description: Ex. enviar uma notificação ao cliente.
@@ -80,8 +93,17 @@ variables:
   interruptor_ent: !input interruptor
   utilizador: !input username
   horas: !input horas_auto_desligar
+  atraso: !input atraso_arranque
 
 actions:
+  # No arranque, espera que o pyscript fique disponível
+  - if:
+      - condition: trigger
+        id: arranque
+    then:
+      - delay:
+          minutes: "{{ atraso | int(5) }}"
+
   - action: pyscript.acesso_local_utilizador
     data:
       username: "{{ utilizador }}"
