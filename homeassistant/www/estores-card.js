@@ -1,6 +1,6 @@
-// estores-card v1.0 — estores e automatismos dos estores (tablet), em português
+// estores-card v1.1 — estores e automatismos dos estores (tablet), em português
 // Lê e escreve os helpers da blueprint CoverAutomatic_v4 (est_esq1..4).
-const EST_VERSION = "1.0.0";
+const EST_VERSION = "1.1.0";
 
 const EST_DEFAULT = {
   back: "/dashboard-tablet/novo-tablet",
@@ -55,7 +55,6 @@ const MAIN_CSS = `
   .sech b{font-size:16px;font-weight:600}
   .sech span{color:var(--mute);font-size:12px;text-align:right}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  @container (max-width:420px){.grid{grid-template-columns:1fr}}
   .cv{position:relative;height:68px;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden;cursor:pointer;display:flex;align-items:center;gap:10px;padding:0 14px;user-select:none;-webkit-user-select:none;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
   .cv .fill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,rgba(101,216,222,.14),var(--fill));border-right:2px solid var(--cyan);transition:width .45s ease;pointer-events:none}
   .cv.drag .fill{transition:none}
@@ -92,6 +91,18 @@ const MAIN_CSS = `
   .chip{font-size:12px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line2);color:var(--dim)}
   .next{margin-left:auto;font-size:12.5px;color:var(--sun);font-weight:600;white-space:nowrap}
   .auto.off .next{color:var(--mute)}
+  @container (max-width:520px){
+    .top{margin-bottom:12px}.top h2{font-size:20px}.back{height:42px;padding:0 12px 0 6px}
+    .cols{gap:18px}.grid{gap:8px}
+    .cv{height:60px;padding:0 10px;gap:8px;border-radius:14px}
+    .cv ha-icon{display:none}
+    .cv .nm{font-size:14px;white-space:normal;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .cv .pc{font-size:12.5px;padding:3px 7px}
+    .all{grid-template-columns:repeat(3,minmax(0,1fr));padding:8px}.all .lbl{display:none}
+    .btn{height:46px;font-size:13.5px}
+    .auto{padding:12px 14px}.ico{width:40px;height:40px}
+    .sech span{display:none}
+  }
 `;
 
 const ED_CSS = `
@@ -144,6 +155,13 @@ const ED_CSS = `
   .edf{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .edf small{color:var(--mute);font-size:12px}
   .ok{height:48px;padding:0 24px;border-radius:13px;border:none;background:var(--cyan);color:#062028;font-size:15px;font-weight:700;cursor:pointer}
+  @media (max-width:540px){
+    .scrim{padding:8px}.ed{padding:14px;gap:14px;border-radius:18px}
+    .stepper{width:100%}.stepper output{min-width:0;flex:1;font-size:16px}.stepper button{min-width:40px;padding:0 6px}
+    .daypick{gap:4px;flex-wrap:nowrap}.daypick button{width:auto;flex:1;height:42px;font-size:12px;border-radius:12px}
+    .tnow{flex-wrap:wrap;gap:8px 12px}.tnow .v{font-size:22px}.tnow .st{margin-left:0;white-space:normal}
+    .edf small{display:none}.ok{flex:1}
+  }
 `;
 
 function esc(s) {

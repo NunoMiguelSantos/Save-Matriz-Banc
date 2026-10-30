@@ -1,0 +1,18 @@
+# Vista "Estores" do dashboard-smartphone (path: estores). Usa o cartão homeassistant/www/estores-card.js.
+# A vista também copia o popup #mais e a navbar-card da vista antiga (editcovers).
+title: Estores
+path: estores
+icon: mdi:window-shutter-cog
+subview: true
+type: sections
+max_columns: 4
+sections:
+  - type: grid
+    column_span: 4
+    cards:
+      - type: custom:estores-card
+        back: /dashboard-smartphone/smartphone-v3
+        grid_options:
+          columns: full
+          rows: auto
+      # + popup bubble-card #mais e custom:navbar-card (iguais às outras vistas)
