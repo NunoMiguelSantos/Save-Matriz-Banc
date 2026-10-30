@@ -1,12 +1,15 @@
-// estores-card v1.3 — estores e automatismos dos estores (tablet), em português
+// estores-card v1.4 — estores e automatismos dos estores (tablet), em português
 // Lê e escreve os helpers da blueprint CoverAutomatic_v4 (est_esq1..4).
-const EST_VERSION = "1.3.0";
+const EST_VERSION = "1.4.0";
 
 const EST_DEFAULT = {
   back: "/dashboard-tablet/novo-tablet",
   all_cover: "cover.allcovers",
   temp_sensor: "sensor.temperatura_exterior",
   esquemas: 4,
+  // o que este cartão mostra, pela ordem: "agora" (estores) e/ou "automatismos"
+  seccoes: ["agora", "automatismos"],
+  cabecalho: true,
   // inc = número do include_estN que corresponde a este estore na blueprint
   covers: [
     { entity: "cover.estore_sala", name: "Sala", inc: 2 },
@@ -49,6 +52,7 @@ const MAIN_CSS = `
   .top h2{font-size:22px;font-weight:700;margin:0}
   .top .sub{color:var(--cyan);font-size:13px;margin-top:2px}
   .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:22px;align-items:start}
+  .cols.one{grid-template-columns:1fr}
   @container (max-width:820px){.cols{grid-template-columns:1fr}}
   .sec{display:flex;flex-direction:column;gap:10px;min-width:0}
   .sech{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 2px}
@@ -400,24 +404,27 @@ class EstoresCard extends HTMLElement {
           <div class="chips">${this._estList(a.inc).map((n) => `<span class="chip">${esc(n)}</span>`).join("")}</div>
           <span class="next">${this._proxima(a)}</span></div>
       </div>`).join("");
-    this.shadowRoot.innerHTML = `<style>${EST_CSS}${MAIN_CSS}</style>
-      <div class="root">
-        <div class="top"><button class="back" data-back><ha-icon icon="mdi:chevron-left"></ha-icon>Casa</button>
-          <div><h2>Estores</h2><div class="sub">${ligados} de ${esqs.length} automatismos ligados</div></div></div>
-        <div class="cols">
-          <div class="sec">
+    const blocos = {
+      agora: `<div class="sec">
             <div class="sech"><b>Agora</b><span>toque abre/fecha · arrastar ajusta</span></div>
             <div class="grid">${covers}</div>
             <div class="all"><span class="lbl">Todos</span>
               <button class="btn" data-all="open_cover"><ha-icon icon="mdi:arrow-up"></ha-icon>Abrir</button>
               <button class="btn" data-all="stop_cover"><ha-icon icon="mdi:pause"></ha-icon>Parar</button>
               <button class="btn" data-all="close_cover"><ha-icon icon="mdi:arrow-down"></ha-icon>Fechar</button></div>
-          </div>
-          <div class="sec">
+          </div>`,
+      automatismos: `<div class="sec">
             <div class="sech"><b>Automatismos</b><span>toca no cartão para editar</span></div>
             <div class="autos">${autos}</div>
-          </div>
-        </div>
+          </div>`,
+    };
+    const secs = (Array.isArray(c.seccoes) ? c.seccoes : [c.seccoes]).filter((k) => blocos[k]);
+    const topo = c.cabecalho === false ? "" : `<div class="top"><button class="back" data-back><ha-icon icon="mdi:chevron-left"></ha-icon>Casa</button>
+          <div><h2>Estores</h2><div class="sub">${ligados} de ${esqs.length} automatismos ligados</div></div></div>`;
+    this.shadowRoot.innerHTML = `<style>${EST_CSS}${MAIN_CSS}</style>
+      <div class="root">
+        ${topo}
+        <div class="cols${secs.length < 2 ? " one" : ""}">${secs.map((k) => blocos[k]).join("")}</div>
       </div>`;
     if (this._edit) this._renderEd();
   }
