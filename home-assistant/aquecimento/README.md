@@ -18,3 +18,9 @@
 ## Mudar o cartão
 
 Depois de gravar `aquecimento-card.js`, sobe a versão do recurso (`?v=2`, …) em Definições → Painéis → ⋮ → Recursos. As cores estão no topo do ficheiro (`AQ` e `AQ_CORES`). As divisões e os nomes podem ir no YAML do cartão (`divisoes:`), que ganha ao ficheiro.
+
+## Ajustes seguintes (barras e Energia)
+
+- Tablet: a barra de navegação deixou de ter "Mais" (reticências). Mostra tudo: Casa, Energia, Estores, Caldeira, Máquina da Louça, Aspirador, Música, Configurações e Programador. Na vista Exterior faltava a Máquina da Louça e foi acrescentada.
+- Telemóvel: na barra, Estores passou para o lugar da Energia, e a Energia passou para o menu "Mais" (no lugar dos Estores).
+- Energia (telemóvel e tablet): cartão "Potência agora (casa toda)" com `sensor.geral_power` e a curva das últimas 6 horas, logo a seguir ao título.
