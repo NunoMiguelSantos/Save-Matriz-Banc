@@ -1,15 +1,27 @@
 # Ecrã principal (casa-card) – fitas LED RGBW
 
-As fitas Shelly RGBW (Sala `light.fita_sala` e Suite `light.rgbw_suite`) têm o branco num canal próprio. O brilho geral do HA (`brightness`) só mexe nas cores, por isso no branco a "Intensidade" não fazia nada.
+As fitas Shelly RGBW (Sala `light.fita_sala` e Suite `light.rgbw_suite`) têm o branco num canal próprio (4.º número de `rgbw_color`, 0–255). A "Intensidade" (brilho geral do HA) só mexe nas cores.
 
-Mudanças em `/config/www/casa-card/casa-card.js` (recurso `?v=2`; a versão anterior ficou em `casa-card.js.bak`):
+Estado atual de `/config/www/casa-card/casa-card.js` (recurso `?v=3`):
 
-- Quando uma fita RGBW está num dos brancos, a barra do painel chama-se **Brilho do branco**. Ela e os botões Noite/Suave/Médio/… mudam o canal branco (4.º valor de `rgbw_color`) e o brilho geral na mesma proporção, para os brancos com um pouco de cor (Vela, Quente) baixarem por igual.
-- O reconhecimento do branco escolhido passou a comparar só as três cores, porque o canal branco fica mais baixo quando se diminui o brilho.
-- A fita do escritório (Livarno) tem branco real (`color_temp`) e continua como estava.
+- **Intensidade:** igual ao original (brilho geral).
+- **Branco:** barra nova que só aparece numa fita RGBW com um branco escolhido. Mostra o valor lido do canal branco (0–100 %) e muda só esse canal, mantendo as cores do branco escolhido.
+- O cartão passou a redesenhar-se também quando muda só o `rgbw_color`, que era o motivo de a barra não acompanhar o valor real.
+- O branco escolhido é reconhecido comparando só as três cores, porque o canal branco pode estar mais baixo do que na predefinição.
 
-As trocas exatas estão em `fitas-rgbw-trocas.json` e foram aplicadas com o serviço `pyscript.trocar_texto_ficheiro` (`home-assistant/pyscript/trocar_texto.py`).
+Trocas aplicadas com `pyscript.trocar_texto_ficheiro`, por ordem: `fitas-rgbw-trocas.json` e depois `fitas-rgbw-trocas-2.json`. O `casa-card.js.bak` no HA é a versão entre as duas.
 
-## Mudar os brancos e as cores
+## Brancos e cores (no dashboard, não no ficheiro)
 
-Estão na configuração do cartão `custom:casa-tlm-card` no dashboard (`led_whites` e `led_colors`), no telemóvel e no tablet. Não é preciso mexer no ficheiro.
+Ecrã principal → Editar painel → cartão da Casa → editor YAML → `led_whites` e `led_colors`. O telemóvel e o tablet têm cada um a sua cópia.
+
+Em cada branco, o 4.º número de `rgbw` é o brilho com que esse branco liga (0–255). Exemplo do mais fraco ao mais forte:
+
+```yaml
+led_whites:
+  - { name: Vela,    color: "#ff9a3c", kelvin: 2000, rgbw: [255, 60, 0, 10] }
+  - { name: Quente,  color: "#ffbf73", kelvin: 2700, rgbw: [255, 100, 0, 60] }
+  - { name: Natural, color: "#ffe1bd", kelvin: 4000, rgbw: [0, 0, 0, 120] }
+  - { name: Dia,     color: "#fff1e3", kelvin: 5000, rgbw: [0, 15, 40, 190] }
+  - { name: Frio,    color: "#e9f0ff", kelvin: 6500, rgbw: [0, 60, 140, 255] }
+```
