@@ -26,9 +26,11 @@ led_whites:
   - { name: Frio,    color: "#e9f0ff", kelvin: 6500, rgbw: [0, 60, 140, 255] }
 ```
 
-## Alarme e portão no topo (recurso `?v=4`)
+## Alarme e portão (recurso `?v=5`)
 
-- Telemóvel: ao lado das bolinhas das pessoas há dois ícones redondos, só com o símbolo: o escudo do alarme (vermelho quando armado; toca para abrir o alarme) e o portão (vermelho e aberto quando está aberto; toca para ir à garagem, onde se abre ou fecha com confirmação).
-- Saíram do fundo do painel "Casa toda".
-- Tablet: o botão "Armado/Desarmado" do topo passou a ser os mesmos dois ícones, ao lado das pessoas.
-- Código: método `_topIcons()` no `casa-card.js` e classe `.ico2` no `estilos.js`.
+- Telemóvel: ao lado das bolinhas das pessoas há dois ícones redondos, só com o símbolo.
+  - Escudo do alarme: vermelho quando armado; toca para abrir o alarme.
+  - Portão: vermelho e aberto quando está aberto; toca e abre uma janela a perguntar "Queres abrir/fechar o portão?" com "Sim" e "Cancelar". O "Sim" carrega no mesmo interruptor da Garagem.
+  - No painel "Casa toda" do telemóvel já não aparecem os botões do alarme e do portão.
+- Tablet: tudo onde estava (botão "Armado/Desarmado" no topo e os botões do alarme e do portão no painel "Casa toda"). Só o botão do portão mudou: abre a mesma janela de confirmação, em vez de ir para a Garagem.
+- Código: `_topIcons()` e o painel `kind: "gate"` no `casa-card.js`; classe `.ico2` no `estilos.js`.
