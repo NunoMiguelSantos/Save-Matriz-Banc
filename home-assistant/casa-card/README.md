@@ -34,3 +34,14 @@ led_whites:
   - No painel "Casa toda" do telemóvel já não aparecem os botões do alarme e do portão.
 - Tablet: tudo onde estava (botão "Armado/Desarmado" no topo e os botões do alarme e do portão no painel "Casa toda"). Só o botão do portão mudou: abre a mesma janela de confirmação, em vez de ir para a Garagem.
 - Código: `_topIcons()` e o painel `kind: "gate"` no `casa-card.js`; classe `.ico2` no `estilos.js`.
+
+## Menu do alarme (recurso `?v=6`)
+
+Janela própria para o Alarmo (`alarm_control_panel.alarmo`), em vez do ecrã nativo do HA:
+
+- Em cima, o estado com a cor certa: desarmado (verde), em casa (azul), ausente (vermelho), a armar / entrada detetada (amarelo, a pulsar) e disparado (vermelho, a pulsar). Enquanto arma, mostra os segundos que faltam.
+- Três botões: **Desarmar**, **Em casa** e **Ausente** (`alarm_disarm`, `alarm_arm_home`, `alarm_arm_away`). O modo atual tem um ✓. O Alarmo não pede código.
+- Se o Alarmo não armar por haver sensores abertos, aparece um aviso com os nomes.
+- "Mais detalhes ›" abre o ecrã nativo.
+- Abre a partir do escudo no topo do telemóvel e dos dois botões do alarme no tablet (o do topo e o do painel "Casa toda").
+- Trocas aplicadas: `alarme-trocas.json`.
