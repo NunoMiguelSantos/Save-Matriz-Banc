@@ -25,3 +25,10 @@ led_whites:
   - { name: Dia,     color: "#fff1e3", kelvin: 5000, rgbw: [0, 15, 40, 190] }
   - { name: Frio,    color: "#e9f0ff", kelvin: 6500, rgbw: [0, 60, 140, 255] }
 ```
+
+## Alarme e portão no topo (recurso `?v=4`)
+
+- Telemóvel: ao lado das bolinhas das pessoas há dois ícones redondos, só com o símbolo: o escudo do alarme (vermelho quando armado; toca para abrir o alarme) e o portão (vermelho e aberto quando está aberto; toca para ir à garagem, onde se abre ou fecha com confirmação).
+- Saíram do fundo do painel "Casa toda".
+- Tablet: o botão "Armado/Desarmado" do topo passou a ser os mesmos dois ícones, ao lado das pessoas.
+- Código: método `_topIcons()` no `casa-card.js` e classe `.ico2` no `estilos.js`.
