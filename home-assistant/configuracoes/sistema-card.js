@@ -5,10 +5,11 @@
 //  Depois de gravar, sobe o número ?v= do recurso deste cartão em
 //  Definições → Painéis → ⋮ → Recursos (ver www/cartoes/LEIA-ME.md).
 // =====================================================================
-// sistema-card v1.1 — estado do sistema, automações, baterias e servidor, em português
+// sistema-card v1.2 — estado do sistema, automações, baterias e servidor, em português
 // v1.1: automações com "recolhido: true" (abre e fecha ao tocar no título);
 //       tablet com "brilho" e "protetor" (number.*) dentro do mesmo cartão.
-const SIS_VERSION = "1.1.0";
+// v1.2: servidor com o botão "Acesso remoto do convidado" (acesso_remoto: input_boolean, acesso_horas: n).
+const SIS_VERSION = "1.2.0";
 const SC = {
   blue: "#64A0FF", teal: "#3CC8B4", green: "#4ADE80", amber: "#FBBF24", red: "#F87171", purple: "#A78BFA", cyan: "#65D8DE",
   muted: "rgba(255,255,255,0.58)", faint: "rgba(255,255,255,0.10)",
@@ -57,6 +58,7 @@ class SistemaCard extends HTMLElement {
     if (c.mode === "estado") ids = ids.concat(Object.keys(h.states).filter((e) => e.startsWith("update.")), [c.backup_ultimo, c.backup_proximo, c.backup_atrasado], c.baterias.map((b) => b.e));
     if (c.mode === "baterias") ids = c.baterias.map((b) => b.e);
     if (c.mode === "tablet") ids = [c.ecra, c.bateria_tablet, c.brilho, c.protetor].filter(Boolean);
+    if (c.mode === "servidor") ids = [c.acesso_remoto].filter(Boolean);
     const sig = ids.map((e) => { const s = h.states[e]; return s ? s.state + (e.startsWith("automation.") ? s.attributes.last_triggered : "") : "-"; }).join("|");
     if (sig !== this._sig) { this._sig = sig; if (!this._drag) this._render(); }
   }
@@ -152,8 +154,20 @@ class SistemaCard extends HTMLElement {
     return `<button class="sb ${conf ? "conf" : ""}" data-b="${id}" style="--c:${col}"><ha-icon icon="${icon}"></ha-icon><b>${conf ? "Toca outra vez" : txt}</b><small>${conf ? "para confirmar" : sub}</small></button>`;
   }
 
+  // botão do acesso remoto do convidado (input_boolean usado pela automação "Acesso remoto (Convidado)")
+  _acesso() {
+    const c = this._c, s = this.st(c.acesso_remoto);
+    if (!s) return "";
+    const on = s.state === "on";
+    const horas = Number(c.acesso_horas) || 0;
+    const fim = on && horas > 0 ? new Date(Date.parse(s.last_changed) + horas * 3600e3) : null;
+    const sub = on ? (fim ? `Pode entrar de fora de casa · desliga sozinho ${quando(fim)}` : "Pode entrar de fora de casa") : "Só pode entrar na rede de casa";
+    return `<button class="ac ${on ? "on" : ""}" data-b="acesso"><ha-icon icon="${on ? "mdi:account-lock-open" : "mdi:account-lock"}"></ha-icon>
+      <div class="at"><b>Acesso remoto do convidado</b><small>${sub}</small></div><span class="sw"></span></button>`;
+  }
+
   _servidor() {
-    return `<div class="sbs">
+    return `${this._acesso()}<div class="sbs">
       ${this._btn("perfil", "Perfil", "o teu utilizador", "mdi:account-cog-outline", SC.blue)}
       ${this._btn("restart", "Reiniciar HA", "≈ 30 s", "mdi:restart", SC.amber)}
       ${this._btn("reboot", "Reiniciar servidor", "≈ 2 min", "mdi:server-network", SC.amber)}
@@ -234,6 +248,7 @@ class SistemaCard extends HTMLElement {
       if (id === "reboot") confirmar(id, () => this.call("hassio", "host_reboot", {}));
       if (id === "shutdown") confirmar(id, () => this.call("hassio", "host_shutdown", {}));
       if (id === "ecra") this.call("switch", "toggle", { entity_id: c.ecra });
+      if (id === "acesso") this.call("input_boolean", "toggle", { entity_id: c.acesso_remoto });
       if (id === "browser") this.call("button", "press", { entity_id: c.reiniciar_navegador });
       if (id === "tablet_restart") confirmar(id, () => this.call("button", "press", { entity_id: c.reiniciar_tablet }));
     }));
@@ -293,6 +308,16 @@ class SistemaCard extends HTMLElement {
       .sb b { font-size:14px; } .sb small { font-size:11.5px; color:${SC.muted}; }
       .sb.conf { background: color-mix(in srgb, var(--c) 22%, transparent); }
       .sb.lit { background: color-mix(in srgb, var(--c) 16%, transparent); }
+      .ac { width:100%; display:flex; align-items:center; gap:10px; font:inherit; color:#fff; text-align:left; padding:12px; margin-bottom:8px; border-radius:14px; cursor:pointer;
+        background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.10); }
+      .ac .at { flex:1; min-width:0; display:flex; flex-direction:column; }
+      .ac b { font-size:14px; } .ac small { font-size:11.5px; color:${SC.muted}; }
+      .ac ha-icon { --mdc-icon-size:22px; color:${SC.muted}; flex:none; }
+      .ac.on { border-color: rgba(251,191,36,0.45); background: rgba(251,191,36,0.08); }
+      .ac.on ha-icon, .ac.on small { color:${SC.amber}; }
+      .ac .sw { width:38px; height:22px; border-radius:999px; background: rgba(255,255,255,0.18); position:relative; flex:none; }
+      .ac .sw::after { content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; }
+      .ac.on .sw { background:${SC.amber}; } .ac.on .sw::after { left:19px; }
       .ctl { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
       .cr { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); }
       .cr > ha-icon { --mdc-icon-size:22px; flex:none; }
