@@ -52,3 +52,9 @@ Janela própria para o Alarmo (`alarm_control_panel.alarmo`), em vez do ecrã na
 - Novas opções do cartão: `weather_days` (entidade para a previsão por dias; usa `weather` se faltar) e `weather_name` (nome no topo da janela). Nos dois painéis: `weather: weather.home` (met.no, horas), `weather_days: weather.leiria` (IPMA, dias), `weather_name: Leiria`.
 - As previsões são pedidas ao HA (`weather.get_forecasts`) quando a janela abre e ficam guardadas 10 minutos.
 - As trocas aplicadas ao `casa-card.js` estão em `meteorologia-trocas.json` (serviço `pyscript.trocar_texto_ficheiro`).
+
+## Cabeçalho do telemóvel maior (casa-card ?v=8)
+
+- Só no telemóvel (o tablet usa outro topo): "Boa noite" 23px, linha do tempo/data 14,5px, fotos 38px, botões do alarme, portão e sino 42px com ícones de 22px, botão do tempo mais alto.
+- A data deixou de ter o "·" e passa para a linha de baixo quando não cabe ao lado do tempo.
+- As regras estão no fim do bloco `.ico2.dang` em `estilos.js` (comentário "cabeçalho do telemóvel maior"). Resumo em `cabecalho-telemovel-trocas.json`.

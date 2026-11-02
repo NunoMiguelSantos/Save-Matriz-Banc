@@ -1,0 +1,14 @@
+{
+ "estilos.js": [
+  {
+   "de": ".ico2.dang {...}  (fim da regra)",
+   "para": "+ bloco '/* cabeçalho do telemóvel maior */' com .top, .top .g (23px), .top .g small (14.5px, quebra de linha), .top .av (38px, sobrepostas), .top .ico2 e .top .bell (42px, ícone 22px)"
+  }
+ ],
+ "casa-card.js": [
+  {
+   "de": "${Math.round(num(wx.attributes.temperature, 0))}°</button> · ${esc(date)}`",
+   "para": "${Math.round(num(wx.attributes.temperature, 0))}°</button><span>${esc(date)}</span>`"
+  }
+ ]
+}
