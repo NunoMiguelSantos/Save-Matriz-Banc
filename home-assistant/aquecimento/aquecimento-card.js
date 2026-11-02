@@ -1,7 +1,8 @@
-// aquecimento-card v1.0 — caldeira e aquecimento por divisões, em português
+// aquecimento-card v1.1 — caldeira e aquecimento por divisões, em português
+// v1.1: cartão "Como funciona" com as regras (mínima de conforto e histerese) e janela "Ajustar"
 // Um só cartão para o telemóvel e o tablet: `layout: telemovel` (uma coluna) ou `layout: tablet` (faixa + duas colunas).
 // Lê e escreve os helpers do sistema "Aquecimento por divisões" (blueprints CenarioAquecimento, ZonaAquecimento, CaldeiraSimples).
-const AQ_VERSION = "1.0.0";
+const AQ_VERSION = "1.1.0";
 
 const AQ_DEFAULT = {
   layout: "telemovel", // "telemovel" ou "tablet"
@@ -9,6 +10,9 @@ const AQ_DEFAULT = {
   automatico: "input_boolean.cald_auto_mode",
   forcar: "input_boolean.cald_force_override",
   conforto: "input_number.cald_temp_setpoint_conforto",
+  // histerese das zonas: pede calor a alvo − inferior e deixa de pedir a alvo + superior
+  offset_inferior: "input_number.cald_offset_inferior",
+  offset_superior: "input_number.cald_offset_superior",
   media: "sensor.temperatura_media_da_casa",
   cenarios: 6, // aq_cen1 … aq_cenN
   // id = parte do nome dos helpers (aq_<id>_setpoint, aq_<id>_pede_calor, aq_cenN_<id>)
@@ -52,6 +56,7 @@ class AquecimentoCard extends HTMLElement {
     this._portal = null;
     this._pushed = false;
     this._typing = false;
+    this._exAlvo = 21;
     this._onPop = () => {
       if (this._edit && location.hash !== AQ_HASH) {
         this._pushed = false;
@@ -99,7 +104,7 @@ class AquecimentoCard extends HTMLElement {
   _watch() {
     if (this._ids) return this._ids;
     const c = this._cfg;
-    const ids = [c.caldeira, c.automatico, c.forcar, c.conforto, c.media];
+    const ids = [c.caldeira, c.automatico, c.forcar, c.conforto, c.media, c.offset_inferior, c.offset_superior];
     c.divisoes.forEach((d) => ids.push(d.temp, `input_number.aq_${d.id}_setpoint`, `input_boolean.aq_${d.id}_pede_calor`));
     for (let n = 1; n <= c.cenarios; n++) {
       const p = this._c(n);
@@ -179,7 +184,7 @@ class AquecimentoCard extends HTMLElement {
   }
 
   _onClick(e) {
-    const t = e.target.closest?.("[data-a],[data-tog],[data-open],[data-room],[data-conf],[data-sp]");
+    const t = e.target.closest?.("[data-a],[data-tog],[data-open],[data-room],[data-conf],[data-sp],[data-regras]");
     if (!t) return;
     const c = this._cfg;
     if (t.dataset.tog) {
@@ -188,6 +193,7 @@ class AquecimentoCard extends HTMLElement {
       return this._bool(id, !this._on(id));
     }
     if (t.dataset.open) return this._openEd(Number(t.dataset.open));
+    if ("regras" in t.dataset) return this._openEd("regras");
     if (t.dataset.room) { this._open = this._open === t.dataset.room ? null : t.dataset.room; return this._render(); }
     if (t.dataset.conf) return this._step(c.conforto, Number(t.dataset.conf));
     if (t.dataset.sp) return this._step(`input_number.aq_${t.dataset.sp}_setpoint`, Number(t.dataset.d));
@@ -219,12 +225,11 @@ class AquecimentoCard extends HTMLElement {
         <div class="big"><b>${aqF1(media)}°</b><small>média casa</small></div>
         ${tablet ? `<div class="mcol">${this._modes(auto, forced)}<div class="hint">${hint}</div></div>` : ""}
       </div>`;
-    const confBox = `<div class="conf">
-        <ha-icon icon="mdi:shield-home"></ha-icon>
-        <div class="ct">Mínima de conforto<small>Nenhuma divisão desce abaixo disto</small></div>
-        <button class="rnd sm" data-conf="-1" aria-label="Baixar mínima"><ha-icon icon="mdi:minus"></ha-icon></button>
-        <div class="sv">${aqF1(conf)}°</div>
-        <button class="rnd sm" data-conf="1" aria-label="Subir mínima"><ha-icon icon="mdi:plus"></ha-icon></button>
+    const inf = this._val(c.offset_inferior), sup = this._val(c.offset_superior);
+    const confBox = `<div class="reg">
+        <div class="rh"><ha-icon icon="mdi:tune-variant"></ha-icon><b>Como funciona</b><button class="aj" data-regras><ha-icon icon="mdi:tune"></ha-icon>Ajustar</button></div>
+        <div class="lin"><ha-icon icon="mdi:shield-home" style="color:${AQ.wait}"></ha-icon><span>Fora dos cenários, nenhuma divisão desce abaixo de <b class="v">${aqF1(conf)}°</b>.</span></div>
+        <div class="lin"><ha-icon icon="mdi:swap-vertical" style="color:${AQ.amber}"></ha-icon><span>Cada divisão pede calor <b>${aqF1(inf)}°</b> abaixo do alvo e deixa de pedir <b>${aqF1(sup)}°</b> acima.</span></div>
       </div>`;
 
     // Semana
@@ -324,6 +329,11 @@ class AquecimentoCard extends HTMLElement {
     }
     if (this._typing) return; // não apagar o que está a ser escrito
     const sr = this._portal.shadowRoot, prev = sr.querySelector(".ed"), scroll = prev ? prev.scrollTop : 0;
+    if (this._edit === "regras") {
+      sr.innerHTML = `<style>${AquecimentoCard.css}${AquecimentoCard.edCss}</style>${this._regrasHtml()}`;
+      this._fresh = false;
+      return;
+    }
     const x = this._cen(this._edit), tablet = this._cfg.layout === "tablet", cross = aqMin(x.ini) > aqMin(x.fim);
     sr.innerHTML = `<style>${AquecimentoCard.css}${AquecimentoCard.edCss}</style>
       <div class="scrim ${tablet ? "center" : "bottom"} ${this._fresh ? "anim" : ""}" data-x="1">
@@ -349,6 +359,31 @@ class AquecimentoCard extends HTMLElement {
     const ed = sr.querySelector(".ed");
     if (ed) ed.scrollTop = scroll;
   }
+  // janela "Ajustar": mínima de conforto e histerese, com um exemplo que mostra quando liga e quando pára
+  _regrasHtml() {
+    const c = this._cfg, tablet = c.layout === "tablet";
+    const conf = this._val(c.conforto), inf = this._val(c.offset_inferior), sup = this._val(c.offset_superior);
+    const a = this._exAlvo, lig = a - (Number.isFinite(inf) ? inf : 0), des = a + (Number.isFinite(sup) ? sup : 0);
+    const lo = a - 1.5, hi = a + 1, p = (v) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100)).toFixed(1);
+    const row = (cor, ic, n, d, v, ent) => `<div class="rrow" style="--k:${cor}"><span class="ric"><ha-icon icon="${ic}"></ha-icon></span><div class="rtx"><b>${n}</b><small>${d}</small></div>
+      <div class="rstp"><button data-num="${ent}" data-d="-1" aria-label="Menos"><ha-icon icon="mdi:minus"></ha-icon></button><b>${aqF1(v)}°</b><button data-num="${ent}" data-d="1" aria-label="Mais"><ha-icon icon="mdi:plus"></ha-icon></button></div></div>`;
+    return `<div class="scrim ${tablet ? "center" : "bottom"} ${this._fresh ? "anim" : ""}" data-x="1">
+      <div class="ed" role="dialog" aria-modal="true" aria-label="Regras do aquecimento">
+        <div class="grab"></div>
+        <div class="shh"><h2><ha-icon icon="mdi:tune-variant" style="color:${AQ.wait}"></ha-icon>Regras do aquecimento</h2><button class="x" data-x="1" aria-label="Fechar"><ha-icon icon="mdi:close"></ha-icon></button></div>
+        ${row(AQ.wait, "mdi:shield-home", "Mínima de conforto", "Fora dos cenários, nenhuma divisão desce abaixo disto", conf, c.conforto)}
+        ${row(AQ.heat, "mdi:arrow-down", "Pede calor abaixo do alvo", "Quanto a divisão tem de arrefecer para começar a aquecer", inf, c.offset_inferior)}
+        ${row(AQ.green, "mdi:arrow-up", "Deixa de pedir acima do alvo", "Quanto passa do alvo antes de parar", sup, c.offset_superior)}
+        <div class="regua">
+          <div class="rtt"><span>Exemplo</span><span class="ralvo">alvo <button data-ex="-1" aria-label="Baixar o alvo do exemplo"><ha-icon icon="mdi:minus"></ha-icon></button><b>${aqF1(a)}°</b><button data-ex="1" aria-label="Subir o alvo do exemplo"><ha-icon icon="mdi:plus"></ha-icon></button></span></div>
+          <div class="trk"><div class="tb"></div><div class="tz" style="left:${p(lig)}%;width:${(p(des) - p(lig)).toFixed(1)}%"></div>
+            <div class="mk lig" style="left:${p(lig)}%"><i></i>${aqF1(lig)}°</div><div class="mk alv" style="left:${p(a)}%"><i></i></div><div class="mk des" style="left:${p(des)}%"><i></i>${aqF1(des)}°</div></div>
+          <div class="frase">Com alvo <b>${aqF1(a)}°</b>, a divisão <b style="color:${AQ.heat}">começa a pedir calor a ${aqF1(lig)}°</b> e <b style="color:${AQ.green}">pára a ${aqF1(des)}°</b>. Entre os dois mantém o que estava a fazer, para a caldeira não ligar e desligar a toda a hora.</div>
+        </div>
+        <button class="done" data-x="1">Feito</button>
+      </div>
+    </div>`;
+  }
   _saveName(inp) {
     const n = this._edit;
     if (!n) return;
@@ -356,8 +391,15 @@ class AquecimentoCard extends HTMLElement {
     if (v && v !== (this._st(id)?.state || "").trim()) this._call("input_text", "set_value", { entity_id: id, value: v });
   }
   _onEdClick(e) {
-    const p = this._c(this._edit);
     if (e.target.classList?.contains("scrim") || e.target.closest?.("[data-x]:not(.scrim)")) return this._closeEd();
+    if (this._edit === "regras") {
+      const b = e.target.closest?.("[data-num],[data-ex]");
+      if (!b) return;
+      if (b.dataset.num) return this._step(b.dataset.num, Number(b.dataset.d));
+      this._exAlvo = Math.min(26, Math.max(10, this._exAlvo + Number(b.dataset.ex) * 0.5));
+      return this._renderEd();
+    }
+    const p = this._c(this._edit);
     const t = e.target.closest?.("[data-e],[data-day],[data-qd],[data-cr],[data-qr]");
     if (!t) return;
     if (t.dataset.e === "ativo") return this._bool(`input_boolean.${p}_ativo`, !this._on(`input_boolean.${p}_ativo`));
@@ -376,6 +418,7 @@ class AquecimentoCard extends HTMLElement {
   }
   _onEdChange(e) {
     const t = e.target;
+    if (this._edit === "regras") return;
     if (!t.dataset?.t || !t.value) return;
     this._call("input_datetime", "set_datetime", { entity_id: `input_datetime.${this._c(this._edit)}_${t.dataset.t}`, time: `${t.value}:00` });
   }
@@ -434,6 +477,16 @@ class AquecimentoCard extends HTMLElement {
       .sw { width:34px; height:20px; border-radius:999px; background:rgba(255,255,255,0.18); position:relative; flex:none; border:none; padding:0; transition:background .2s; }
       .sw::after { content:""; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:left .2s; }
       .sw.on { background:${AQ.teal}; } .sw.on::after { left:17px; }
+      .reg { display:flex; flex-direction:column; gap:8px; padding:12px 14px; border-radius:16px; background:rgba(100,160,255,0.06); border:1px solid rgba(100,160,255,0.28); }
+      .reg .rh { display:flex; align-items:center; gap:8px; }
+      .reg .rh > ha-icon { color:${AQ.wait}; }
+      .reg .rh b { flex:1; font-size:14px; font-weight:650; }
+      .aj { display:flex; align-items:center; gap:5px; font-size:12.5px; font-weight:600; padding:7px 12px; border-radius:999px; background:rgba(100,160,255,0.14); border:1px solid rgba(100,160,255,0.45); }
+      .aj ha-icon { --mdc-icon-size:16px; color:#64A0FF; }
+      .lin { display:flex; gap:8px; align-items:flex-start; font-size:12.5px; line-height:1.45; color:rgba(255,255,255,0.78); }
+      .lin ha-icon { --mdc-icon-size:16px; flex:none; margin-top:1px; }
+      .lin b { font-weight:600; color:#fff; font-variant-numeric:tabular-nums; } .lin b.v { color:${AQ.setpoint}; }
+      .tablet .reg { justify-content:center; padding:14px 18px; border-radius:20px; }
       .conf { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; background:rgba(100,160,255,0.07); border:1px solid rgba(100,160,255,0.28); }
       .conf > ha-icon { color:${AQ.wait}; }
       .conf .ct { flex:1; font-size:13px; } .conf .ct small { display:block; font-size:11.5px; color:${AQ.muted}; }
@@ -522,6 +575,27 @@ class AquecimentoCard extends HTMLElement {
       .tm input { font:inherit; font-size:22px; font-weight:300; color:#fff; background:transparent; border:none; padding:0; width:100%; color-scheme:dark; }
       .note { font-size:12px; color:${AQ.muted}; line-height:1.4; display:flex; gap:6px; } .note ha-icon { --mdc-icon-size:16px; flex:none; }
       .done { width:100%; padding:14px; border-radius:16px; font-size:15px; font-weight:650; border:none; background:linear-gradient(135deg, ${AQ.teal}, #0EA5A4); color:#fff; }
+      .shh h2 ha-icon { --mdc-icon-size:20px; }
+      .rrow { display:flex; align-items:center; gap:12px; padding:12px; border-radius:16px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); }
+      .ric { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; flex:none; background:color-mix(in srgb, var(--k) 15%, transparent); color:var(--k); }
+      .ric ha-icon { --mdc-icon-size:22px; }
+      .rtx { flex:1; min-width:0; } .rtx b { display:block; font-size:14px; } .rtx small { display:block; font-size:11.5px; color:${AQ.muted}; margin-top:2px; line-height:1.35; }
+      .rstp { display:flex; align-items:center; gap:6px; flex:none; }
+      .rstp button, .ralvo button { display:grid; place-items:center; padding:0; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14); }
+      .rstp button { width:34px; height:34px; border-radius:10px; } .rstp button ha-icon { --mdc-icon-size:18px; }
+      .rstp b { min-width:54px; text-align:center; font-size:17px; font-weight:400; color:var(--k); font-variant-numeric:tabular-nums; }
+      .regua { padding:12px; border-radius:16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:10px; }
+      .rtt { font-size:12px; color:${AQ.muted}; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+      .ralvo { display:flex; align-items:center; gap:6px; }
+      .ralvo button { width:26px; height:26px; border-radius:8px; } .ralvo button ha-icon { --mdc-icon-size:15px; }
+      .ralvo b { color:${AQ.setpoint}; font-weight:600; min-width:42px; text-align:center; }
+      .trk { position:relative; height:46px; }
+      .trk .tb { position:absolute; left:0; right:0; top:20px; height:6px; border-radius:3px; background:rgba(255,255,255,0.08); }
+      .trk .tz { position:absolute; top:20px; height:6px; border-radius:3px; background:linear-gradient(90deg, ${AQ.heat}, ${AQ.setpoint}); }
+      .trk .mk { position:absolute; top:6px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10.5px; color:${AQ.muted}; font-variant-numeric:tabular-nums; white-space:nowrap; }
+      .trk .mk i { width:2px; height:20px; background:currentColor; border-radius:1px; }
+      .trk .mk.lig { color:${AQ.heat}; } .trk .mk.des { color:${AQ.green}; } .trk .mk.alv { color:${AQ.setpoint}; top:0; } .trk .mk.alv i { height:28px; }
+      .frase { font-size:12.5px; line-height:1.45; color:rgba(255,255,255,0.8); } .frase b { font-variant-numeric:tabular-nums; }
     `;
   }
 }
