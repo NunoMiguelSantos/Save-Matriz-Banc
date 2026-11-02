@@ -45,3 +45,10 @@ Janela própria para o Alarmo (`alarm_control_panel.alarmo`), em vez do ecrã na
 - "Mais detalhes ›" abre o ecrã nativo.
 - Abre a partir do escudo no topo do telemóvel e dos dois botões do alarme no tablet (o do topo e o do painel "Casa toda").
 - Trocas aplicadas: `alarme-trocas.json`.
+
+## Meteorologia (casa-card ?v=7)
+
+- No topo do ecrã Casa (telemóvel: ao lado da data; tablet: em cima à esquerda, a seguir à data) o tempo passou a ser um botão. Tocar abre a janela "Meteorologia": agora (temperatura, céu, máx./mín., humidade, vento, chuva hoje, pressão), próximas 24 horas (curva da temperatura, ícone e chuva em mm, a deslizar para o lado) e próximos 10 dias (máx./mín. e probabilidade de chuva).
+- Novas opções do cartão: `weather_days` (entidade para a previsão por dias; usa `weather` se faltar) e `weather_name` (nome no topo da janela). Nos dois painéis: `weather: weather.home` (met.no, horas), `weather_days: weather.leiria` (IPMA, dias), `weather_name: Leiria`.
+- As previsões são pedidas ao HA (`weather.get_forecasts`) quando a janela abre e ficam guardadas 10 minutos.
+- As trocas aplicadas ao `casa-card.js` estão em `meteorologia-trocas.json` (serviço `pyscript.trocar_texto_ficheiro`).
