@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.1.0";
+const VERSAO = "2.1.1";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1104,7 +1104,7 @@ ${resto}`;
   _histRange() {
     const H = this._hist,
       [y, m, d] = H.date.split("-").map(Number),
-      B = [];
+      K = [];
     const lg = (t) => t.toLocaleDateString("pt-PT", { weekday: "long" }).replace("-feira", "");
     const sh = (t) => lg(t).slice(0, 3);
     const dm = (t) => t.getDate() + " " + t.toLocaleDateString("pt-PT", { month: "short" }).replace(".", "");
@@ -1116,8 +1116,9 @@ ${resto}`;
     if (H.per === "d") {
       a = new Date(y, m - 1, d);
       b = new Date(y, m - 1, d + 1);
-      for (let i = 0; i < 8; i++)
-        B.push({ a: new Date(y, m - 1, d, i * 3), b: new Date(y, m - 1, d, i * 3 + 3), l: i * 3 + "h", tip: `${lg(a)}, ${dm(a)} · ${p2(i * 3)}h–${p2(i * 3 + 3)}h` });
+      // o HA guarda valores de 5 em 5 minutos só nos últimos 10 dias; antes disso usa os de hora a hora
+      if (Date.now() - b.getTime() < 9 * 86400000) fine = "5minute";
+      for (let i = 0; i < 24; i += 3) K.push({ t: new Date(y, m - 1, d, i).getTime(), l: i + "h" });
       label = `${lg(a)}, ${dm(a)} ${y}`;
     } else if (H.per === "w" || H.per === "m") {
       const w = H.per === "w",
@@ -1127,8 +1128,9 @@ ${resto}`;
       a = new Date(y, m - 1, d0);
       b = new Date(y, m - 1, d0 + n);
       for (let i = 0; i < n; i++) {
-        const s = new Date(y, m - 1, d0 + i);
-        B.push({ a: s, b: new Date(y, m - 1, d0 + i + 1), l: w ? sh(s) : [1, 5, 10, 15, 20, 25, 30].includes(i + 1) ? String(i + 1) : "", tip: `${lg(s)}, ${dm(s)}` });
+        const s = new Date(y, m - 1, d0 + i),
+          l = w ? sh(s) : [1, 5, 10, 15, 20, 25, 30].includes(i + 1) ? String(i + 1) : "";
+        if (l) K.push({ t: s.getTime() + 43200000, l });
       }
       const z = new Date(y, m - 1, d0 + n - 1);
       label = w ? (a.getMonth() === z.getMonth() ? `${a.getDate()}–${dm(z)} ${z.getFullYear()}` : `${dm(a)} – ${dm(z)} ${z.getFullYear()}`) : `${mes(a)} ${y}`;
@@ -1136,13 +1138,10 @@ ${resto}`;
       fine = "day";
       a = new Date(y, 0, 1);
       b = new Date(y + 1, 0, 1);
-      for (let i = 0; i < 12; i++) {
-        const s = new Date(y, i, 1);
-        B.push({ a: s, b: new Date(y, i + 1, 1), l: mes(s).charAt(0).toUpperCase(), tip: `${mes(s)} ${y}` });
-      }
+      for (let i = 0; i < 12; i++) K.push({ t: new Date(y, i, 15).getTime(), l: mes(new Date(y, i, 1)).charAt(0).toUpperCase() });
       label = String(y);
     }
-    return { a, b, fine, B, label };
+    return { a, b, fine, K, label };
   }
   _histKey(src, R) {
     return src.ids.join(",") + "|" + R.fine + "|" + R.a.getTime();
@@ -1196,51 +1195,51 @@ ${resto}`;
         return { t, mean: v, min: v, max: v };
       });
   }
-  // mín, máx e média de cada barra e do período todo (com o instante da mínima e da máxima)
+  // pontos do período, média, mínima e máxima (cada ponto é o valor médio daquele momento)
   _histAgg(rows, R) {
-    const o = R.B.map(() => ({ s: 0, n: 0, min: null, max: null }));
+    const p = rows.filter((r) => r.t >= R.a.getTime() && r.t < R.b.getTime());
     let S = 0,
-      N = 0,
       mn = null,
       mx = null;
-    for (const r of rows) {
-      const i = R.B.findIndex((x) => r.t >= x.a.getTime() && r.t < x.b.getTime());
-      if (i < 0) continue;
-      const q = o[i];
-      q.s += r.mean;
-      q.n++;
-      if (q.min == null || r.min < q.min) q.min = r.min;
-      if (q.max == null || r.max > q.max) q.max = r.max;
+    for (const r of p) {
       S += r.mean;
-      N++;
-      if (!mn || r.min < mn.v) mn = { v: r.min, t: r.t };
-      if (!mx || r.max > mx.v) mx = { v: r.max, t: r.t };
+      if (!mn || r.mean < mn.v) mn = { v: r.mean, t: r.t };
+      if (!mx || r.mean > mx.v) mx = { v: r.mean, t: r.t };
     }
-    return { b: o.map((q) => (q.n ? { mean: q.s / q.n, min: q.min, max: q.max } : null)), mean: N ? S / N : null, mn, mx };
+    return { p, mean: p.length ? S / p.length : null, mn, mx };
   }
-  // quando foi a mínima / máxima, com a precisão que os dados têm
+  // quando foi a mínima / máxima
   _histWhen(t) {
     if (!t) return "";
     const d = new Date(t),
-      per = this._hist.per,
-      h = p2(d.getHours()) + "h";
-    if (per === "d") return "às " + h;
+      per = this._hist.per;
+    if (per === "d") return "às " + p2(d.getHours()) + ":" + p2(d.getMinutes());
     if (per === "y") return d.getDate() + " " + d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", "");
-    return d.toLocaleDateString("pt-PT", { weekday: "long" }).slice(0, 3) + ", " + d.getDate() + " · " + h;
+    return d.toLocaleDateString("pt-PT", { weekday: "long" }).slice(0, 3) + ", " + d.getDate() + " · " + p2(d.getHours()) + "h";
   }
-  // gráfico: barra mín–máx por intervalo + linha branca da média
+  // texto do ponto tocado no gráfico
+  _histTip(t) {
+    const d = new Date(t),
+      per = this._hist.per,
+      dia = d.toLocaleDateString("pt-PT", { weekday: "long" }).replace("-feira", "") + ", " + d.getDate() + " " + d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", "");
+    if (per === "y") return dia;
+    return dia + " · " + p2(d.getHours()) + ":" + p2(d.getMinutes());
+  }
+  // gráfico de linha simples: um ponto por valor guardado (5 min, 1 hora ou 1 dia)
   _histSvg(A, R, U) {
     const W = 340,
       HH = 190,
       L = 34,
-      RP = 6,
-      TP = 10,
+      RP = 8,
+      TP = 12,
       BP = 24,
       pw = W - L - RP,
       ph = HH - TP - BP,
-      n = R.B.length,
-      hi0 = this._hist.hi;
-    const vals = A.b.filter(Boolean).flatMap((b) => [b.min, b.max]);
+      P = A.p,
+      a0 = R.a.getTime(),
+      span = R.b.getTime() - a0,
+      sel = this._hist.hi;
+    const vals = P.map((r) => r.mean);
     let lo = Math.min(...vals),
       hi = Math.max(...vals);
     const rg = Math.max(hi - lo, U === "%" ? 4 : 1);
@@ -1249,31 +1248,40 @@ ${resto}`;
     hi = Math.ceil((hi + rg * 0.12) / st) * st;
     if (hi <= lo) hi = lo + st;
     while ((hi - lo) / st > 6) st *= 2;
-    const Y = (v) => TP + (1 - (v - lo) / (hi - lo)) * ph,
-      sl = pw / n,
-      bw = Math.max(3, Math.min(16, sl * 0.56)),
-      X = (i) => L + sl * (i + 0.5),
-      f = (v) => v.toFixed(1);
+    const X = (t) => L + ((t - a0) / span) * pw,
+      Y = (v) => TP + (1 - (v - lo) / (hi - lo)) * ph,
+      f = (v) => v.toFixed(1),
+      gap = { "5minute": 300000, hour: 3600000, day: 86400000 }[R.fine] * 2.5;
     let g = "";
     for (let v = Math.ceil(lo / st) * st; v <= hi + 1e-9; v += st)
       g += `<line x1="${L}" x2="${W - RP}" y1="${f(Y(v))}" y2="${f(Y(v))}" class="gl"/><text x="${L - 5}" y="${f(Y(v) + 3.5)}" text-anchor="end" class="yl">${String(+v.toFixed(1)).replace(".", ",")}${U}</text>`;
-    let bars = "",
-      line = "",
-      dots = "",
-      pen = false;
-    A.b.forEach((b, i) => {
-      if (!b) return (pen = false);
-      const y1 = Y(b.max),
-        h = Math.max(3, Y(b.min) - y1);
-      if (i === hi0) bars += `<line x1="${f(X(i))}" x2="${f(X(i))}" y1="${TP}" y2="${TP + ph}" class="sel"/>`;
-      bars += `<rect x="${f(X(i) - bw / 2)}" y="${f(y1 - (h === 3 ? 1.5 : 0))}" width="${f(bw)}" height="${f(h)}" rx="${f(Math.min(4, bw / 2))}" fill="var(--ac)" opacity="${hi0 == null || i === hi0 ? 0.7 : 0.35}"/>`;
-      line += (pen ? "L" : "M") + f(X(i)) + " " + f(Y(b.mean)) + " ";
-      pen = true;
-      dots += `<circle cx="${f(X(i))}" cy="${f(Y(b.mean))}" r="${n > 12 ? 1.8 : i === hi0 ? 4 : 2.8}" fill="#fff"/>`;
-    });
-    const xl = R.B.map((b, i) => (b.l ? `<text x="${f(X(i))}" y="${HH - 7}" text-anchor="middle" class="xl">${esc(b.l)}</text>` : "")).join("");
-    const hits = R.B.map((b, i) => `<rect x="${f(L + sl * i)}" y="0" width="${f(sl)}" height="${HH}" fill="transparent" data-hb="${i}"/>`).join("");
-    return `<svg viewBox="0 0 ${W} ${HH}" role="img" aria-label="Gráfico do histórico">${g}${bars}<path d="${line}" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}${xl}${hits}</svg>`;
+    let line = "",
+      prev = null;
+    for (const r of P) {
+      line += (prev != null && r.t - prev <= gap ? "L" : "M") + f(X(r.t)) + " " + f(Y(r.mean)) + " ";
+      prev = r.t;
+    }
+    const dots = P.length <= 31 ? P.map((r) => `<circle cx="${f(X(r.t))}" cy="${f(Y(r.mean))}" r="2.6" fill="var(--ac)"/>`).join("") : "";
+    const s = sel != null ? P.find((r) => r.t === sel) : null;
+    const mark = s
+      ? `<line x1="${f(X(s.t))}" x2="${f(X(s.t))}" y1="${TP}" y2="${TP + ph}" class="sel"/><circle cx="${f(X(s.t))}" cy="${f(Y(s.mean))}" r="4.5" fill="#fff" stroke="var(--ac)" stroke-width="2"/>`
+      : "";
+    const xl = R.K.map((k) => `<text x="${f(X(k.t))}" y="${HH - 7}" text-anchor="middle" class="xl">${esc(k.l)}</text>`).join("");
+    return `<svg viewBox="0 0 ${W} ${HH}" role="img" aria-label="Gráfico do histórico">${g}<path d="${line}" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}${mark}${xl}<rect x="${L}" y="0" width="${pw}" height="${HH}" fill="transparent" data-hx/></svg>`;
+  }
+  // toque no gráfico: escolhe o ponto mais perto do dedo
+  _histPick(e, el) {
+    const bx = (el.ownerSVGElement || el).getBoundingClientRect(),
+      R = this._histRange(),
+      D = this._hc?.[this._histKey(this._histSrc(), R)];
+    if (!D?.rows || !bx.width) return;
+    const P = this._histAgg(D.rows, R).p,
+      xv = ((e.clientX - bx.left) / bx.width) * 340,
+      t = R.a.getTime() + ((xv - 34) / (340 - 34 - 8)) * (R.b.getTime() - R.a.getTime());
+    let best = null;
+    for (const r of P) if (!best || Math.abs(r.t - t) < Math.abs(best.t - t)) best = r;
+    this._hist.hi = best ? best.t : null;
+    this._renderSheet();
   }
   _histHtml() {
     const H = this._hist,
@@ -1306,10 +1314,10 @@ ${resto}`;
     else if (!A) chart = `<div class="hch ld">A carregar…</div>`;
     else if (A.mean == null) chart = `<div class="hch ld">Sem dados neste período</div>`;
     else chart = `<div class="hch">${this._histSvg(A, R, U)}</div>`;
-    const sb = H.hi != null ? A?.b[H.hi] : null;
-    tip = sb
-      ? `${esc(R.B[H.hi].tip)}<b>mín ${f(sb.min)} · méd ${f(sb.mean)} · máx ${f(sb.max)}</b>`
-      : `${esc(R.label)}<span>${A?.mean != null ? "Toca numa barra para ver os valores" : "&nbsp;"}</span>`;
+    const sp = H.hi != null ? A?.p.find((r) => r.t === H.hi) : null;
+    tip = sp
+      ? `${esc(this._histTip(sp.t))}<b>${f(sp.mean)}</b>`
+      : `${esc(R.label)}<span>${A?.mean != null ? "Toca no gráfico para ver o valor" : "&nbsp;"}</span>`;
     return `<style>.hst{--ac:${AC}}.grab{position:relative;touch-action:none;cursor:grab}.grab::before{content:"";position:absolute;left:-90px;right:-90px;top:-14px;bottom:-14px}.hcs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}.hc{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);font-size:14px;font-weight:600;color:var(--dim)}.hc ha-icon{--mdc-icon-size:17px}.hc.on{background:color-mix(in srgb,var(--ac) 16%,transparent);border-color:color-mix(in srgb,var(--ac) 55%,transparent);color:var(--fg)}.hv{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:14px}.hv>div{min-width:0}.hv small{display:block;font-size:13px;color:var(--dim)}.hv .big{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px}.hv .big b{font-size:46px;font-weight:300;line-height:1.05;color:var(--ac);font-variant-numeric:tabular-nums}.htr{display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--dim);white-space:nowrap}.htr ha-icon{--mdc-icon-size:16px}.htr.up{color:#ff8a5c}.htr.dn{color:#7cc4ff}.hm{display:flex;gap:4px;padding:3px;border-radius:13px;background:rgba(0,0,0,.25);flex:none}.hm button{width:44px;height:36px;border-radius:10px;color:var(--dim);display:grid;place-items:center}.hm button ha-icon{--mdc-icon-size:20px}.hm button.on{background:var(--card2);color:var(--ac);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}.hp{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:3px;border-radius:13px;background:rgba(0,0,0,.25);margin-bottom:10px}.hp button{height:36px;border-radius:10px;font-weight:600;font-size:14px;color:var(--dim)}.hp button.on{background:var(--card2);color:var(--fg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}.hdt{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--dim)}.hdt ha-icon{--mdc-icon-size:22px}.hdt input{flex:1;min-width:0;height:42px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--fg);font:inherit;font-size:15px;color-scheme:dark}.hti{min-height:36px;font-size:12.5px;color:var(--dim);margin:0 2px 6px;line-height:1.4}.hti b{display:block;color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}.hti span{display:block;color:var(--mute)}.hch{border-radius:16px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.12);padding:6px 4px 0;margin-bottom:12px}.hch.ld{aspect-ratio:340/196;display:grid;place-items:center;text-align:center;padding:16px;font-size:13px;color:var(--mute)}.hch svg{display:block;width:100%;height:auto}.hch .gl{stroke:rgba(255,255,255,.07)}.hch .sel{stroke:rgba(255,255,255,.25);stroke-dasharray:3 3}.hch .yl,.hch .xl{fill:rgba(238,250,255,.45);font-size:10.5px;font-variant-numeric:tabular-nums}.hbx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hbx div{padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);min-width:0}.hbx span{display:block;font-size:11.5px;color:var(--mute)}.hbx b{display:block;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;margin:1px 0}.hbx small{display:block;font-size:11.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}</style>
 <div class="hst"><div class="hcs">${chips}</div>
 <div class="hv"><div><small>${esc(src.name)}</small><div class="big"><b>${f(now)}</b>${trend}</div></div>
@@ -1717,12 +1725,8 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
   }
   _onSheetClick(e) {
     if (e.target.matches?.("[data-scrim]")) return this._closeSheet();
-    const hb = e.target.closest?.("[data-hb]");
-    if (hb && this._sheet?.kind === "hist") {
-      const i = Number(hb.dataset.hb);
-      this._hist.hi = this._hist.hi === i ? null : i;
-      return this._renderSheet();
-    }
+    const hx = e.target.closest?.("[data-hx]");
+    if (hx && this._sheet?.kind === "hist") return this._histPick(e, hx);
     const b = e.target.closest?.("button");
     if (!b || !this._sheet) return;
     const d = b.dataset,
