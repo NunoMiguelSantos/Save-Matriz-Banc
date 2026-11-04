@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.1.1";
+const VERSAO = "2.1.2";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -618,7 +618,7 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     const c = this._cfg,
       H = new Date().getHours();
     const hello = H < 6 ? "Boa noite" : H < 13 ? "Bom dia" : H < 20 ? "Boa tarde" : "Boa noite";
-    const wx = this._st(c.weather);
+    const wx = this._st(this._wxId());
     const date = new Date().toLocaleDateString("pt-PT", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "");
     const wxTxt = wx
       ? `<button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button><span>${esc(date)}</span>`
@@ -854,7 +854,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
     const hello = H < 6 ? "Boa noite" : H < 13 ? "Bom dia" : H < 20 ? "Boa tarde" : "Boa noite";
     const hhmm = String(H).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
     const date = now.toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "short" }).replace(/\./g, "");
-    const wx = this._st(c.weather);
+    const wx = this._st(this._wxId());
     const worst = al[0]?.lvl,
       nUrg = al.filter((a) => a.lvl === "bad").length;
     const chip = al.length
@@ -994,6 +994,12 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
     }
   }
   // ---------- meteorologia (toque no tempo do topo) ----------
+  // tempo agora: usa weather (met.no); se estiver em baixo, usa weather_days (IPMA)
+  _wxId() {
+    const c = this._cfg,
+      ok = (e) => e && this._st(e) && !["unavailable", "unknown"].includes(this._st(e).state);
+    return ok(c.weather) ? c.weather : ok(c.weather_days) ? c.weather_days : c.weather;
+  }
   // pede ao HA as previsões por hora (weather) e por dia (weather_days, ex.: IPMA) quando a janela abre
   _openWx() {
     this._openSheet({ kind: "wx" });
@@ -1006,14 +1012,14 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
               .then((r) => r?.response?.[e]?.forecast || [])
               .catch(() => [])
           : Promise.resolve([]);
-    Promise.all([ask(c.weather, "hourly"), ask(c.weather_days || c.weather, "daily")]).then(([h, d]) => {
+    Promise.all([ask(this._wxId(), "hourly"), ask(c.weather_days || c.weather, "daily")]).then(([h, d]) => {
       this._wxData = { h, d, t: Date.now() };
       if (this._sheet?.kind === "wx") this._renderSheet();
     });
   }
   _wxHtml() {
     const c = this._cfg,
-      o = this._st(c.weather),
+      o = this._st(this._wxId()),
       od = this._st(c.weather_days) || o,
       a = o?.attributes || {},
       D = this._wxData;

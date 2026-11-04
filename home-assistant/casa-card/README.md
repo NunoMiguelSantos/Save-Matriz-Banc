@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=10`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=11`)
 
-`casa-card.js` nesta pasta é a cópia completa de `/config/www/casa-card/casa-card.js` (versão 2.1.1).
+`casa-card.js` nesta pasta é a cópia completa de `/config/www/casa-card/casa-card.js` (versão 2.1.2).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -25,3 +25,7 @@ O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 Todos têm `state_class: measurement`. O `sensor.esp_th_suite_temperatura` não tinha: acrescentei `device_class: temperature` e `state_class: measurement` no `esphome/esp-th-suite.yaml` e fiz o update por OTA a 3 nov 2026. O histórico da temperatura da Suite só existe a partir dessa data.
 
 Trocas aplicadas com `pyscript.trocar_texto_ficheiro`, por ordem: `historico-trocas.json` (?v=9) e `grafico-linha-trocas.json` (?v=10, gráfico de linha). O `casa-card.js.bak` no HA passou a ser a versão ?v=9.
+
+## Tempo no topo quando o met.no falha (?v=11)
+
+O tempo do topo e a janela da meteorologia usam `weather` (met.no, `weather.home`). Se estiver `unavailable`/`unknown`, o cartão passa sozinho para `weather_days` (IPMA, `weather.leiria`) e volta ao met.no quando este recuperar. Trocas: `meteo-ipma-trocas.json`.
