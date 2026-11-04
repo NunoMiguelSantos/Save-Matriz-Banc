@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=11`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=12`)
 
-`casa-card.js` nesta pasta é a cópia completa de `/config/www/casa-card/casa-card.js` (versão 2.1.2).
+`casa-card.js` nesta pasta é a cópia completa de `/config/www/casa-card/casa-card.js` (versão 2.1.3).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -29,3 +29,7 @@ Trocas aplicadas com `pyscript.trocar_texto_ficheiro`, por ordem: `historico-tro
 ## Tempo no topo quando o met.no falha (?v=11)
 
 O tempo do topo e a janela da meteorologia usam `weather` (met.no, `weather.home`). Se estiver `unavailable`/`unknown`, o cartão passa sozinho para `weather_days` (IPMA, `weather.leiria`) e volta ao met.no quando este recuperar. Trocas: `meteo-ipma-trocas.json`.
+
+## Só IPMA (?v=12)
+
+No YAML do cartão (telemóvel e tablet) `weather` passou de `weather.home` (met.no) para `weather.leiria` (IPMA); `weather_days` já era `weather.leiria`. O IPMA manda `precipitation_probability: -99` nas horas sem valor: o cartão mostra essas horas sem percentagem. Trocas: `meteo-ipma-99-trocas.json`.

@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.1.2";
+const VERSAO = "2.1.3";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1013,7 +1013,9 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
               .catch(() => [])
           : Promise.resolve([]);
     Promise.all([ask(this._wxId(), "hourly"), ask(c.weather_days || c.weather, "daily")]).then(([h, d]) => {
-      this._wxData = { h, d, t: Date.now() };
+      // o IPMA manda -99 quando não tem probabilidade de chuva para aquela hora: fica vazio
+      const ok = (L) => L.map((f) => (f.precipitation_probability < 0 ? { ...f, precipitation_probability: null } : f));
+      this._wxData = { h: ok(h), d: ok(d), t: Date.now() };
       if (this._sheet?.kind === "wx") this._renderSheet();
     });
   }
