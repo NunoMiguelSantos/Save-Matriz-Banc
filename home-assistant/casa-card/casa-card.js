@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.2.0";
+const VERSAO = "2.3.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -221,6 +221,7 @@ class CasaTlmCard extends HTMLElement {
         c.boiler,
         c.history_avg,
         ...(c.history_rooms || HIST_ROOMS).flatMap((r) => [r.t, r.h]),
+        ...(c.scenes || []).map((x) => (typeof x.data?.entity_id === "string" && x.data.entity_id.startsWith("script.") ? x.data.entity_id : null)),
         ...(c.persons || []).map((p) => p.entity),
         A.base_power,
         A.base_limit,
@@ -650,7 +651,7 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     this.shadowRoot.innerHTML = `<style>${ESTILOS.CORES}${ESTILOS.BASE}${ESTILOS.TELEMOVEL}</style>
 <div class="root">
 <div class="top"><div class="g">${hello}<small>${wxTxt}</small></div>${people}${this._topIcons()}
-<button class="bell" data-pick="casa" aria-label="Alertas"><ha-icon icon="mdi:bell-outline"></ha-icon>${al.length ? `<b>${al.length}</b>` : ""}</button></div>
+${(c.scenes || []).length ? `<button class="bell" data-scenepop aria-label="Cenários"><ha-icon icon="mdi:palette-outline"></ha-icon></button>` : ""}</div>
 <div class="pick">${pick}</div>
 <div class="room">${this._sel === "casa" ? this._casa(al) : this._roomView(this._room(this._sel) || c.rooms[0])}</div>
 </div>`;
@@ -1347,6 +1348,20 @@ ${chart}
     this._openSheet({ kind: "hist" });
     this._histLoad();
   }
+  // ---------- cenários (botão no topo do telemóvel) ----------
+  // um botão por cenário do YAML (scenes); mostra "A correr…" enquanto o script corre e "Ativado ✓" depois do toque
+  _scenesHtml() {
+    const S = this._cfg.scenes || [];
+    const rows = S.map((x, i) => {
+      const ent = typeof x.data?.entity_id === "string" && x.data.entity_id.startsWith("script.") ? x.data.entity_id : null,
+        run = ent && this._st(ent)?.state === "on",
+        done = this._scDone === i,
+        st = run ? "A correr…" : done ? "Ativado ✓" : "";
+      return `<button class="scb ${run || done ? "on" : ""} ${run ? "run" : ""}" data-scn="${i}" style="--ac:${esc(x.color || "#65d8de")}"><span><ha-icon icon="${esc(x.icon || "mdi:play")}"></ha-icon></span><div><b>${esc(x.name)}</b>${x.desc ? `<small>${esc(x.desc)}</small>` : ""}</div>${st ? `<em>${st}</em>` : `<ha-icon class="pl" icon="mdi:play"></ha-icon>`}</button>`;
+    }).join("");
+    return `<style>.scl{display:flex;flex-direction:column;gap:8px}.scb{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:16px;text-align:left;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12)}.scb>span{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac)}.scb>span ha-icon{--mdc-icon-size:24px}.scb div{flex:1;min-width:0}.scb b{display:block;font-size:15.5px}.scb small{display:block;font-size:12px;opacity:.65;margin-top:1px}.scb .pl{--mdc-icon-size:20px;opacity:.45}.scb em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--ac);white-space:nowrap}.scb.on{background:color-mix(in srgb,var(--ac) 16%,transparent);border-color:color-mix(in srgb,var(--ac) 60%,transparent)}.scb.run>span{animation:scp 1.2s ease-in-out infinite}@keyframes scp{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 22%,transparent)}}@media (prefers-reduced-motion: reduce){.scb.run>span{animation:none}}</style><div class="sh"><div><b>Cenários</b><small>Toca num cenário para o ativar</small></div><button class="x" data-close>Fechar</button></div>
+<div class="scl">${rows || `<p class="sub">Não há cenários configurados.</p>`}</div>`;
+  }
   // ---------- painéis (fita LED, AC e alertas) ----------
   _openSheet(s) {
     this._sheet = s;
@@ -1514,6 +1529,8 @@ ${abertos.length ? `<div class="alw"><ha-icon icon="mdi:door-open"></ha-icon><sp
 <div style="display:flex;gap:10px;margin-top:6px"><button class="abtn cf" data-gyes style="flex:1;height:48px;font-size:15px">Sim, ${verbo}</button><button class="abtn" data-close style="flex:1;height:48px;font-size:15px">Cancelar</button></div>`;
     } else if (s.kind === "wx") {
       body = this._wxHtml();
+    } else if (s.kind === "scenes") {
+      body = this._scenesHtml();
     } else if (s.kind === "hist") {
       body = this._histHtml();
     } else if (s.kind === "ac") {
@@ -1634,6 +1651,7 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
     if ("alarmpop" in d) return this._openSheet({ kind: "alarm" });
     if ("wxpop" in d) return this._openWx();
     if ("histpop" in d) return this._openHist();
+    if ("scenepop" in d) return this._openSheet({ kind: "scenes" });
     if (d.scene != null) {
       const x = this._cfg.scenes[Number(d.scene)],
         [dom, svc] = (x.action || x.service).split(".");
@@ -1768,6 +1786,20 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
       return setTimeout(() => this._more(id), 50);
     }
     if (d.alert) return this._doAlert(d.alert);
+    if (d.scn != null) {
+      const i = Number(d.scn),
+        x = this._cfg.scenes?.[i];
+      if (!x) return;
+      const [dom, svc] = (x.action || x.service).split(".");
+      this._scDone = i;
+      clearTimeout(this._scT);
+      this._scT = setTimeout(() => {
+        this._scDone = null;
+        if (this._sheet?.kind === "scenes") this._renderSheet();
+      }, 3000);
+      this._call(dom, svc, x.data || {});
+      return this._renderSheet();
+    }
     if (s.kind === "hist" && (d.hc || d.hm || d.hp)) {
       const H = this._hist;
       if (d.hc) H.sel = d.hc;

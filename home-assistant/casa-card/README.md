@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=13`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=14`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.2.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.3.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -37,3 +37,7 @@ No YAML do cartão (telemóvel e tablet) `weather` passou de `weather.home` (met
 ## "Ligado agora" com botões (?v=13)
 
 Em cada divisão: o nome (com ›) abre a divisão; o botão amarelo "N luzes ✕" apaga todas as luzes dessa divisão; o botão do AC desliga o AC ao 2.º toque (o 1.º mostra "Desligar?" durante 4 s). Aquecimento e ventilação são só informação. Telemóvel e tablet. Trocas: `ligado-agora-trocas.json` (casa-card.js) e `ligado-agora-estilos-trocas.json` (estilos.js); o `estilos.js.bak` no HA é a versão anterior.
+
+## Cenários no telemóvel (?v=14)
+
+O sino do topo do telemóvel deu lugar a um botão com uma paleta (`mdi:palette-outline`) que abre a janela "Cenários": os mesmos `scenes` do YAML do cartão (Sair de casa, Rotina dos estores, Dormir). Um toque ativa; mostra "Ativado ✓" 3 s e, nos scripts, "A correr…" enquanto correm. Cada cenário aceita `desc` (texto pequeno por baixo do nome). Trocas: `cenarios-trocas.json`.
