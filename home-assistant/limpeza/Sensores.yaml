@@ -1,0 +1,4 @@
+# Sensores da plataforma "sensor:" (incluído no configuration.yaml).
+# O sensor REST "Sun Costume" (Open-Meteo) foi tirado a 5 nov 2026 porque nada o usava.
+# Cópia em Sensores.yaml.bak. Os estores usam o sun.sun (sensor.estores_nascer_sol_do_dia / _por_sol_do_dia).
+[]

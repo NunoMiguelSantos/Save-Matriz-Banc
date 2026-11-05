@@ -1,0 +1,29 @@
+
+- platform: rest
+  unique_id: "sun_costume_open_meteo"
+  name: "Sun Costume"
+  resource: "https://api.open-meteo.com/v1/forecast?latitude=38.72&longitude=-9.14&daily=sunrise,sunset,sunshine_duration,uv_index_max,uv_index_clear_sky_max,daylight_duration,precipitation_sum,precipitation_hours,precipitation_probability_max,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,weathercode,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&timezone=Europe%2FLisbon&forecast_days=1"
+  value_template: "{{ value_json.daily.sunset[0] }}"
+  json_attributes_path: "$.daily"
+  json_attributes:
+    - sunrise
+    - sunset
+    - sunshine_duration
+    - daylight_duration
+    - uv_index_max
+    - uv_index_clear_sky_max
+    - precipitation_sum
+    - precipitation_hours
+    - precipitation_probability_max
+    - temperature_2m_max
+    - temperature_2m_min
+    - apparent_temperature_max
+    - apparent_temperature_min
+    - weathercode
+    - windspeed_10m_max
+    - windgusts_10m_max
+    - winddirection_10m_dominant
+    - shortwave_radiation_sum
+    - et0_fao_evapotranspiration
+  timeout: 60
+  scan_interval: 900
