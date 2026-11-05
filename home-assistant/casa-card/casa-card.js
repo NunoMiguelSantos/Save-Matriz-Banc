@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.1.3";
+const VERSAO = "2.2.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -682,18 +682,23 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     const rows = c.rooms
       .map((r) => {
         const it = [];
-        const ls = (r.lights || []).filter((l) => this._lightOn(l)).map((l) => esc(l.name));
-        if (ls.length) it.push(`<i class="l"><ha-icon icon="mdi:lightbulb"></ha-icon>${ls.join(", ")}</i>`);
-        if (this._acOn(r)) {
-          const [ic, k] = this._acIcon(this._hvac(r));
+        // luzes: um botão por divisão que apaga todas; AC: desliga ao 2.º toque ("Desligar?")
+        const nl = (r.lights || []).filter((l) => this._lightOn(l)).length;
+        if (nl)
           it.push(
-            `<i class="${k}"><ha-icon icon="${ic}"></ha-icon>AC ${num(this._st(r.climate)?.attributes?.temperature, "")}°</i>`,
+            `<button class="onb l" data-roff="${r.id}" aria-label="Apagar as luzes de ${esc(r.name)}"><ha-icon icon="mdi:lightbulb"></ha-icon>${nl > 1 ? nl + " luzes" : "1 luz"}<ha-icon class="x" icon="mdi:close"></ha-icon></button>`,
+          );
+        if (this._acOn(r)) {
+          const [ic, k] = this._acIcon(this._hvac(r)),
+            ask = this._acAsk === r.id;
+          it.push(
+            `<button class="onb ${k} ${ask ? "ask" : ""}" data-acoff="${r.id}" aria-label="Desligar o AC de ${esc(r.name)}"><ha-icon icon="${ask ? "mdi:power" : ic}"></ha-icon>${ask ? "Desligar?" : `AC ${num(this._st(r.climate)?.attributes?.temperature, "")}°`}<ha-icon class="x" icon="mdi:close"></ha-icon></button>`,
           );
         }
         if (r.heat && this._on(r.heat)) it.push(`<i class="h"><ha-icon icon="mdi:radiator"></ha-icon>Aquecimento</i>`);
         if (r.fan && this._on(r.fan)) it.push(`<i class="f"><ha-icon icon="mdi:fan"></ha-icon>Ventilação</i>`);
         return it.length
-          ? `<button class="onrow" data-pick="${r.id}"><b>${esc(r.name)}</b><span>${it.join("")}</span></button>`
+          ? `<div class="onrow"><button class="onm" data-pick="${r.id}">${esc(r.name)}<small>›</small></button><span>${it.join("")}</span></div>`
           : "";
       })
       .join("");
@@ -1635,6 +1640,22 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
       b.classList.add("run");
       setTimeout(() => b.classList.remove("run"), 900);
       return this._call(dom, svc, x.data || {});
+    }
+    if (d.roff) return this._call("light", "turn_off", { entity_id: (this._room(d.roff)?.lights || []).map((l) => l.entity) });
+    if (d.acoff) {
+      clearTimeout(this._acT);
+      if (this._acAsk !== d.acoff) {
+        // 1.º toque: pede confirmação durante 4 s
+        this._acAsk = d.acoff;
+        this._acT = setTimeout(() => {
+          this._acAsk = null;
+          this._render();
+        }, 4000);
+        return this._render();
+      }
+      this._acAsk = null;
+      this._render();
+      return this._call("climate", "set_hvac_mode", { entity_id: this._room(d.acoff).climate, hvac_mode: "off" });
     }
     if (d.pick) return this._select(d.pick);
     if (d.light) return this._call("light", "toggle", { entity_id: d.light });

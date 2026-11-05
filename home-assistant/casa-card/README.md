@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=12`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=13`)
 
-`casa-card.js` nesta pasta é a cópia completa de `/config/www/casa-card/casa-card.js` (versão 2.1.3).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.2.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -33,3 +33,7 @@ O tempo do topo e a janela da meteorologia usam `weather` (met.no, `weather.home
 ## Só IPMA (?v=12)
 
 No YAML do cartão (telemóvel e tablet) `weather` passou de `weather.home` (met.no) para `weather.leiria` (IPMA); `weather_days` já era `weather.leiria`. O IPMA manda `precipitation_probability: -99` nas horas sem valor: o cartão mostra essas horas sem percentagem. Trocas: `meteo-ipma-99-trocas.json`.
+
+## "Ligado agora" com botões (?v=13)
+
+Em cada divisão: o nome (com ›) abre a divisão; o botão amarelo "N luzes ✕" apaga todas as luzes dessa divisão; o botão do AC desliga o AC ao 2.º toque (o 1.º mostra "Desligar?" durante 4 s). Aquecimento e ventilação são só informação. Telemóvel e tablet. Trocas: `ligado-agora-trocas.json` (casa-card.js) e `ligado-agora-estilos-trocas.json` (estilos.js); o `estilos.js.bak` no HA é a versão anterior.
