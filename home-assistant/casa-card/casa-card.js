@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.5.1";
+const VERSAO = "2.5.2";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -196,7 +196,6 @@ class CasaTlmCard extends HTMLElement {
   }
   set hass(hass) {
     this._hass = hass;
-    if (this._pmap) this._pmap.hass = hass;
     const sig = this._signature();
     if (sig !== this._sig) {
       this._sig = sig;
@@ -1352,49 +1351,73 @@ ${chart}
     this._histLoad();
   }
   // ---------- pessoas (toque nas fotos do topo) ----------
-  // mapa do próprio HA (cartão "map", criado com os card helpers) + onde está cada um, desde quando e a que distância de casa
+  // mapa + onde está cada um, desde quando e a que distância de casa
   _openPpl() {
+    this._pz = 0;
     this._openSheet({ kind: "ppl" });
   }
-  _pplMount() {
-    const box = this._portal?.shadowRoot?.getElementById("pmap");
-    if (!box) return;
-    if (this._pmap) {
-      this._pmap.hass = this._hass;
-      if (this._pmap.parentNode !== box) {
-        box.appendChild(this._pmap);
-        // o mapa (Leaflet) só se centra depois de a janela acabar de abrir e ter tamanho
-        const fit = () => {
-          try {
-            const m = this._pmap?.shadowRoot?.querySelector("ha-map");
-            m?.leafletMap?.invalidateSize();
-            m?.fitMap?.();
-          } catch (_) {}
-        };
-        [300, 800, 1600].forEach((t) => setTimeout(fit, t));
-      }
-      return;
+  // mapa próprio, sem bibliotecas: mosaicos escuros (CARTO, os mesmos do mapa do HA; se falharem, OpenStreetMap escurecido)
+  // com a zona de casa e as fotos por cima; o zoom escolhe-se sozinho para caberem todos (+/− ajusta)
+  _pplMap() {
+    const W = 340,
+      H = 210,
+      pts = [],
+      zh = this._st("zone.home")?.attributes;
+    if (zh?.latitude != null) pts.push({ lat: zh.latitude, lon: zh.longitude, r: zh.radius || 100 });
+    (this._cfg.persons || []).forEach((p) => {
+      const o = this._st(p.entity),
+        a = o?.attributes || {};
+      if (a.latitude != null) pts.push({ lat: a.latitude, lon: a.longitude, p, pic: a.entity_picture, home: o.state === "home" });
+    });
+    if (!pts.length) return `<div class="pmw pme">Sem localização</div>`;
+    const P = (lat, lon, z) => {
+      const n = 256 * 2 ** z,
+        s = Math.sin((lat * Math.PI) / 180);
+      return [((lon + 180) / 360) * n, (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n];
+    };
+    const caixa = (z) => {
+      const q = pts.map((t) => P(t.lat, t.lon, z)),
+        xs = q.map((v) => v[0]),
+        ys = q.map((v) => v[1]);
+      return { q, x1: Math.min(...xs), x2: Math.max(...xs), y1: Math.min(...ys), y2: Math.max(...ys) };
+    };
+    let z = 16;
+    while (z > 3) {
+      const c = caixa(z);
+      if (c.x2 - c.x1 < W - 80 && c.y2 - c.y1 < H - 80) break;
+      z--;
     }
-    if (this._pmapLoading || !window.loadCardHelpers) return;
-    this._pmapLoading = true;
-    window
-      .loadCardHelpers()
-      .then((h) => {
-        const el = h.createCardElement({
-          type: "map",
-          entities: [...(this._cfg.persons || []).map((p) => ({ entity: p.entity })), { entity: "zone.home" }],
-          hours_to_show: 0,
-          default_zoom: 15,
-          theme_mode: "dark",
-          aspect_ratio: "16:10",
-          fit_zones: false,
-        });
-        el.hass = this._hass;
-        this._pmap = el;
-        this._pmapLoading = false;
-        this._pplMount();
-      })
-      .catch(() => (this._pmapLoading = false));
+    z = Math.max(3, Math.min(18, z + (this._pz || 0)));
+    const c = caixa(z),
+      x0 = (c.x1 + c.x2) / 2 - W / 2,
+      y0 = (c.y1 + c.y2) / 2 - H / 2,
+      n = 2 ** z,
+      px = (x) => (((x - x0) / W) * 100).toFixed(3) + "%",
+      py = (y) => (((y - y0) / H) * 100).toFixed(3) + "%";
+    let tiles = "";
+    for (let tx = Math.floor(x0 / 256); tx <= Math.floor((x0 + W) / 256); tx++)
+      for (let ty = Math.floor(y0 / 256); ty <= Math.floor((y0 + H) / 256); ty++) {
+        if (ty < 0 || ty >= n) continue;
+        const wx = ((tx % n) + n) % n;
+        tiles += `<img class="pt" src="https://a.basemaps.cartocdn.com/dark_all/${z}/${wx}/${ty}.png" style="left:${px(tx * 256)};top:${py(ty * 256)}" alt="" onerror="this.onerror=null;this.classList.add('osm');this.src='https://tile.openstreetmap.org/${z}/${wx}/${ty}.png'">`;
+      }
+    let marks = "",
+      usados = [];
+    pts.forEach((t, i) => {
+      const [x, y] = c.q[i];
+      if (!t.p) {
+        const mpp = (156543.03 * Math.cos((t.lat * Math.PI) / 180)) / n,
+          r = Math.max(10, t.r / mpp);
+        marks += `<i class="pz" style="left:${px(x)};top:${py(y)};width:${((2 * r) / W) * 100}%;height:${((2 * r) / H) * 100}%"></i>`;
+        return;
+      }
+      // duas fotos no mesmo sítio ficam lado a lado
+      let dx = 0;
+      while (usados.some(([ux, uy]) => Math.hypot(ux - (x + dx), uy - y) < 26)) dx += 24;
+      usados.push([x + dx, y]);
+      marks += `<span class="pa ${t.home ? "home" : ""}" style="left:${px(x + dx)};top:${py(y)};background-color:${t.p.color};${t.pic ? `background-image:url('${esc(t.pic)}')` : ""}">${t.pic ? "" : esc(t.p.initial)}</span>`;
+    });
+    return `<div class="pmw">${tiles}${marks}<div class="pmz"><button data-pz="1" aria-label="Aproximar">+</button><button data-pz="-1" aria-label="Afastar">−</button></div><small class="pcr">© OpenStreetMap · © CARTO</small></div>`;
   }
   // distância em linha reta entre dois pontos (km)
   _km(a, b) {
@@ -1429,8 +1452,8 @@ ${chart}
         return `<div class="pr"><span class="av ${st === "home" ? "home" : ""}" style="background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span><div><b>${esc(a.friendly_name || p.entity)}</b><small><i class="${st === "home" ? "in" : ""}">${esc(onde)}</i>${o ? " · " + desde(o.last_changed) : ""}</small></div>${dist ? `<em>${dist}</em>` : ""}</div>`;
       })
       .join("");
-    return `<style>.pmw{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);min-height:200px;margin-bottom:12px}.pmw>*{display:block;--ha-card-border-radius:0;--ha-card-border-width:0}.pr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);margin-bottom:6px}.pr .av{width:42px;height:42px;flex:none;font-size:15px;border-radius:50%;display:grid;place-items:center;font-weight:700;position:relative;border:2px solid #10242b;background-size:cover;background-position:center}.pr .av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--mute);border:2px solid #10242b}.pr .av.home::after{background:var(--ok)}.pr div{flex:1;min-width:0}.pr b{display:block;font-size:15px}.pr small{display:block;font-size:12.5px;color:var(--dim);margin-top:1px}.pr small i{font-style:normal;font-weight:600;color:var(--fg)}.pr small i.in{color:var(--ok)}.pr em{font-style:normal;font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap}</style><div class="sh"><div><b>Pessoas</b><small>Onde está cada um</small></div><button class="x" data-close>Fechar</button></div>
-<div class="pmw" id="pmap"></div>${rows}`;
+    return `<style>.pmw{position:relative;aspect-ratio:340/210;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:#1b2329;margin-bottom:12px}.pme{display:grid;place-items:center;color:var(--mute);font-size:13px}.pt{position:absolute;width:75.294%;height:121.905%;max-width:none;user-select:none;pointer-events:none}.pt.osm{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}.pz{position:absolute;transform:translate(-50%,-50%);border-radius:50%;background:rgba(101,216,222,.15);border:1.5px solid rgba(101,216,222,.7)}.pa{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid var(--mute);background-size:cover;background-position:center;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.5)}.pa.home{border-color:var(--ok)}.pmz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px}.pmz button{width:34px;height:34px;border-radius:10px;background:rgba(15,32,45,.85);border:1px solid rgba(255,255,255,.15);font-size:18px;font-weight:700;color:var(--fg)}.pcr{position:absolute;right:6px;bottom:3px;font-size:9px;color:rgba(255,255,255,.45)}.pr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);margin-bottom:6px}.pr .av{width:42px;height:42px;flex:none;font-size:15px;border-radius:50%;display:grid;place-items:center;font-weight:700;position:relative;border:2px solid #10242b;background-size:cover;background-position:center}.pr .av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--mute);border:2px solid #10242b}.pr .av.home::after{background:var(--ok)}.pr div{flex:1;min-width:0}.pr b{display:block;font-size:15px}.pr small{display:block;font-size:12.5px;color:var(--dim);margin-top:1px}.pr small i{font-style:normal;font-weight:600;color:var(--fg)}.pr small i.in{color:var(--ok)}.pr em{font-style:normal;font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap}</style><div class="sh"><div><b>Pessoas</b><small>Onde está cada um</small></div><button class="x" data-close>Fechar</button></div>
+${this._pplMap()}${rows}`;
   }
   // ---------- calendário (toque no dia do topo) ----------
   // calendários a mostrar: os do YAML (calendars: [{entity, name, color}]) ou, por omissão, todos os calendar.* do HA
@@ -1744,13 +1767,11 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
         this._sheetHtml = inner;
         sheet.innerHTML = inner;
       }
-      if (s.kind === "ppl") this._pplMount();
       return;
     }
     this._sheetHtml = inner;
     this._portal.shadowRoot.innerHTML = `<style>${ESTILOS.CORES}${ESTILOS.BASE}${ESTILOS.PAINEIS}</style>
 <div class="scrim ${this._tab ? "ctr" : ""}" data-scrim><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`;
-    if (s.kind === "ppl") this._pplMount();
   }
   // ---------- ações ----------
   _call(d, s, data) {
@@ -1983,6 +2004,10 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
       return setTimeout(() => this._more(id), 50);
     }
     if (d.alert) return this._doAlert(d.alert);
+    if (s.kind === "ppl" && d.pz) {
+      this._pz = Math.max(-6, Math.min(4, (this._pz || 0) + Number(d.pz)));
+      return this._renderSheet();
+    }
     if (s.kind === "cal" && (d.cd || d.cm || "ct" in d)) {
       const C = this._cal;
       if (d.cd) {

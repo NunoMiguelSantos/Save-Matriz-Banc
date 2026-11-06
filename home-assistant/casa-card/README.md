@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=18`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=19`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.1).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.2).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -57,3 +57,7 @@ Tocar nas fotos do topo (telemóvel e tablet) abre a janela "Pessoas": cartão d
 ### Correção do mapa (?v=18)
 
 O mapa aparecia vazio (só os botões de zoom): o cartão passa a pedir ao mapa para recalcular o tamanho e centrar-se nas pessoas depois de a janela abrir (`default_zoom: 15`). Trocas: `pessoas-mapa-trocas.json`.
+
+### Mapa próprio (?v=19)
+
+O cartão de mapa do HA continuava vazio dentro da janela. Passou a ser um mapa desenhado pelo cartão, sem bibliotecas: mosaicos escuros da CARTO (os mesmos do mapa do HA; se falharem, OpenStreetMap escurecido), zona de casa e fotos por cima, zoom automático para caberem todos e botões +/−. Trocas: `pessoas-mapa2-trocas.json`.
