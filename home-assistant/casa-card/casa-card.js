@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.5.0";
+const VERSAO = "2.5.1";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1361,7 +1361,18 @@ ${chart}
     if (!box) return;
     if (this._pmap) {
       this._pmap.hass = this._hass;
-      if (this._pmap.parentNode !== box) box.appendChild(this._pmap);
+      if (this._pmap.parentNode !== box) {
+        box.appendChild(this._pmap);
+        // o mapa (Leaflet) só se centra depois de a janela acabar de abrir e ter tamanho
+        const fit = () => {
+          try {
+            const m = this._pmap?.shadowRoot?.querySelector("ha-map");
+            m?.leafletMap?.invalidateSize();
+            m?.fitMap?.();
+          } catch (_) {}
+        };
+        [300, 800, 1600].forEach((t) => setTimeout(fit, t));
+      }
       return;
     }
     if (this._pmapLoading || !window.loadCardHelpers) return;
@@ -1373,6 +1384,7 @@ ${chart}
           type: "map",
           entities: [...(this._cfg.persons || []).map((p) => ({ entity: p.entity })), { entity: "zone.home" }],
           hours_to_show: 0,
+          default_zoom: 15,
           theme_mode: "dark",
           aspect_ratio: "16:10",
           fit_zones: false,

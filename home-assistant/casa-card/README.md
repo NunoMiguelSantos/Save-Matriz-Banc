@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=17`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=18`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.1).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -53,3 +53,7 @@ Tempo e data ficam sempre na mesma linha (`estilos.js`: `.top .g small` sem queb
 ## Pessoas (?v=17)
 
 Tocar nas fotos do topo (telemóvel e tablet) abre a janela "Pessoas": cartão de mapa do próprio HA (criado com `loadCardHelpers`, modo escuro, pessoas + `zone.home`) e uma linha por pessoa com "Em casa"/"Fora"/nome da zona, desde quando e, para quem está fora, a distância em linha reta a casa (m ou km). Trocas: `pessoas-trocas.json`.
+
+### Correção do mapa (?v=18)
+
+O mapa aparecia vazio (só os botões de zoom): o cartão passa a pedir ao mapa para recalcular o tamanho e centrar-se nas pessoas depois de a janela abrir (`default_zoom: 15`). Trocas: `pessoas-mapa-trocas.json`.
