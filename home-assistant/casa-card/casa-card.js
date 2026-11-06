@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.5.3";
+const VERSAO = "2.6.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1354,6 +1354,7 @@ ${chart}
   // mapa + onde está cada um, desde quando e a que distância de casa
   _openPpl() {
     this._pz = 0;
+    this._pc = [0, 0];
     this._openSheet({ kind: "ppl" });
   }
   // mapa próprio, sem bibliotecas: mosaicos do OpenStreetMap escurecidos (os da CARTO passaram a pedir chave)
@@ -1387,19 +1388,22 @@ ${chart}
       if (c.x2 - c.x1 < W - 80 && c.y2 - c.y1 < H - 80) break;
       z--;
     }
+    this._pzb = z;
     z = Math.max(3, Math.min(18, z + (this._pz || 0)));
+    this._pzz = z;
     const c = caixa(z),
-      x0 = (c.x1 + c.x2) / 2 - W / 2,
-      y0 = (c.y1 + c.y2) / 2 - H / 2,
+      x0 = (c.x1 + c.x2) / 2 - W / 2 + (this._pc?.[0] || 0),
+      y0 = (c.y1 + c.y2) / 2 - H / 2 + (this._pc?.[1] || 0),
       n = 2 ** z,
       px = (x) => (((x - x0) / W) * 100).toFixed(3) + "%",
       py = (y) => (((y - y0) / H) * 100).toFixed(3) + "%";
     let tiles = "";
-    for (let tx = Math.floor(x0 / 256); tx <= Math.floor((x0 + W) / 256); tx++)
-      for (let ty = Math.floor(y0 / 256); ty <= Math.floor((y0 + H) / 256); ty++) {
+    // um quadrado a mais à volta, para o arrastar não mostrar buracos
+    for (let tx = Math.floor((x0 - 256) / 256); tx <= Math.floor((x0 + W + 256) / 256); tx++)
+      for (let ty = Math.floor((y0 - 256) / 256); ty <= Math.floor((y0 + H + 256) / 256); ty++) {
         if (ty < 0 || ty >= n) continue;
         const wx = ((tx % n) + n) % n;
-        tiles += `<img class="pt osm" src="https://tile.openstreetmap.org/${z}/${wx}/${ty}.png" style="left:${px(tx * 256)};top:${py(ty * 256)}" alt="" loading="lazy">`;
+        tiles += `<img class="pt osm" src="https://tile.openstreetmap.org/${z}/${wx}/${ty}.png" style="left:${px(tx * 256)};top:${py(ty * 256)}" alt="">`;
       }
     let marks = "",
       usados = [];
@@ -1417,7 +1421,95 @@ ${chart}
       usados.push([x + dx, y]);
       marks += `<span class="pa ${t.home ? "home" : ""}" style="left:${px(x + dx)};top:${py(y)};background-color:${t.p.color};${t.pic ? `background-image:url('${esc(t.pic)}')` : ""}">${t.pic ? "" : esc(t.p.initial)}</span>`;
     });
-    return `<div class="pmw">${tiles}${marks}<div class="pmz"><button data-pz="1" aria-label="Aproximar">+</button><button data-pz="-1" aria-label="Afastar">−</button></div><small class="pcr">© OpenStreetMap</small></div>`;
+    return `<div class="pmw" data-pmap><div class="pml">${tiles}${marks}</div><div class="pmz"><button data-pz="1" aria-label="Aproximar">+</button><button data-pz="-1" aria-label="Afastar">−</button><button data-pc aria-label="Centrar em todos">⌖</button></div><small class="pcr">© OpenStreetMap</small></div>`;
+  }
+  // muda o zoom do mapa k níveis mantendo o mesmo sítio ao centro
+  _mapZoom(k) {
+    const zb = this._pzb ?? 16,
+      zo = this._pzz ?? zb,
+      zn = Math.max(3, Math.min(18, zo + k)),
+      f = 2 ** (zn - zo),
+      [ox, oy] = this._pc || [0, 0];
+    this._pz = zn - zb;
+    this._pc = [ox * f, oy * f];
+  }
+  // gestos no mapa: arrastar com um dedo, pinça com dois, duplo toque aproxima
+  _mapDown(e) {
+    const pm = e.target.closest?.("[data-pmap]");
+    if (!pm || e.target.closest("button")) return;
+    e.preventDefault();
+    if (!this._pg) this._pg = { pm, lay: pm.querySelector(".pml"), pts: new Map(), tx: 0, ty: 0, s: 1, o: null, t0: Date.now() };
+    const g = this._pg;
+    g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    try {
+      pm.setPointerCapture(e.pointerId);
+    } catch (_) {}
+    this._sBusy = true;
+    this._mapBase(g);
+  }
+  // quando muda o número de dedos, o gesto recomeça a partir da posição atual
+  _mapBase(g) {
+    const R = g.pm.getBoundingClientRect(),
+      P = [...g.pts.values()];
+    g.b = { tx: g.tx, ty: g.ty, s: g.s, P: P.map((p) => ({ ...p })) };
+    if (P.length >= 2) {
+      g.b.m = [(P[0].x + P[1].x) / 2 - R.left, (P[0].y + P[1].y) / 2 - R.top];
+      g.b.d = Math.hypot(P[0].x - P[1].x, P[0].y - P[1].y) || 1;
+      if (g.s === 1) g.o = [g.b.m[0] - g.tx, g.b.m[1] - g.ty];
+    }
+  }
+  _mapMove(e) {
+    const g = this._pg;
+    if (!g || !g.pts.has(e.pointerId)) return;
+    g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const R = g.pm.getBoundingClientRect(),
+      P = [...g.pts.values()],
+      b = g.b;
+    if (P.length >= 2 && b.m) {
+      const m = [(P[0].x + P[1].x) / 2 - R.left, (P[0].y + P[1].y) / 2 - R.top];
+      g.s = Math.max(0.25, Math.min(8, (b.s * Math.hypot(P[0].x - P[1].x, P[0].y - P[1].y)) / b.d));
+      g.tx = b.tx + m[0] - b.m[0];
+      g.ty = b.ty + m[1] - b.m[1];
+    } else {
+      g.tx = b.tx + P[0].x - b.P[0].x;
+      g.ty = b.ty + P[0].y - b.P[0].y;
+    }
+    const o = g.o || [R.width / 2, R.height / 2];
+    g.lay.style.transformOrigin = `${o[0]}px ${o[1]}px`;
+    g.lay.style.transform = `translate(${g.tx}px,${g.ty}px) scale(${g.s})`;
+  }
+  _mapUp(e) {
+    const g = this._pg;
+    if (!g || !g.pts.has(e.pointerId)) return;
+    g.pts.delete(e.pointerId);
+    if (g.pts.size) return this._mapBase(g);
+    this._pg = null;
+    this._sBusy = false;
+    g.lay.style.transform = "";
+    const R = g.pm.getBoundingClientRect(),
+      kx = 340 / (R.width || 340),
+      C = [R.width / 2, R.height / 2],
+      o = g.o || C;
+    // toque curto sem mexer: dois seguidos aproximam um nível à volta do dedo
+    if (Math.abs(g.tx) < 6 && Math.abs(g.ty) < 6 && g.s === 1 && Date.now() - g.t0 < 350) {
+      const t = [e.clientX - R.left, e.clientY - R.top];
+      if (this._ptap && Date.now() - this._ptap.t < 350) {
+        this._ptap = null;
+        const [ox, oy] = this._pc || [0, 0];
+        this._pc = [ox + ((t[0] - C[0]) / 2) * kx, oy + ((t[1] - C[1]) / 2) * kx];
+        this._mapZoom(1);
+      } else {
+        this._ptap = { t: Date.now() };
+        return;
+      }
+    } else {
+      // o ponto que ficou ao centro do ecrã passa a ser o novo centro; a pinça arredonda para o nível de zoom mais próximo
+      const p = [o[0] + (C[0] - g.tx - o[0]) / g.s, o[1] + (C[1] - g.ty - o[1]) / g.s],
+        [ox, oy] = this._pc || [0, 0];
+      this._pc = [ox + (p[0] - C[0]) * kx, oy + (p[1] - C[1]) * kx];
+      this._mapZoom(Math.round(Math.log2(g.s)));
+    }
+    this._renderSheet();
   }
   // distância em linha reta entre dois pontos (km)
   _km(a, b) {
@@ -1452,7 +1544,7 @@ ${chart}
         return `<div class="pr"><span class="av ${st === "home" ? "home" : ""}" style="background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span><div><b>${esc(a.friendly_name || p.entity)}</b><small><i class="${st === "home" ? "in" : ""}">${esc(onde)}</i>${o ? " · " + desde(o.last_changed) : ""}</small></div>${dist ? `<em>${dist}</em>` : ""}</div>`;
       })
       .join("");
-    return `<style>.pmw{position:relative;aspect-ratio:340/210;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:#1b2329;margin-bottom:12px}.pme{display:grid;place-items:center;color:var(--mute);font-size:13px}.pt{position:absolute;width:75.294%;height:121.905%;max-width:none;user-select:none;pointer-events:none}.pt.osm{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}.pz{position:absolute;transform:translate(-50%,-50%);border-radius:50%;background:rgba(101,216,222,.15);border:1.5px solid rgba(101,216,222,.7)}.pa{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid var(--mute);background-size:cover;background-position:center;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.5)}.pa.home{border-color:var(--ok)}.pmz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px}.pmz button{width:34px;height:34px;border-radius:10px;background:rgba(15,32,45,.85);border:1px solid rgba(255,255,255,.15);font-size:18px;font-weight:700;color:var(--fg)}.pcr{position:absolute;right:6px;bottom:3px;font-size:9px;color:rgba(255,255,255,.45)}.pr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);margin-bottom:6px}.pr .av{width:42px;height:42px;flex:none;font-size:15px;border-radius:50%;display:grid;place-items:center;font-weight:700;position:relative;border:2px solid #10242b;background-size:cover;background-position:center}.pr .av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--mute);border:2px solid #10242b}.pr .av.home::after{background:var(--ok)}.pr div{flex:1;min-width:0}.pr b{display:block;font-size:15px}.pr small{display:block;font-size:12.5px;color:var(--dim);margin-top:1px}.pr small i{font-style:normal;font-weight:600;color:var(--fg)}.pr small i.in{color:var(--ok)}.pr em{font-style:normal;font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap}</style><div class="sh"><div><b>Pessoas</b><small>Onde está cada um</small></div><button class="x" data-close>Fechar</button></div>
+    return `<style>.pmw{position:relative;aspect-ratio:340/210;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:#1b2329;margin-bottom:12px}.pml{position:absolute;inset:0;will-change:transform}.pmw[data-pmap]{touch-action:none;-webkit-user-select:none;user-select:none}.pme{display:grid;place-items:center;color:var(--mute);font-size:13px}.pt{position:absolute;width:75.294%;height:121.905%;max-width:none;user-select:none;pointer-events:none}.pt.osm{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}.pz{position:absolute;transform:translate(-50%,-50%);border-radius:50%;background:rgba(101,216,222,.15);border:1.5px solid rgba(101,216,222,.7)}.pa{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid var(--mute);background-size:cover;background-position:center;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.5)}.pa.home{border-color:var(--ok)}.pmz{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px}.pmz button{width:34px;height:34px;border-radius:10px;background:rgba(15,32,45,.85);border:1px solid rgba(255,255,255,.15);font-size:18px;font-weight:700;color:var(--fg)}.pcr{position:absolute;right:6px;bottom:3px;font-size:9px;color:rgba(255,255,255,.45)}.pr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);margin-bottom:6px}.pr .av{width:42px;height:42px;flex:none;font-size:15px;border-radius:50%;display:grid;place-items:center;font-weight:700;position:relative;border:2px solid #10242b;background-size:cover;background-position:center}.pr .av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--mute);border:2px solid #10242b}.pr .av.home::after{background:var(--ok)}.pr div{flex:1;min-width:0}.pr b{display:block;font-size:15px}.pr small{display:block;font-size:12.5px;color:var(--dim);margin-top:1px}.pr small i{font-style:normal;font-weight:600;color:var(--fg)}.pr small i.in{color:var(--ok)}.pr em{font-style:normal;font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap}</style><div class="sh"><div><b>Pessoas</b><small>Onde está cada um</small></div><button class="x" data-close>Fechar</button></div>
 ${this._pplMap()}${rows}`;
   }
   // ---------- calendário (toque no dia do topo) ----------
@@ -1636,6 +1728,10 @@ ${this._pplMap()}${rows}`;
       };
       sr.addEventListener("pointerup", dragEnd);
       sr.addEventListener("pointercancel", dragEnd);
+      sr.addEventListener("pointerdown", (e) => this._mapDown(e));
+      sr.addEventListener("pointermove", (e) => this._mapMove(e));
+      sr.addEventListener("pointerup", (e) => this._mapUp(e));
+      sr.addEventListener("pointercancel", (e) => this._mapUp(e));
       sr.addEventListener("keydown", (e) => {
         if (e.key === "Escape") this._closeSheet();
       });
@@ -2005,7 +2101,12 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
     }
     if (d.alert) return this._doAlert(d.alert);
     if (s.kind === "ppl" && d.pz) {
-      this._pz = Math.max(-6, Math.min(4, (this._pz || 0) + Number(d.pz)));
+      this._mapZoom(Number(d.pz));
+      return this._renderSheet();
+    }
+    if (s.kind === "ppl" && "pc" in d) {
+      this._pz = 0;
+      this._pc = [0, 0];
       return this._renderSheet();
     }
     if (s.kind === "cal" && (d.cd || d.cm || "ct" in d)) {
