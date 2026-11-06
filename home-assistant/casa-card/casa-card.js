@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.3.0";
+const VERSAO = "2.4.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -45,6 +45,7 @@ const PADRAO = {
   plan: null, // planta 3D (só tablet)
   history_avg: "sensor.temperatura_media_da_casa", // temperatura média da casa (texto "média" e janela do histórico)
   history_rooms: null, // divisões da janela do histórico (por omissão HIST_ROOMS, em baixo)
+  calendars: null, // calendários da janela do calendário: [{entity, name, color}] (por omissão todos os calendar.*)
 };
 
 // divisões da janela do histórico: t = temperatura, h = humidade (precisam de state_class: measurement)
@@ -622,8 +623,8 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     const wx = this._st(this._wxId());
     const date = new Date().toLocaleDateString("pt-PT", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "");
     const wxTxt = wx
-      ? `<button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button><span>${esc(date)}</span>`
-      : esc(date);
+      ? `<button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button><span><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button></span>`
+      : `<span><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button></span>`;
     const people = c.persons
       .map((p) => {
         const o = this._st(p.entity),
@@ -885,7 +886,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
     const gar = c.rooms.find((r) => r.gate);
     this.shadowRoot.innerHTML = `<style>${ESTILOS.CORES}${ESTILOS.BASE}${ESTILOS.TELEMOVEL}${ESTILOS.TABLET}</style>
 <div class="tab" style="--h:${c.tablet_height}">
-<div class="ttop"><div class="clock">${hhmm}</div><div class="tdate"><b>${hello}</b><br>${esc(date)}${wx ? ` · <button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:2px 10px 2px 6px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button>` : ""}</div>
+<div class="ttop"><div class="clock">${hhmm}</div><div class="tdate"><b>${hello}</b><br><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button>${wx ? ` · <button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:2px 10px 2px 6px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button>` : ""}</div>
 <div class="tmid">${chip}</div>
 <button class="pill ${armed ? "arm" : ""}" data-alarmpop><ha-icon icon="${armed ? "mdi:shield-lock" : "mdi:shield-off-outline"}"></ha-icon>${armed ? "Armado" : "Desarmado"}</button>
 <div style="display:flex;padding-left:6px">${people}</div></div>
@@ -1348,6 +1349,111 @@ ${chart}
     this._openSheet({ kind: "hist" });
     this._histLoad();
   }
+  // ---------- calendário (toque no dia do topo) ----------
+  // calendários a mostrar: os do YAML (calendars: [{entity, name, color}]) ou, por omissão, todos os calendar.* do HA
+  _calList() {
+    const COR = ["#65d8de", "#f6b84b", "#a78bfa", "#5fd39a", "#ff8a5c", "#7cc4ff"];
+    const L = this._cfg.calendars || Object.keys(this._hass?.states || {}).filter((e) => e.startsWith("calendar."));
+    return L.map((x, i) => {
+      const o = typeof x === "string" ? { entity: x } : x;
+      return { entity: o.entity, name: o.name || this._st(o.entity)?.attributes?.friendly_name || o.entity, color: o.color || COR[i % COR.length] };
+    });
+  }
+  _openCal() {
+    const t = new Date();
+    this._cal = { y: t.getFullYear(), m: t.getMonth(), sel: `${t.getFullYear()}-${p2(t.getMonth() + 1)}-${p2(t.getDate())}` };
+    this._openSheet({ kind: "cal" });
+    this._calLoad();
+  }
+  // 6 semanas a começar na segunda-feira antes do dia 1 do mês
+  _calGrid() {
+    const C = this._cal,
+      f = new Date(C.y, C.m, 1),
+      a = new Date(C.y, C.m, 1 - ((f.getDay() + 6) % 7));
+    return { a, b: new Date(a.getFullYear(), a.getMonth(), a.getDate() + 42) };
+  }
+  // pede os eventos do mês visível (guardados 5 min)
+  _calLoad() {
+    const C = this._cal,
+      k = C.y + "-" + C.m,
+      L = this._calList(),
+      G = this._calGrid();
+    this._cc = this._cc || {};
+    const c = this._cc[k];
+    if (!L.length || (c && (c.loading || Date.now() - c.t < 300000))) return;
+    this._cc[k] = { loading: true, ev: c?.ev };
+    this._hass
+      .callWS({ type: "call_service", domain: "calendar", service: "get_events", service_data: { start_date_time: G.a.toISOString(), end_date_time: G.b.toISOString() }, target: { entity_id: L.map((x) => x.entity) }, return_response: true })
+      .then((r) => {
+        const ev = [];
+        for (const x of L) for (const e of r?.response?.[x.entity]?.events || []) ev.push({ ...e, cor: x.color, cal: x.name });
+        this._cc[k] = { ev, t: Date.now() };
+      })
+      .catch(() => (this._cc[k] = { err: true, ev: [], t: Date.now() }))
+      .finally(() => this._sheet?.kind === "cal" && this._renderSheet());
+  }
+  // eventos por dia ("AAAA-MM-DD" -> lista); um evento de vários dias aparece em todos
+  _calByDay(ev) {
+    const out = {},
+      ymd = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`,
+      pd = (s) => (s.length <= 10 ? new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) : new Date(s));
+    for (const e of ev) {
+      const allDay = String(e.start).length <= 10,
+        s = pd(String(e.start)),
+        en = pd(String(e.end || e.start));
+      let d = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+      for (let n = 0; n < 62; n++) {
+        if (n > 0 && (allDay ? d >= en : d >= en)) break;
+        (out[ymd(d)] ||= []).push({ ...e, allDay, s, en });
+        d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+      }
+    }
+    for (const k in out) out[k].sort((x, y) => (x.allDay === y.allDay ? x.s - y.s : x.allDay ? -1 : 1));
+    return out;
+  }
+  _calHtml() {
+    const C = this._cal,
+      L = this._calList(),
+      D = this._cc?.[C.y + "-" + C.m],
+      G = this._calGrid(),
+      byDay = this._calByDay(D?.ev || []),
+      t0 = new Date(),
+      today = `${t0.getFullYear()}-${p2(t0.getMonth() + 1)}-${p2(t0.getDate())}`,
+      hm = (d) => p2(d.getHours()) + ":" + p2(d.getMinutes());
+    const mes = new Date(C.y, C.m, 1).toLocaleDateString("pt-PT", { month: "long", year: "numeric" }).replace(" de ", " ");
+    let cells = "";
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(G.a.getFullYear(), G.a.getMonth(), G.a.getDate() + i),
+        k = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`,
+        evs = byDay[k] || [],
+        cores = [...new Set(evs.map((e) => e.cor))].slice(0, 3);
+      cells += `<button class="cd ${d.getMonth() !== C.m ? "fo" : ""} ${k === today ? "hj" : ""} ${k === C.sel ? "se" : ""}" data-cd="${k}" aria-label="${d.getDate()}${evs.length ? ", " + evs.length + " eventos" : ""}"><b>${d.getDate()}</b><i>${cores.map((c) => `<s style="background:${c}"></s>`).join("")}</i></button>`;
+    }
+    const [sy, sm, sd] = C.sel.split("-").map(Number),
+      sDate = new Date(sy, sm - 1, sd),
+      dn = sDate.toLocaleDateString("pt-PT", { weekday: "long" }).replace("-feira", ""),
+      titulo = (C.sel === today ? "Hoje · " : "") + dn.charAt(0).toUpperCase() + dn.slice(1) + ", " + sd + " " + sDate.toLocaleDateString("pt-PT", { month: "long" }),
+      lst = byDay[C.sel] || [];
+    const lista = !L.length
+      ? `<p class="cvz">Não há calendários no Home Assistant.</p>`
+      : !D || (D.loading && !D.ev)
+        ? `<p class="cvz">A carregar…</p>`
+        : D.err
+          ? `<p class="cvz">Não foi possível ler o calendário.</p>`
+          : lst.length
+            ? lst
+                .map(
+                  (e) =>
+                    `<div class="ce" style="--c:${e.cor}"><span class="ch">${e.allDay ? "Dia todo" : hm(e.s) + "<small>" + hm(e.en) + "</small>"}</span><div><b>${esc(e.summary || "(sem título)")}</b>${e.location ? `<small>${esc(e.location)}</small>` : ""}${L.length > 1 ? `<small>${esc(e.cal)}</small>` : ""}</div></div>`,
+                )
+                .join("")
+            : `<p class="cvz">Nada marcado.</p>`;
+    return `<style>.cm{display:flex;align-items:center;gap:6px;margin:2px 0 10px}.cm b{flex:1;font-size:16px;text-transform:capitalize}.cm button{height:36px;min-width:36px;padding:0 10px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:14px;font-weight:600;color:var(--dim)}.cm button ha-icon{--mdc-icon-size:20px}.cw,.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cw span{text-align:center;font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;padding-bottom:2px}.cd{height:44px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-variant-numeric:tabular-nums}.cd b{font-size:14.5px;font-weight:500;width:28px;height:28px;line-height:28px;border-radius:50%;text-align:center}.cd i{display:flex;gap:2px;height:5px}.cd s{width:5px;height:5px;border-radius:50%;text-decoration:none}.cd.fo{opacity:.35}.cd.hj b{color:var(--cyan);font-weight:800;box-shadow:inset 0 0 0 1.5px var(--cyan)}.cd.se{background:rgba(101,216,222,.14)}.cd.se b{background:var(--cyan);color:#06262b;box-shadow:none;font-weight:800}.cdh{font-size:13px;font-weight:700;color:var(--dim);margin:14px 2px 8px}.ce{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-left:4px solid var(--c);margin-bottom:6px}.ce .ch{width:58px;flex:none;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--c)}.ce .ch small{display:block;font-weight:500;color:var(--mute)}.ce div{min-width:0}.ce b{display:block;font-size:14.5px}.ce div small{display:block;font-size:12px;color:var(--dim);margin-top:1px}.cvz{font-size:13px;color:var(--mute);margin:4px 2px}</style><div class="sh"><div><b>Calendário</b>${L.length === 1 ? `<small>${esc(L[0].name)}</small>` : ""}</div><button class="x" data-close>Fechar</button></div>
+<div class="cm"><button data-cm="-1" aria-label="Mês anterior"><ha-icon icon="mdi:chevron-left"></ha-icon></button><b>${esc(mes)}</b><button data-ct>Hoje</button><button data-cm="1" aria-label="Mês seguinte"><ha-icon icon="mdi:chevron-right"></ha-icon></button></div>
+<div class="cw">${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map((x) => `<span>${x}</span>`).join("")}</div>
+<div class="cg">${cells}</div>
+<div class="cdh">${esc(titulo)}</div>${lista}`;
+  }
   // ---------- cenários (botão no topo do telemóvel) ----------
   // um botão por cenário do YAML (scenes); mostra "A correr…" enquanto o script corre e "Ativado ✓" depois do toque
   _scenesHtml() {
@@ -1529,6 +1635,8 @@ ${abertos.length ? `<div class="alw"><ha-icon icon="mdi:door-open"></ha-icon><sp
 <div style="display:flex;gap:10px;margin-top:6px"><button class="abtn cf" data-gyes style="flex:1;height:48px;font-size:15px">Sim, ${verbo}</button><button class="abtn" data-close style="flex:1;height:48px;font-size:15px">Cancelar</button></div>`;
     } else if (s.kind === "wx") {
       body = this._wxHtml();
+    } else if (s.kind === "cal") {
+      body = this._calHtml();
     } else if (s.kind === "scenes") {
       body = this._scenesHtml();
     } else if (s.kind === "hist") {
@@ -1652,6 +1760,7 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
     if ("wxpop" in d) return this._openWx();
     if ("histpop" in d) return this._openHist();
     if ("scenepop" in d) return this._openSheet({ kind: "scenes" });
+    if ("calpop" in d) return this._openCal();
     if (d.scene != null) {
       const x = this._cfg.scenes[Number(d.scene)],
         [dom, svc] = (x.action || x.service).split(".");
@@ -1786,6 +1895,27 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
       return setTimeout(() => this._more(id), 50);
     }
     if (d.alert) return this._doAlert(d.alert);
+    if (s.kind === "cal" && (d.cd || d.cm || "ct" in d)) {
+      const C = this._cal;
+      if (d.cd) {
+        C.sel = d.cd;
+        const [y, m] = d.cd.split("-").map(Number);
+        C.y = y;
+        C.m = m - 1;
+      } else if (d.cm) {
+        const n = new Date(C.y, C.m + Number(d.cm), 1);
+        C.y = n.getFullYear();
+        C.m = n.getMonth();
+        C.sel = `${C.y}-${p2(C.m + 1)}-01`;
+      } else {
+        const t = new Date();
+        C.y = t.getFullYear();
+        C.m = t.getMonth();
+        C.sel = `${C.y}-${p2(C.m + 1)}-${p2(t.getDate())}`;
+      }
+      this._calLoad();
+      return this._renderSheet();
+    }
     if (d.scn != null) {
       const i = Number(d.scn),
         x = this._cfg.scenes?.[i];

@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=14`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=15`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.3.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.4.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -41,3 +41,7 @@ Em cada divisão: o nome (com ›) abre a divisão; o botão amarelo "N luzes �
 ## Cenários no telemóvel (?v=14)
 
 O sino do topo do telemóvel deu lugar a um botão com uma paleta (`mdi:palette-outline`) que abre a janela "Cenários": os mesmos `scenes` do YAML do cartão (Sair de casa, Rotina dos estores, Dormir). Um toque ativa; mostra "Ativado ✓" 3 s e, nos scripts, "A correr…" enquanto correm. Cada cenário aceita `desc` (texto pequeno por baixo do nome). Trocas: `cenarios-trocas.json`.
+
+## Calendário (?v=15)
+
+No telemóvel e no tablet, a data do topo passou a botão (ícone de calendário) que abre a janela "Calendário": mês com ‹ › e "Hoje", pontinhos nos dias com eventos, e por baixo os eventos do dia escolhido (hora ou "Dia todo", título, local). Usa `calendar.get_events` só com a janela aberta (guardado 5 min). Mostra todos os `calendar.*` do HA; para escolher, pôr no YAML `calendars: [{entity, name, color}]`. A 6 nov 2026 só havia o `calendar.calendariolocal`, vazio: falta ligar o Google Calendar com a integração "Calendário remoto" (endereço secreto iCal). Trocas: `calendario-trocas.json`.
