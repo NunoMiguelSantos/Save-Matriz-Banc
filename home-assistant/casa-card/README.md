@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=16`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=17`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.4.1).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -49,3 +49,7 @@ No telemóvel e no tablet, a data do topo passou a botão (ícone de calendário
 ## Topo do telemóvel numa linha (?v=16)
 
 Tempo e data ficam sempre na mesma linha (`estilos.js`: `.top .g small` sem quebra). O escudo do alarme saiu do topo do telemóvel com a opção nova `top_alarm: false` no YAML do cartão do telemóvel (pôr `true` ou apagar a linha para voltar). Trocas: `topo-trocas.json` e `topo-estilos-trocas.json`.
+
+## Pessoas (?v=17)
+
+Tocar nas fotos do topo (telemóvel e tablet) abre a janela "Pessoas": cartão de mapa do próprio HA (criado com `loadCardHelpers`, modo escuro, pessoas + `zone.home`) e uma linha por pessoa com "Em casa"/"Fora"/nome da zona, desde quando e, para quem está fora, a distância em linha reta a casa (m ou km). Trocas: `pessoas-trocas.json`.

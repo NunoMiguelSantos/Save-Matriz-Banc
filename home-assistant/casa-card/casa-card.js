@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.4.1";
+const VERSAO = "2.5.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -196,6 +196,7 @@ class CasaTlmCard extends HTMLElement {
   }
   set hass(hass) {
     this._hass = hass;
+    if (this._pmap) this._pmap.hass = hass;
     const sig = this._signature();
     if (sig !== this._sig) {
       this._sig = sig;
@@ -630,7 +631,7 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
       .map((p) => {
         const o = this._st(p.entity),
           pic = o?.attributes?.entity_picture;
-        return `<span class="av ${o?.state === "home" ? "home" : ""}" title="${esc(o?.attributes?.friendly_name || "")}" style="background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span>`;
+        return `<span class="av ${o?.state === "home" ? "home" : ""}" data-ppl role="button" title="${esc(o?.attributes?.friendly_name || "")}" style="cursor:pointer;background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span>`;
       })
       .join("");
     const al = this._alerts();
@@ -874,7 +875,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
       .map((p) => {
         const o = this._st(p.entity),
           pic = o?.attributes?.entity_picture;
-        return `<span class="av ${o?.state === "home" ? "home" : ""}" title="${esc(o?.attributes?.friendly_name || "")}" style="width:36px;height:36px;background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span>`;
+        return `<span class="av ${o?.state === "home" ? "home" : ""}" data-ppl role="button" title="${esc(o?.attributes?.friendly_name || "")}" style="cursor:pointer;width:36px;height:36px;background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span>`;
       })
       .join("");
     const room = this._sel === "casa" ? null : this._room(this._sel);
@@ -1350,6 +1351,75 @@ ${chart}
     this._openSheet({ kind: "hist" });
     this._histLoad();
   }
+  // ---------- pessoas (toque nas fotos do topo) ----------
+  // mapa do próprio HA (cartão "map", criado com os card helpers) + onde está cada um, desde quando e a que distância de casa
+  _openPpl() {
+    this._openSheet({ kind: "ppl" });
+  }
+  _pplMount() {
+    const box = this._portal?.shadowRoot?.getElementById("pmap");
+    if (!box) return;
+    if (this._pmap) {
+      this._pmap.hass = this._hass;
+      if (this._pmap.parentNode !== box) box.appendChild(this._pmap);
+      return;
+    }
+    if (this._pmapLoading || !window.loadCardHelpers) return;
+    this._pmapLoading = true;
+    window
+      .loadCardHelpers()
+      .then((h) => {
+        const el = h.createCardElement({
+          type: "map",
+          entities: [...(this._cfg.persons || []).map((p) => ({ entity: p.entity })), { entity: "zone.home" }],
+          hours_to_show: 0,
+          theme_mode: "dark",
+          aspect_ratio: "16:10",
+          fit_zones: false,
+        });
+        el.hass = this._hass;
+        this._pmap = el;
+        this._pmapLoading = false;
+        this._pplMount();
+      })
+      .catch(() => (this._pmapLoading = false));
+  }
+  // distância em linha reta entre dois pontos (km)
+  _km(a, b) {
+    const R = 6371,
+      r = (x) => (x * Math.PI) / 180,
+      dLa = r(b[0] - a[0]),
+      dLo = r(b[1] - a[1]);
+    const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLo / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  _pplHtml() {
+    const z = this._st("zone.home")?.attributes || {},
+      casa = z.latitude != null ? [z.latitude, z.longitude] : null;
+    const desde = (iso) => {
+      const d = new Date(iso),
+        t = new Date(),
+        h = p2(d.getHours()) + ":" + p2(d.getMinutes()),
+        ontem = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1);
+      if (d.toDateString() === t.toDateString()) return "desde as " + h;
+      if (d.toDateString() === ontem.toDateString()) return "desde ontem, " + h;
+      return "desde " + d.toLocaleDateString("pt-PT", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "") + ", " + h;
+    };
+    const rows = (this._cfg.persons || [])
+      .map((p) => {
+        const o = this._st(p.entity),
+          a = o?.attributes || {},
+          st = o?.state,
+          pic = a.entity_picture,
+          onde = st === "home" ? "Em casa" : st === "not_home" ? "Fora" : !st || st === "unknown" || st === "unavailable" ? "Sem localização" : st,
+          km = casa && st !== "home" && a.latitude != null ? this._km(casa, [a.latitude, a.longitude]) : null,
+          dist = km == null ? "" : km < 1 ? "a " + Math.max(10, Math.round((km * 1000) / 10) * 10) + " m" : "a " + fmt1(km) + " km";
+        return `<div class="pr"><span class="av ${st === "home" ? "home" : ""}" style="background-color:${p.color};${pic ? `background-image:url('${esc(pic)}')` : ""}">${pic ? "" : esc(p.initial)}</span><div><b>${esc(a.friendly_name || p.entity)}</b><small><i class="${st === "home" ? "in" : ""}">${esc(onde)}</i>${o ? " · " + desde(o.last_changed) : ""}</small></div>${dist ? `<em>${dist}</em>` : ""}</div>`;
+      })
+      .join("");
+    return `<style>.pmw{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);min-height:200px;margin-bottom:12px}.pmw>*{display:block;--ha-card-border-radius:0;--ha-card-border-width:0}.pr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);margin-bottom:6px}.pr .av{width:42px;height:42px;flex:none;font-size:15px;border-radius:50%;display:grid;place-items:center;font-weight:700;position:relative;border:2px solid #10242b;background-size:cover;background-position:center}.pr .av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:var(--mute);border:2px solid #10242b}.pr .av.home::after{background:var(--ok)}.pr div{flex:1;min-width:0}.pr b{display:block;font-size:15px}.pr small{display:block;font-size:12.5px;color:var(--dim);margin-top:1px}.pr small i{font-style:normal;font-weight:600;color:var(--fg)}.pr small i.in{color:var(--ok)}.pr em{font-style:normal;font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap}</style><div class="sh"><div><b>Pessoas</b><small>Onde está cada um</small></div><button class="x" data-close>Fechar</button></div>
+<div class="pmw" id="pmap"></div>${rows}`;
+  }
   // ---------- calendário (toque no dia do topo) ----------
   // calendários a mostrar: os do YAML (calendars: [{entity, name, color}]) ou, por omissão, todos os calendar.* do HA
   _calList() {
@@ -1636,6 +1706,8 @@ ${abertos.length ? `<div class="alw"><ha-icon icon="mdi:door-open"></ha-icon><sp
 <div style="display:flex;gap:10px;margin-top:6px"><button class="abtn cf" data-gyes style="flex:1;height:48px;font-size:15px">Sim, ${verbo}</button><button class="abtn" data-close style="flex:1;height:48px;font-size:15px">Cancelar</button></div>`;
     } else if (s.kind === "wx") {
       body = this._wxHtml();
+    } else if (s.kind === "ppl") {
+      body = this._pplHtml();
     } else if (s.kind === "cal") {
       body = this._calHtml();
     } else if (s.kind === "scenes") {
@@ -1660,11 +1732,13 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
         this._sheetHtml = inner;
         sheet.innerHTML = inner;
       }
+      if (s.kind === "ppl") this._pplMount();
       return;
     }
     this._sheetHtml = inner;
     this._portal.shadowRoot.innerHTML = `<style>${ESTILOS.CORES}${ESTILOS.BASE}${ESTILOS.PAINEIS}</style>
 <div class="scrim ${this._tab ? "ctr" : ""}" data-scrim><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`;
+    if (s.kind === "ppl") this._pplMount();
   }
   // ---------- ações ----------
   _call(d, s, data) {
@@ -1745,6 +1819,7 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
   // ---------- TOQUES NOS BOTÕES ----------
   // cada botão tem um data-... que diz o que fazer (data-light, data-q, data-mode, ...)
   _onClick(e) {
+    if (e.target.closest?.("[data-ppl]")) return this._openPpl();
     const b = e.target.closest?.("button");
     if (!b) {
       if (e.target.closest?.("[data-plan]")) {
