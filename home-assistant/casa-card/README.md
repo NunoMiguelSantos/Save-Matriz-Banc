@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=19`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=20`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.2).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.5.3).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -61,3 +61,7 @@ O mapa aparecia vazio (só os botões de zoom): o cartão passa a pedir ao mapa 
 ### Mapa próprio (?v=19)
 
 O cartão de mapa do HA continuava vazio dentro da janela. Passou a ser um mapa desenhado pelo cartão, sem bibliotecas: mosaicos escuros da CARTO (os mesmos do mapa do HA; se falharem, OpenStreetMap escurecido), zona de casa e fotos por cima, zoom automático para caberem todos e botões +/−. Trocas: `pessoas-mapa2-trocas.json`.
+
+### Mosaicos OpenStreetMap (?v=20)
+
+Os mosaicos da CARTO passaram a devolver "API KEY REQUIRED" (é também por isso que o mapa do HA aparecia vazio). O mapa usa agora só os mosaicos do OpenStreetMap, escurecidos com um filtro. Trocas: `pessoas-mapa-osm-trocas.json`.

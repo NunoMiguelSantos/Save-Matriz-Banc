@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.5.2";
+const VERSAO = "2.5.3";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1356,7 +1356,7 @@ ${chart}
     this._pz = 0;
     this._openSheet({ kind: "ppl" });
   }
-  // mapa próprio, sem bibliotecas: mosaicos escuros (CARTO, os mesmos do mapa do HA; se falharem, OpenStreetMap escurecido)
+  // mapa próprio, sem bibliotecas: mosaicos do OpenStreetMap escurecidos (os da CARTO passaram a pedir chave)
   // com a zona de casa e as fotos por cima; o zoom escolhe-se sozinho para caberem todos (+/− ajusta)
   _pplMap() {
     const W = 340,
@@ -1399,7 +1399,7 @@ ${chart}
       for (let ty = Math.floor(y0 / 256); ty <= Math.floor((y0 + H) / 256); ty++) {
         if (ty < 0 || ty >= n) continue;
         const wx = ((tx % n) + n) % n;
-        tiles += `<img class="pt" src="https://a.basemaps.cartocdn.com/dark_all/${z}/${wx}/${ty}.png" style="left:${px(tx * 256)};top:${py(ty * 256)}" alt="" onerror="this.onerror=null;this.classList.add('osm');this.src='https://tile.openstreetmap.org/${z}/${wx}/${ty}.png'">`;
+        tiles += `<img class="pt osm" src="https://tile.openstreetmap.org/${z}/${wx}/${ty}.png" style="left:${px(tx * 256)};top:${py(ty * 256)}" alt="" loading="lazy">`;
       }
     let marks = "",
       usados = [];
@@ -1417,7 +1417,7 @@ ${chart}
       usados.push([x + dx, y]);
       marks += `<span class="pa ${t.home ? "home" : ""}" style="left:${px(x + dx)};top:${py(y)};background-color:${t.p.color};${t.pic ? `background-image:url('${esc(t.pic)}')` : ""}">${t.pic ? "" : esc(t.p.initial)}</span>`;
     });
-    return `<div class="pmw">${tiles}${marks}<div class="pmz"><button data-pz="1" aria-label="Aproximar">+</button><button data-pz="-1" aria-label="Afastar">−</button></div><small class="pcr">© OpenStreetMap · © CARTO</small></div>`;
+    return `<div class="pmw">${tiles}${marks}<div class="pmz"><button data-pz="1" aria-label="Aproximar">+</button><button data-pz="-1" aria-label="Afastar">−</button></div><small class="pcr">© OpenStreetMap</small></div>`;
   }
   // distância em linha reta entre dois pontos (km)
   _km(a, b) {
