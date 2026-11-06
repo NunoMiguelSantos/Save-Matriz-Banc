@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.4.0";
+const VERSAO = "2.4.1";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -33,6 +33,7 @@ const PADRAO = {
   weather_days: null, // previsão por dias na janela da meteorologia (ex.: IPMA); sem isto usa weather
   weather_name: null, // nome no topo da janela (por omissão o nome de weather_days)
   alarm: null,
+  top_alarm: true, // escudo do alarme no topo do telemóvel (false = não mostra)
   water_alert: null,
   boiler: null,
   all_cover: null,
@@ -665,7 +666,7 @@ ${(c.scenes || []).length ? `<button class="bell" data-scenepop aria-label="Cen�
       gr = c.rooms.find((r) => r.gate),
       gc = gr ? this._gateClosed(gr) : null;
     let h = "";
-    if (c.alarm) {
+    if (c.alarm && c.top_alarm !== false) {
       const t = armed ? "Alarme armado" : "Alarme desarmado";
       h += `<button class="ico2 ${armed ? "dang" : ""}" data-alarmpop aria-label="${t}" title="${t}"><ha-icon icon="${armed ? "mdi:shield-lock" : "mdi:shield-off-outline"}"></ha-icon></button>`;
     }

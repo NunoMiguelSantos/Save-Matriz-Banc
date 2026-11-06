@@ -307,16 +307,17 @@ export const TELEMOVEL = `
 }
 .top .g small {
   font-size: 14.5px;
-  gap: 4px 8px;
+  gap: 6px;
   margin-top: 3px;
-  flex-wrap: wrap;
-  white-space: normal;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 .top .g small ha-icon {
   --mdc-icon-size: 18px;
 }
 .top .g small button {
-  padding: 4px 11px 4px 7px !important;
+  padding: 4px 9px 4px 6px !important;
+  flex: none;
 }
 .top .av {
   width: 38px;

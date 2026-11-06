@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=15`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=16`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.4.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.4.1).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -45,3 +45,7 @@ O sino do topo do telemóvel deu lugar a um botão com uma paleta (`mdi:palette-
 ## Calendário (?v=15)
 
 No telemóvel e no tablet, a data do topo passou a botão (ícone de calendário) que abre a janela "Calendário": mês com ‹ › e "Hoje", pontinhos nos dias com eventos, e por baixo os eventos do dia escolhido (hora ou "Dia todo", título, local). Usa `calendar.get_events` só com a janela aberta (guardado 5 min). Mostra todos os `calendar.*` do HA; para escolher, pôr no YAML `calendars: [{entity, name, color}]`. A 6 nov 2026 só havia o `calendar.calendariolocal`, vazio: falta ligar o Google Calendar com a integração "Calendário remoto" (endereço secreto iCal). Trocas: `calendario-trocas.json`.
+
+## Topo do telemóvel numa linha (?v=16)
+
+Tempo e data ficam sempre na mesma linha (`estilos.js`: `.top .g small` sem quebra). O escudo do alarme saiu do topo do telemóvel com a opção nova `top_alarm: false` no YAML do cartão do telemóvel (pôr `true` ou apagar a linha para voltar). Trocas: `topo-trocas.json` e `topo-estilos-trocas.json`.

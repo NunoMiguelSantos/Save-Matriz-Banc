@@ -1,0 +1,1 @@
+[{"de": "    if (c.alarm) {\n      const t = armed", "para": "    if (c.alarm && c.top_alarm !== false) {\n      const t = armed"}, {"de": "  alarm: null,\n", "para": "  alarm: null,\n  top_alarm: true, // escudo do alarme no topo do telemóvel (false = não mostra)\n"}, {"de": "const VERSAO = \"2.4.0\";", "para": "const VERSAO = \"2.4.1\";"}]
