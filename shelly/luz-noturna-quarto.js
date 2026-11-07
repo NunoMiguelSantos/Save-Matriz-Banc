@@ -31,8 +31,9 @@ let luxId = null;
 
 function log(m) { if (CONFIG.DEBUG) print("[luz-noturna] " + m); }
 
-function toMin(hhmm) {
-  return JSON.parse(hhmm.slice(0, 2)) * 60 + JSON.parse(hhmm.slice(3, 5));
+function d(ch) { return ch.charCodeAt(0) - 48; }
+function toMin(hhmm) { // "HH:MM" -> minutos desde a meia-noite
+  return (d(hhmm[0]) * 10 + d(hhmm[1])) * 60 + d(hhmm[3]) * 10 + d(hhmm[4]);
 }
 
 function isNight() {
