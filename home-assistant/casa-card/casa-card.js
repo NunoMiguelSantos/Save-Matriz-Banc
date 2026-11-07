@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.6.0";
+const VERSAO = "2.7.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -1010,6 +1010,8 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
   }
   // pede ao HA as previsões por hora (weather) e por dia (weather_days, ex.: IPMA) quando a janela abre
   _openWx() {
+    this._wxSel = null;
+    this._wxMsg = 0;
     this._openSheet({ kind: "wx" });
     if (this._wxData && Date.now() - this._wxData.t < 600000) return;
     const c = this._cfg,
@@ -1050,7 +1052,21 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
       ["Pressão", a.pressure != null ? `${r0(a.pressure)} ${a.pressure_unit || "hPa"}` : null],
     ].filter((x) => x[1] != null);
     // próximas 24 horas: colunas + curva da temperatura por cima
-    const H = (D?.h || []).filter((f) => Date.parse(f.datetime) > Date.now() - 3600000).slice(0, 24),
+    // dia escolhido na lista dos próximos dias (só os que têm previsão hora a hora); sem escolha mostra as próximas 24 horas
+    const ymd = (x) => {
+        const d = new Date(x);
+        return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+      },
+      comHoras = new Set((D?.h || []).map((f) => ymd(f.datetime))),
+      sel = this._wxSel && comHoras.has(this._wxSel) ? this._wxSel : null,
+      aviso = this._wxMsg && Date.now() - this._wxMsg < 4000;
+    let titSel = "";
+    if (sel) {
+      const d = new Date(sel + "T12:00"),
+        w = d.toLocaleDateString("pt-PT", { weekday: "long" }).replace("-feira", "");
+      titSel = w.charAt(0).toUpperCase() + w.slice(1) + ", " + d.getDate() + " " + d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", "");
+    }
+    const H = (sel ? (D?.h || []).filter((f) => ymd(f.datetime) === sel) : (D?.h || []).filter((f) => Date.parse(f.datetime) > Date.now() - 3600000).slice(0, 24)),
       W = 56,
       n = H.length;
     let hrs = "";
@@ -1071,9 +1087,9 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
           novo = i > 0 && hh === 0,
           mm = f.precipitation,
           pr = mm != null ? d1(mm) + " mm" : f.precipitation_probability != null ? r0(f.precipitation_probability) + "%" : "";
-        return `<div class="wc ${novo ? "nd" : ""}" ${novo ? `data-d="${esc(d.toLocaleDateString("pt-PT", { weekday: "long" }))}"` : ""}><span class="wh ${i ? "" : "now"}">${i ? String(hh).padStart(2, "0") + "h" : "Agora"}</span>${ico(f.condition)}<span class="wm ${mm > 0 || f.precipitation_probability > 0 ? "r" : ""}">${pr}</span></div>`;
+        return `<div class="wc ${novo ? "nd" : ""}" ${novo ? `data-d="${esc(d.toLocaleDateString("pt-PT", { weekday: "long" }))}"` : ""}><span class="wh ${i || sel ? "" : "now"}">${i || sel ? String(hh).padStart(2, "0") + "h" : "Agora"}</span>${ico(f.condition)}<span class="wm ${mm > 0 || f.precipitation_probability > 0 ? "r" : ""}">${pr}</span></div>`;
       }).join("");
-      hrs = `<div class="wst">Próximas 24 horas<em>desliza para o lado</em></div><div class="wxh"><div class="wxt" style="width:${n * W}px">${svg}${cols}</div></div>`;
+      hrs = `<div class="wst">${sel ? esc(titSel) + " · hora a hora" : "Próximas 24 horas"}<em>${aviso ? "só há horas para os próximos 3 dias" : "desliza para o lado"}</em></div><div class="wxh"><div class="wxt" style="width:${n * W}px">${svg}${cols}</div></div>`;
     }
     // próximos dias
     let days = "";
@@ -1087,11 +1103,12 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
         const d = new Date(f.datetime),
           dn = f === hoje ? "Hoje" : d.toLocaleDateString("pt-PT", { weekday: "short" }).replace(".", ""),
           pr = temProb ? (f.precipitation_probability ? r0(f.precipitation_probability) + "%" : "") : f.precipitation ? d1(f.precipitation) + " mm" : "";
-        return `<div class="wd"><div class="dn">${esc(dn.charAt(0).toUpperCase() + dn.slice(1))}<small>${d.getDate()} ${esc(d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", ""))}</small></div>${ico(f.condition === "clear-night" ? "sunny" : f.condition)}<span class="pp">${pr}</span><span class="lo">${r0(tl(f))}°</span><span class="rg"><i style="left:${p(tl(f)).toFixed(1)}%;right:${(100 - p(f.temperature)).toFixed(1)}%"></i></span><span class="hi">${r0(f.temperature)}°</span></div>`;
+        const k = ymd(f.datetime);
+        return `<button class="wd ${k === sel ? "sel" : ""} ${comHoras.has(k) ? "" : "nh"}" data-wxd="${k}"><div class="dn">${esc(dn.charAt(0).toUpperCase() + dn.slice(1))}<small>${d.getDate()} ${esc(d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", ""))}</small></div>${ico(f.condition === "clear-night" ? "sunny" : f.condition)}<span class="pp">${pr}</span><span class="lo">${r0(tl(f))}°</span><span class="rg"><i style="left:${p(tl(f)).toFixed(1)}%;right:${(100 - p(f.temperature)).toFixed(1)}%"></i></span><span class="hi">${r0(f.temperature)}°</span></button>`;
       }).join("")}</div>`;
     }
     const resto = !D ? `<p class="sub">A carregar a previsão…</p>` : hrs || days ? hrs + days : `<p class="sub">Não foi possível obter a previsão. Tenta outra vez daqui a pouco.</p>`;
-    return `<style>.wxn{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:18px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px}.wxa{display:flex;align-items:center;gap:10px}.wxa>ha-icon{--mdc-icon-size:46px}.wxa .big{font-size:46px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}.wxa b{display:block;font-size:15px}.wxa small{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}.wxc{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}@media (min-width:521px){.wxc{grid-template-columns:repeat(4,1fr)}}.wxc div{padding:7px 9px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line2)}.wxc span{display:block;font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.wxc b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}.wst{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:4px 2px 6px}.wst em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}.wxh{overflow-x:auto;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px;-webkit-overflow-scrolling:touch}.wxt{position:relative;height:150px;display:flex}.wc{width:56px;flex:none;display:flex;flex-direction:column;align-items:center;padding:8px 0 7px;position:relative}.wc .wh{font-size:12px;color:var(--dim)}.wc .wh.now{color:var(--cyan);font-weight:700}.wc ha-icon{--mdc-icon-size:22px;margin-top:4px}.wc .wm{margin-top:auto;font-size:10.5px;color:var(--mute);white-space:nowrap}.wc .wm.r{color:#64A0FF}.wc.nd{border-left:1px dashed rgba(255,255,255,.18)}.wc.nd::after{content:attr(data-d);position:absolute;left:4px;bottom:24px;font-size:10px;color:var(--mute);white-space:nowrap}.wds{display:flex;flex-direction:column;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);overflow:hidden}.wd{display:grid;grid-template-columns:62px 26px 42px 30px 1fr 30px;align-items:center;gap:8px;padding:8px 12px;font-size:14px;font-variant-numeric:tabular-nums}.wd+.wd{border-top:1px solid var(--line2)}.wd .dn{font-weight:600}.wd .dn small{display:block;font-weight:400;font-size:11px;color:var(--mute)}.wd ha-icon{--mdc-icon-size:22px}.wd .pp{font-size:12px;color:#64A0FF;text-align:right}.wd .lo{color:var(--dim);text-align:right}.wd .hi{font-weight:600}.wd .rg{height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative}.wd .rg i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7DD3FC,#FBBF24,#FF7841)}</style>
+    return `<style>.wxn{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:18px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px}.wxa{display:flex;align-items:center;gap:10px}.wxa>ha-icon{--mdc-icon-size:46px}.wxa .big{font-size:46px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}.wxa b{display:block;font-size:15px}.wxa small{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}.wxc{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}@media (min-width:521px){.wxc{grid-template-columns:repeat(4,1fr)}}.wxc div{padding:7px 9px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line2)}.wxc span{display:block;font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.wxc b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}.wst{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:4px 2px 6px}.wst em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}.wxh{overflow-x:auto;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px;-webkit-overflow-scrolling:touch}.wxt{position:relative;height:150px;display:flex}.wc{width:56px;flex:none;display:flex;flex-direction:column;align-items:center;padding:8px 0 7px;position:relative}.wc .wh{font-size:12px;color:var(--dim)}.wc .wh.now{color:var(--cyan);font-weight:700}.wc ha-icon{--mdc-icon-size:22px;margin-top:4px}.wc .wm{margin-top:auto;font-size:10.5px;color:var(--mute);white-space:nowrap}.wc .wm.r{color:#64A0FF}.wc.nd{border-left:1px dashed rgba(255,255,255,.18)}.wc.nd::after{content:attr(data-d);position:absolute;left:4px;bottom:24px;font-size:10px;color:var(--mute);white-space:nowrap}.wds{display:flex;flex-direction:column;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);overflow:hidden}.wd{display:grid;grid-template-columns:62px 26px 42px 30px 1fr 30px;align-items:center;gap:8px;padding:8px 12px;font-size:14px;font-variant-numeric:tabular-nums}.wd+.wd{border-top:1px solid var(--line2)}button.wd{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:0}.wd.sel{background:rgba(101,216,222,.14);box-shadow:inset 3px 0 0 var(--cyan)}.wd.nh{opacity:.6}.wd .dn{font-weight:600}.wd .dn small{display:block;font-weight:400;font-size:11px;color:var(--mute)}.wd ha-icon{--mdc-icon-size:22px}.wd .pp{font-size:12px;color:#64A0FF;text-align:right}.wd .lo{color:var(--dim);text-align:right}.wd .hi{font-weight:600}.wd .rg{height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative}.wd .rg i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7DD3FC,#FBBF24,#FF7841)}</style>
 <div class="sh"><div><b>Meteorologia</b>${nome ? `<small>${esc(nome)}</small>` : ""}</div><button class="x" data-close>Fechar</button></div>
 <div class="wxn"><div class="wxa">${ico(o?.state)}<span class="big">${r0(a.temperature)}°</span><div><b>${esc(PT[o?.state] || o?.state || "")}</b>${hoje ? `<small>Máx. ${r0(hoje.temperature)}° · Mín. ${r0(hoje.templow)}°</small>` : ""}</div></div>
 <div class="wxc">${chips.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div></div>
@@ -2100,6 +2117,25 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
       return setTimeout(() => this._more(id), 50);
     }
     if (d.alert) return this._doAlert(d.alert);
+    // meteorologia: tocar num dia mostra as horas desse dia; outra vez (ou em "Hoje") volta às próximas 24 horas
+    if (s.kind === "wx" && d.wxd) {
+      const t = new Date(),
+        hoje = `${t.getFullYear()}-${p2(t.getMonth() + 1)}-${p2(t.getDate())}`,
+        tem = (this._wxData?.h || []).some((f) => {
+          const x = new Date(f.datetime);
+          return `${x.getFullYear()}-${p2(x.getMonth() + 1)}-${p2(x.getDate())}` === d.wxd;
+        });
+      if (!tem) {
+        this._wxMsg = Date.now();
+        setTimeout(() => this._sheet?.kind === "wx" && this._renderSheet(), 4100);
+        return this._renderSheet();
+      }
+      this._wxMsg = 0;
+      this._wxSel = d.wxd === hoje || d.wxd === this._wxSel ? null : d.wxd;
+      this._renderSheet();
+      this._portal?.shadowRoot?.querySelector(".wst")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return;
+    }
     if (s.kind === "ppl" && d.pz) {
       this._mapZoom(Number(d.pz));
       return this._renderSheet();

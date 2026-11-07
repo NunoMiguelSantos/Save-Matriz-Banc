@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=21`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=22`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.6.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.7.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -69,3 +69,7 @@ Os mosaicos da CARTO passaram a devolver "API KEY REQUIRED" (é também por isso
 ### Gestos no mapa (?v=21)
 
 Arrastar com um dedo, pinça com dois (arredonda ao nível de zoom mais próximo ao largar), duplo toque aproxima à volta do dedo, botões + / − e ⌖ (volta a centrar em todos). Carrega um quadrado a mais à volta para não haver buracos ao arrastar. Trocas: `pessoas-gestos-trocas.json`.
+
+## Meteorologia: horas de um dia escolhido (?v=22)
+
+Na janela da meteorologia, tocar num dia da lista mostra na faixa de cima as horas desse dia (0h–23h), com o título "Domingo, 8 nov · hora a hora"; o dia fica destacado (fundo ciano e barra à esquerda). Tocar outra vez nesse dia ou em "Hoje" volta às próximas 24 horas. O IPMA só tem horas para ~3 dias: os outros dias ficam mais apagados e, ao tocar, aparece a nota "só há horas para os próximos 3 dias". Trocas: `meteo-dia-trocas.json`.
