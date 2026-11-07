@@ -1,13 +1,14 @@
 // Luz noturna do quarto - Shelly 2PM Gen3 + Shelly BLU Motion
 //
 // O que faz:
-//  - De noite, quando o sensor deteta movimento e a luz está APAGADA,
-//    acende a luz (para acordar o marido).
+//  - Quando o sensor deteta movimento, a luz está APAGADA e o quarto está
+//    ESCURO (menos de LUX_MAX lux), acende a luz (para acordar o marido).
 //  - Quando o sensor volta a "sem movimento" (fim do cooldown do sensor),
 //    apaga a luz, MAS só se foi o script que a acendeu.
 //  - Se a luz foi acesa pelo interruptor (ou app), o sensor é ignorado:
 //    o script nunca a apaga.
-//  - De dia o script não faz nada.
+//  - Se o quarto tem luz suficiente (dia), o script não faz nada.
+//  - Não precisa de internet nem de hora certa.
 //
 // Exemplos:
 //  - Alguém acende no interruptor e passa à frente do sensor -> luz fica acesa.
@@ -17,11 +18,11 @@
 // ===================== CONFIGURAÇÃO =====================
 let CONFIG = {
   SWITCH_ID: 0,              // canal da luz do quarto: 0 = O1, 1 = O2
-  NIGHT_START: "22:00",      // início do período noturno
-  NIGHT_END: "08:00",        // fim do período noturno
+  LUX_MAX: 15,               // só acende se houver MENOS que isto (lux)
+  NIGHT_START: null,         // opcional, ex. "22:00" (só se o Shelly tiver hora certa)
+  NIGHT_END: null,           // opcional, ex. "08:00"
   SENSOR_MAC: "94:b2:16:07:d6:6e", // MAC do BLU Motion
   MOTION_ID: null,           // null = detetar sozinho; ou ex. 202 (bthomesensor:202)
-  LUX_MAX: null,             // ex. 20 = só acende se houver menos de 20 lux; null = ignora
   DEBUG: true
 };
 // =========================================================
@@ -37,6 +38,7 @@ function toMin(hhmm) { // "HH:MM" -> minutos desde a meia-noite
 }
 
 function isNight() {
+  if (CONFIG.NIGHT_START === null || CONFIG.NIGHT_END === null) return true;
   let t = Shelly.getComponentStatus("sys").time; // "HH:MM" ou null
   if (t === null || t === undefined) return true; // sem hora: por segurança, atua
   let now = toMin(t), s = toMin(CONFIG.NIGHT_START), e = toMin(CONFIG.NIGHT_END);
@@ -47,7 +49,8 @@ function isNight() {
 function isDarkEnough() {
   if (CONFIG.LUX_MAX === null || luxId === null) return true;
   let st = Shelly.getComponentStatus("bthomesensor:" + luxId);
-  if (!st || typeof st.value !== "number") return true;
+  if (!st || typeof st.value !== "number") return true; // sem leitura: por segurança, atua
+  log("luminosidade: " + st.value + " lux");
   return st.value < CONFIG.LUX_MAX;
 }
 
@@ -62,11 +65,16 @@ function setLight(on) {
 function onMotion(motion) {
   if (motion) {
     if (lightIsOn()) { log("movimento, mas luz já acesa -> ignorar"); return; }
-    if (!isNight()) { log("movimento de dia -> ignorar"); return; }
-    if (!isDarkEnough()) { log("movimento, mas há luz suficiente -> ignorar"); return; }
-    log("movimento de noite -> ACENDER");
-    autoOn = true;
-    setLight(true);
+    if (!isNight()) { log("movimento fora do horário -> ignorar"); return; }
+    // Espera 1 s para a leitura de lux que vem no mesmo aviso do sensor
+    // ficar atualizada antes de decidir.
+    Timer.set(1000, false, function () {
+      if (lightIsOn()) return;
+      if (!isDarkEnough()) { log("movimento, mas há luz suficiente -> ignorar"); return; }
+      log("movimento no escuro -> ACENDER");
+      autoOn = true;
+      setLight(true);
+    });
   } else {
     if (autoOn && lightIsOn()) {
       log("fim do movimento -> APAGAR");
