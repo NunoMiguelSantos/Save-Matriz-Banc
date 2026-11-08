@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <title>Mealheiro</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <button class="month-btn" id="prevMonth" aria-label="Mês anterior">‹</button>
+    <h1 id="monthLabel">—</h1>
+    <button class="month-btn" id="nextMonth" aria-label="Mês seguinte">›</button>
+  </header>
+
+  <main>
+    <!-- RESUMO -->
+    <section class="view active" id="view-home">
+      <div class="cards3">
+        <div class="kpi"><span>Entradas</span><strong id="kIn" class="pos">0 €</strong></div>
+        <div class="kpi"><span>Saídas</span><strong id="kOut" class="neg">0 €</strong></div>
+        <div class="kpi"><span>Saldo</span><strong id="kBal">0 €</strong></div>
+      </div>
+      <div class="card" id="insights"></div>
+      <div class="card">
+        <h2>As minhas contas</h2>
+        <div id="accounts"></div>
+        <button class="btn" id="addAccount">+ Adicionar conta</button>
+      </div>
+      <div class="card">
+        <h2>Para onde foi o dinheiro</h2>
+        <div id="homeCats"></div>
+      </div>
+      <div class="card">
+        <h2>Últimos movimentos</h2>
+        <ul class="tx-list" id="homeTx"></ul>
+      </div>
+    </section>
+
+    <!-- MOVIMENTOS -->
+    <section class="view" id="view-tx">
+      <div class="card">
+        <h2>Pagamentos fixos</h2>
+        <div id="fixedList"></div>
+        <button class="btn" id="addFixed">+ Novo pagamento fixo</button>
+      </div>
+      <div class="card">
+        <input type="search" id="txSearch" placeholder="Pesquisar descrição…">
+        <select id="txCatFilter"><option value="">Todas as categorias</option></select>
+        <select id="txAccFilter" hidden></select>
+      </div>
+      <ul class="tx-list card" id="txList"></ul>
+    </section>
+
+    <!-- ESTATÍSTICAS -->
+    <section class="view" id="view-stats">
+      <div class="card">
+        <h2>Últimos 6 meses</h2>
+        <div id="chartMonths"></div>
+        <div class="legend"><i class="dot pos-bg"></i>Entradas <i class="dot neg-bg"></i>Saídas</div>
+      </div>
+      <div class="card">
+        <h2>Médias (últimos 3 meses completos)</h2>
+        <div id="averages"></div>
+      </div>
+      <div class="card">
+        <h2>Gastos por categoria — este mês vs média</h2>
+        <div id="catCompare"></div>
+      </div>
+      <div class="card">
+        <h2>Pagamentos recorrentes detetados</h2>
+        <div id="recurring"></div>
+      </div>
+    </section>
+
+    <!-- POUPANÇA -->
+    <section class="view" id="view-save">
+      <div class="card">
+        <h2>Objetivos de poupança</h2>
+        <div id="goals"></div>
+        <button class="btn" id="addGoal">+ Novo objetivo</button>
+      </div>
+      <div class="card">
+        <h2>Orçamento mensal por categoria</h2>
+        <p class="muted">Define um limite e vê quanto já gastaste este mês.</p>
+        <div id="budgets"></div>
+        <button class="btn" id="addBudget">+ Definir limite</button>
+      </div>
+      <div class="card">
+        <h2>Plano 50 / 30 / 20</h2>
+        <div id="plan5030"></div>
+      </div>
+    </section>
+
+    <!-- MAIS -->
+    <section class="view" id="view-more">
+      <div class="card">
+        <h2>Importar extrato do banco</h2>
+        <p class="muted">No site/app do teu banco, exporta os movimentos em <b>Excel</b> ou <b>CSV</b> (procura “exportar movimentos” ou “extrato”). Depois escolhe o ficheiro aqui e diz de que conta é. As categorias são atribuídas automaticamente, os duplicados são ignorados e as transferências entre as tuas contas são reconhecidas.</p>
+        <details class="muted bank-help"><summary>Onde encontro isto no meu banco?</summary>
+          <p><b>Revolut</b> (app): na conta em euros → ⋯ → Extrato → formato <b>Excel</b> → escolhe o período. Movimentos anulados ou noutra moeda são ignorados e as comissões somadas.</p>
+          <p><b>ActivoBank</b> e <b>Santander</b>: no site (no computador é mais fácil), abre a lista de movimentos da conta, escolhe as datas e usa o botão de exportar / descarregar em Excel.</p>
+          <p>Os menus mudam de vez em quando; se não encontrares, procura “exportar” na ajuda do banco.</p>
+        </details>
+        <label class="btn primary file-btn">Escolher ficheiro (CSV ou Excel)
+          <input type="file" id="csvFile" accept=".csv,.txt,.xls,.xlsx,.ods,text/csv" hidden>
+        </label>
+        <div id="importArea"></div>
+      </div>
+      <div class="card">
+        <h2>Regras automáticas de categorias</h2>
+        <p class="muted">Quando mudas a categoria de um movimento, a app aprende. Também podes adicionar regras: se a descrição contém a palavra → categoria.</p>
+        <div id="rules"></div>
+        <button class="btn" id="addRule">+ Nova regra</button>
+      </div>
+      <div class="card">
+        <h2>Cópia de segurança</h2>
+        <p class="muted">Os dados ficam guardados só neste telemóvel/browser. Faz cópias de vez em quando.</p>
+        <div class="row">
+          <button class="btn" id="exportJson">Guardar cópia</button>
+          <label class="btn file-btn">Restaurar cópia<input type="file" id="importJson" accept=".json,application/json" hidden></label>
+        </div>
+        <div class="row">
+          <button class="btn" id="loadDemo">Carregar dados de exemplo</button>
+          <button class="btn danger" id="wipe">Apagar tudo</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="fab" id="fab" aria-label="Adicionar movimento">+</button>
+
+  <nav class="tabs">
+    <button data-view="home" class="active"><span>🏠</span>Resumo</button>
+    <button data-view="tx"><span>📋</span>Movimentos</button>
+    <button data-view="stats"><span>📊</span>Estatísticas</button>
+    <button data-view="save"><span>🎯</span>Poupança</button>
+    <button data-view="more"><span>⚙️</span>Mais</button>
+  </nav>
+
+  <!-- Formulário de movimento -->
+  <dialog id="txDialog">
+    <form method="dialog" id="txForm">
+      <h2 id="txDialogTitle">Novo movimento</h2>
+      <div class="seg">
+        <label><input type="radio" name="kind" value="out" checked><span>Despesa</span></label>
+        <label><input type="radio" name="kind" value="in"><span>Receita</span></label>
+        <label id="kindTransfer"><input type="radio" name="kind" value="tr"><span>Transferência</span></label>
+      </div>
+      <label>Valor (€)<input name="amount" type="text" inputmode="decimal" required placeholder="0,00"></label>
+      <label>Descrição<input name="desc" type="text" required placeholder="ex.: Continente"></label>
+      <label id="accWrap"><span id="accLabel">Conta</span><select name="account"></select></label>
+      <label id="toWrap" hidden>Para<select name="to"></select></label>
+      <label id="catWrap">Categoria<select name="cat"></select></label>
+      <label>Data<input name="date" type="date" required></label>
+      <label id="repeatWrap">Repetir<select name="repeat">
+        <option value="no">Não repetir</option>
+        <option value="monthly">Todos os meses (pagamento fixo)</option>
+        <option value="yearly">Todos os anos (pagamento fixo)</option>
+      </select></label>
+      <p class="muted" id="fixedNote" hidden>🔁 Lançado automaticamente por um pagamento fixo. Mudar aqui só altera este mês.</p>
+      <div class="row">
+        <button type="button" class="btn danger" id="txDelete" hidden>Apagar</button>
+        <span class="grow"></span>
+        <button type="button" class="btn" value="cancel" id="txCancel">Cancelar</button>
+        <button type="submit" class="btn primary" value="ok">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Formulário genérico -->
+  <dialog id="genDialog">
+    <form method="dialog" id="genForm">
+      <h2 id="genTitle"></h2>
+      <div id="genFields"></div>
+      <div class="row">
+        <button type="button" class="btn danger" id="genDelete" hidden>Apagar</button>
+        <span class="grow"></span>
+        <button type="button" class="btn" id="genCancel">Cancelar</button>
+        <button type="submit" class="btn primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="askDialog">
+    <p id="askMsg"></p>
+    <div class="row">
+      <span class="grow"></span>
+      <button type="button" class="btn" id="askCancel">Cancelar</button>
+      <button type="button" class="btn primary" id="askOk">Continuar</button>
+    </div>
+  </dialog>
+
+  <dialog id="fixedDialog">
+    <h2 id="fixedTitle"></h2>
+    <p class="muted" id="fixedInfo"></p>
+    <div class="row">
+      <button type="button" class="btn danger" id="fixedStop">Parar</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="fixedClose">Fechar</button>
+      <button type="button" class="btn primary" id="fixedEdit">Editar</button>
+    </div>
+  </dialog>
+
+  <dialog id="backupDialog">
+    <h2>Cópia de segurança</h2>
+    <p class="muted">Copia este texto e guarda-o (numa nota, ou num email para ti). Para restaurar, cola aqui um texto de cópia e carrega em “Restaurar”.</p>
+    <textarea id="backupText" rows="6" spellcheck="false"></textarea>
+    <div class="row">
+      <button type="button" class="btn primary" id="backupCopy">Copiar</button>
+      <button type="button" class="btn" id="backupDownload">Descarregar ficheiro</button>
+      <button type="button" class="btn" id="restoreText">Restaurar</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="backupClose">Fechar</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
