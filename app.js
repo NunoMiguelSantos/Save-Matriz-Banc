@@ -572,7 +572,7 @@ async function readFileText(file) {
   const buf = await file.arrayBuffer();
   let text = new TextDecoder('utf-8').decode(buf);
   // muitos bancos portugueses exportam em Windows-1252/ISO-8859-1
-  if (text.includes('�')) text = new TextDecoder('windows-1252').decode(buf);
+  if (text.includes('\uFFFD')) text = new TextDecoder('windows-1252').decode(buf);
   return text;
 }
 
