@@ -618,8 +618,13 @@ function renderImport(info) {
     info.header.map((h, i) => `<option value="${i}" ${i === sel ? 'selected' : ''}>${esc(h || 'Coluna ' + (i + 1))}</option>`).join('');
   const m = info.map;
   const parsed = rowsToTx(info);
-  const existing = new Set(state.tx.map(t => t.date + '|' + t.amount + '|' + norm(t.desc)));
-  const fresh = parsed.filter(t => !existing.has(t.date + '|' + t.amount + '|' + norm(t.desc)));
+  // Duplicado = movimento que já está na app (ex.: importar o mesmo mês duas vezes).
+  // Conta-se quantas vezes cada um existe, para que dois movimentos iguais no mesmo dia
+  // (ex.: dois cafés de 1,20 €) sejam ambos contabilizados.
+  const key = t => t.date + '|' + t.amount + '|' + norm(t.desc);
+  const existing = {};
+  for (const t of state.tx) existing[key(t)] = (existing[key(t)] || 0) + 1;
+  const fresh = parsed.filter(t => existing[key(t)] > 0 ? (existing[key(t)]--, false) : true);
   const two = m.debit >= 0 || m.credit >= 0;
   $('#importArea').innerHTML = `
     <p class="muted">Confirma se as colunas estão certas:</p>
