@@ -373,8 +373,8 @@ function setupTxForm() {
   });
   f.cat.addEventListener('change', () => { f.cat.dataset.touched = '1'; });
   $('#txCancel').onclick = () => $('#txDialog').close();
-  $('#txDelete').onclick = () => {
-    if (!ui.editing || !confirm('Apagar este movimento?')) return;
+  $('#txDelete').onclick = async () => {
+    if (!ui.editing || !(await ask('Apagar este movimento?', 'Apagar'))) return;
     state.tx = state.tx.filter(x => x.id !== ui.editing.id);
     save(); $('#txDialog').close(); render(); toast('Movimento apagado.');
   };
@@ -636,7 +636,7 @@ function bind() {
       });
     }
     if (d.goalEdit) goalForm(state.goals.find(x => x.id === d.goalEdit));
-    if (d.goalDel && confirm('Apagar este objetivo?')) { state.goals = state.goals.filter(x => x.id !== d.goalDel); save(); render(); }
+    if (d.goalDel) ask('Apagar este objetivo?', 'Apagar').then(ok => { if (ok) { state.goals = state.goals.filter(x => x.id !== d.goalDel); save(); render(); } });
     if (d.budgetDel) { delete state.budgets[d.budgetDel]; save(); render(); }
     if (d.ruleDel != null) { state.rules.splice(+d.ruleDel, 1); save(); render(); }
   });
@@ -675,27 +675,55 @@ function bind() {
     } catch (err) { console.error(err); toast('Não consegui ler o ficheiro.'); }
   };
 
+  // Cópia: mostra o texto para copiar (funciona em todo o lado) e tenta também descarregar o ficheiro.
   $('#exportJson').onclick = () => {
-    const blob = new Blob([JSON.stringify(state, null, 1)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = `mealheiro-${todayISO()}.json`; a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    const json = JSON.stringify(state);
+    $('#backupText').value = json;
+    $('#backupCopy').onclick = async () => {
+      try { await navigator.clipboard.writeText(json); toast('Copiado. Cola numa nota ou envia para ti por email.'); }
+      catch { $('#backupText').select(); toast('Seleciona o texto e copia.'); }
+    };
+    $('#backupDownload').onclick = () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      a.download = `mealheiro-${todayISO()}.json`; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    };
+    $('#backupDialog').showModal();
   };
+  $('#backupClose').onclick = () => $('#backupDialog').close();
+  $('#restoreText').onclick = () => restore($('#backupText').value);
   $('#importJson').onchange = async e => {
     const file = e.target.files[0]; e.target.value = '';
     if (!file) return;
-    try {
-      const s = JSON.parse(await file.text());
-      if (!Array.isArray(s.tx)) throw new Error('formato');
-      if (!confirm('Isto substitui os dados atuais pelos da cópia. Continuar?')) return;
-      state = { ...blank(), ...s }; save(); render(); toast('Cópia restaurada.');
-    } catch { toast('Ficheiro de cópia inválido.'); }
+    restore(await file.text());
   };
   $('#loadDemo').onclick = loadDemo;
-  $('#wipe').onclick = () => { if (confirm('Apagar TODOS os dados? Isto não se pode desfazer.')) { state = blank(); save(); render(); } };
+  $('#wipe').onclick = async () => { if (await ask('Apagar TODOS os dados? Isto não se pode desfazer.', 'Apagar tudo')) { state = blank(); save(); render(); } };
 }
-function loadDemo() {
-  if (state.tx.length && !confirm('Isto substitui os teus dados pelos de exemplo. Continuar?')) return;
+async function restore(text) {
+  let s;
+  try { s = JSON.parse(text); if (!Array.isArray(s.tx)) throw new Error('formato'); }
+  catch { toast('Cópia inválida.'); return; }
+  if (!(await ask(`Substituir os dados atuais pelos da cópia (${s.tx.length} movimentos)?`, 'Restaurar'))) return;
+  state = { ...blank(), ...s }; save(); render();
+  if ($('#backupDialog').open) $('#backupDialog').close();
+  toast('Cópia restaurada.');
+}
+/** Pergunta de confirmação dentro da página (confirm() não funciona em todo o lado). */
+function ask(msg, okLabel = 'Continuar') {
+  return new Promise(resolve => {
+    const d = $('#askDialog');
+    $('#askMsg').textContent = msg;
+    $('#askOk').textContent = okLabel;
+    $('#askOk').onclick = () => { d.close(); resolve(true); };
+    $('#askCancel').onclick = () => { d.close(); resolve(false); };
+    d.oncancel = () => resolve(false);
+    d.showModal();
+  });
+}
+async function loadDemo() {
+  if (state.tx.length && !(await ask('Isto substitui os teus dados pelos de exemplo. Continuar?'))) return;
   state = blank(); state.tx = demoData();
   state.goals = [{ id: uid(), name: 'Fundo de emergência', target: 3000, saved: 600, deadline: shiftMonth(monthKey(new Date()), 12) }];
   state.budgets = { 'Restauração': 100 };

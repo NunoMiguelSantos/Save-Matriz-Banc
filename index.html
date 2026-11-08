@@ -161,6 +161,28 @@
     </form>
   </dialog>
 
+  <dialog id="askDialog">
+    <p id="askMsg"></p>
+    <div class="row">
+      <span class="grow"></span>
+      <button type="button" class="btn" id="askCancel">Cancelar</button>
+      <button type="button" class="btn primary" id="askOk">Continuar</button>
+    </div>
+  </dialog>
+
+  <dialog id="backupDialog">
+    <h2>Cópia de segurança</h2>
+    <p class="muted">Copia este texto e guarda-o (numa nota, ou num email para ti). Para restaurar, cola aqui um texto de cópia e carrega em “Restaurar”.</p>
+    <textarea id="backupText" rows="6" spellcheck="false"></textarea>
+    <div class="row">
+      <button type="button" class="btn primary" id="backupCopy">Copiar</button>
+      <button type="button" class="btn" id="backupDownload">Descarregar ficheiro</button>
+      <button type="button" class="btn" id="restoreText">Restaurar</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="backupClose">Fechar</button>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast"></div>
   <script src="app.js"></script>
 </body>
