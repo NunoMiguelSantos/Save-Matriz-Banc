@@ -9,6 +9,8 @@ Funciona no browser do telemóvel e pode ser "instalada" como app (ecrã inicial
 - **Importar o extrato do banco em CSV** — deteta sozinha as colunas (data, descrição, valor ou débito/crédito),
   lida com o formato português (`1.234,56`, `dd-mm-aaaa`, `;`), ignora duplicados e categoriza automaticamente
   (reconhece ~150 lojas/serviços comuns em Portugal).
+- **Pagamentos fixos** (renda, ginásio, salário…): mensais ou anuais, lançados sozinhos na data certa. Ao importar o extrato,
+  o movimento do banco junta-se ao lançado automaticamente, sem duplicar. Os pagamentos repetidos detetados podem virar fixos com um toque.
 - **Aprende**: se corriges a categoria de um movimento, cria uma regra e aplica-a a movimentos parecidos.
 - **Resumo do mês**: entradas, saídas, saldo, taxa de poupança, previsão até ao fim do mês, alertas.
 - **Estatísticas**: últimos 6 meses, médias, cada categoria vs. a tua média, pagamentos recorrentes (subscrições, contas).

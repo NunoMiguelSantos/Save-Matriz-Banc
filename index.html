@@ -40,6 +40,11 @@
     <!-- MOVIMENTOS -->
     <section class="view" id="view-tx">
       <div class="card">
+        <h2>Pagamentos fixos</h2>
+        <div id="fixedList"></div>
+        <button class="btn" id="addFixed">+ Novo pagamento fixo</button>
+      </div>
+      <div class="card">
         <input type="search" id="txSearch" placeholder="Pesquisar descrição…">
         <select id="txCatFilter"><option value="">Todas as categorias</option></select>
       </div>
@@ -139,6 +144,12 @@
       <label>Descrição<input name="desc" type="text" required placeholder="ex.: Continente"></label>
       <label>Categoria<select name="cat"></select></label>
       <label>Data<input name="date" type="date" required></label>
+      <label id="repeatWrap">Repetir<select name="repeat">
+        <option value="no">Não repetir</option>
+        <option value="monthly">Todos os meses (pagamento fixo)</option>
+        <option value="yearly">Todos os anos (pagamento fixo)</option>
+      </select></label>
+      <p class="muted" id="fixedNote" hidden>🔁 Lançado automaticamente por um pagamento fixo. Mudar aqui só altera este mês.</p>
       <div class="row">
         <button type="button" class="btn danger" id="txDelete" hidden>Apagar</button>
         <span class="grow"></span>
@@ -167,6 +178,17 @@
       <span class="grow"></span>
       <button type="button" class="btn" id="askCancel">Cancelar</button>
       <button type="button" class="btn primary" id="askOk">Continuar</button>
+    </div>
+  </dialog>
+
+  <dialog id="fixedDialog">
+    <h2 id="fixedTitle"></h2>
+    <p class="muted" id="fixedInfo"></p>
+    <div class="row">
+      <button type="button" class="btn danger" id="fixedStop">Parar</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="fixedClose">Fechar</button>
+      <button type="button" class="btn primary" id="fixedEdit">Editar</button>
     </div>
   </dialog>
 

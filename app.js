@@ -49,7 +49,7 @@ const KEY = 'mealheiro-v1';
 let state = load();
 const ui = { month: monthKey(new Date()), editing: null };
 
-function blank() { return { tx: [], rules: [], budgets: {}, goals: [] }; }
+function blank() { return { tx: [], rules: [], budgets: {}, goals: [], fixed: [] }; }
 function load() {
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.tx)) return { ...blank(), ...s }; } catch (e) {}
   return blank();
@@ -134,7 +134,7 @@ function recurring() {
   const since = shiftMonth(cur, -5);
   const groups = {};
   for (const t of state.tx) {
-    if (t.amount >= 0 || t.date.slice(0, 7) < since || t.cat === 'Transferências' || t.cat === 'Levantamentos') continue;
+    if (t.amount >= 0 || t.fixed || t.date.slice(0, 7) < since || t.cat === 'Transferências' || t.cat === 'Levantamentos') continue;
     const k = ruleKey(t.desc) || norm(t.desc).trim();
     (groups[k] ||= []).push(t);
   }
@@ -146,22 +146,87 @@ function recurring() {
     const amts = list.map(t => -t.amount).sort((a, b) => a - b);
     const med = amts[Math.floor(amts.length / 2)];
     if (amts.every(a => Math.abs(a - med) <= med * 0.2) && list.length <= months.size + 1) {
-      res.push({ name: list[list.length - 1].desc, cat: list[0].cat, monthly: med, months: months.size });
+      const last = list.reduce((a, b) => (a.date > b.date ? a : b));
+      res.push({ name: last.desc, cat: list[0].cat, monthly: med, months: months.size, last: last.date });
     }
   }
   return res.sort((a, b) => b.monthly - a.monthly);
 }
 
+// ---------- Pagamentos fixos ----------
+// Cada pagamento fixo guarda `next`: o próximo mês ainda por lançar. Ao abrir a app,
+// lança todos os meses em falta cuja data já chegou.
+function fixedDate(f, mk) { return `${mk}-${String(Math.min(f.day, daysInMonth(mk))).padStart(2, '0')}`; }
+function fixedDue(f, mk) { return f.freq !== 'yearly' || mk.slice(5) === f.start.slice(5); }
+function runFixed() {
+  const today = todayISO();
+  let n = 0;
+  for (const f of state.fixed) {
+    let mk = f.next || f.start;
+    for (let guard = 0; guard < 120 && fixedDate(f, mk) <= today; guard++) {
+      if (fixedDue(f, mk)) { state.tx.push({ id: uid(), date: fixedDate(f, mk), desc: f.desc, amount: f.amount, cat: f.cat, fixed: f.id }); n++; }
+      mk = shiftMonth(mk, 1);
+    }
+    f.next = mk;
+  }
+  if (n) save();
+  return n;
+}
+/** Pagamentos fixos que ainda vão acontecer no mês indicado. */
+function fixedPending(mk) {
+  return state.fixed.filter(f => (f.next || f.start) <= mk && f.start <= mk && fixedDue(f, mk));
+}
+function freqLabel(f) {
+  return f.freq === 'yearly' ? `todos os anos, a ${f.day} de ${monthName(f.start).split(' ')[0]}` : `dia ${f.day} de cada mês`;
+}
+function fixedForm(f, preset) {
+  const base = f || preset || {};
+  openForm(f ? 'Editar pagamento fixo' : 'Novo pagamento fixo', [
+    { name: 'kind', label: 'Tipo', options: ['Despesa', 'Receita'], value: (base.amount ?? -1) >= 0 ? 'Receita' : 'Despesa' },
+    { name: 'desc', label: 'Descrição', value: base.desc, required: true, placeholder: 'ex.: Renda, Ginásio, Salário' },
+    { name: 'amount', label: 'Valor (€)', type: 'money', value: base.amount ? String(Math.abs(base.amount)).replace('.', ',') : '', required: true },
+    { name: 'cat', label: 'Categoria', options: CATS.map(c => c.id), value: base.cat || 'Casa' },
+    { name: 'freq', label: 'Repete', options: ['Todos os meses', 'Todos os anos'], value: base.freq === 'yearly' ? 'Todos os anos' : 'Todos os meses' },
+    { name: 'first', label: f ? 'Data (dia do mês em que acontece)' : 'Primeira vez (ou próxima)', type: 'date', value: base.first || (f ? fixedDate(f, f.next || f.start) : todayISO()), required: true },
+  ], v => {
+    const n = parseAmount(v.amount);
+    if (!n) { toast('Valor inválido.'); return false; }
+    const amount = Math.abs(n) * (v.kind === 'Receita' ? 1 : -1);
+    const day = +v.first.slice(8, 10), mk = v.first.slice(0, 7);
+    const data = { desc: v.desc.trim(), amount, cat: v.cat, day, freq: v.freq === 'Todos os anos' ? 'yearly' : 'monthly' };
+    if (f) {
+      Object.assign(f, data);
+      // nunca recuar `next`, para não lançar outra vez meses que já foram lançados
+      if (data.freq === 'yearly') f.start = mk;
+      if (mk > (f.next || f.start)) f.next = mk;
+      toast('Atualizado. Os movimentos já lançados não mudam.');
+    } else {
+      state.fixed.push({ id: uid(), ...data, start: mk, next: preset?.next || mk });
+    }
+    const added = runFixed();
+    if (!f) toast(added ? `Pagamento fixo criado. Lançado(s) ${added} movimento(s) até hoje.` : 'Pagamento fixo criado. Será lançado na data certa.');
+  });
+}
+function renderFixed() {
+  const list = [...state.fixed].sort((a, b) => a.day - b.day);
+  const out = list.filter(f => f.amount < 0 && f.freq !== 'yearly').reduce((s, f) => s - f.amount, 0);
+  $('#fixedList').innerHTML = list.length
+    ? '<ul class="tx-list">' + list.map(f => `<li data-fixed="${f.id}"><span class="ic">${CAT[f.cat]?.ic || '📦'}</span><span class="info"><b>${esc(f.desc)}</b><small>🔁 ${freqLabel(f)}</small></span><span class="amt ${f.amount >= 0 ? 'pos' : ''}">${f.amount >= 0 ? '+' : ''}${eur(f.amount)}</span></li>`).join('') + '</ul>'
+      + (out ? `<p class="muted">Despesas fixas mensais: <b>${eur(out)}</b> (${eur(out * 12)}/ano).</p>` : '')
+    : '<p class="muted">Ex.: renda, ginásio, Netflix, salário. São lançados sozinhos na data certa.</p>';
+}
+
 // ---------- Render ----------
 function render() {
+  runFixed();
   const ml = monthName(ui.month).replace(' de ', ' ');
   $('#monthLabel').textContent = ml[0].toUpperCase() + ml.slice(1);
-  renderHome(); renderTxList(); renderStats(); renderSave(); renderRules();
+  renderHome(); renderTxList(); renderFixed(); renderStats(); renderSave(); renderRules();
 }
 
 function txItem(t) {
   const c = CAT[t.cat] || CAT['Outros'];
-  return `<li data-id="${t.id}"><span class="ic">${c.ic}</span><span class="info"><b>${esc(t.desc)}</b><small>${esc(t.cat)} · ${t.date.split('-').reverse().join('/')}</small></span><span class="amt ${t.amount >= 0 ? 'pos' : ''}">${t.amount >= 0 ? '+' : ''}${eur(t.amount)}</span></li>`;
+  return `<li data-id="${t.id}"><span class="ic">${c.ic}</span><span class="info"><b>${esc(t.desc)}</b><small>${t.fixed ? '🔁 ' : ''}${esc(t.cat)} · ${t.date.split('-').reverse().join('/')}</small></span><span class="amt ${t.amount >= 0 ? 'pos' : ''}">${t.amount >= 0 ? '+' : ''}${eur(t.amount)}</span></li>`;
 }
 function barRow(label, value, max, extra = '', over = false, mark) {
   const w = max ? Math.min(100, value / max * 100) : 0;
@@ -202,13 +267,16 @@ function renderHome() {
       const day = new Date().getDate(), dim = daysInMonth(cur);
       const FIXED = ['Casa', 'Contas', 'Subscrições', 'Educação', 'Poupança'];
       const variable = cats.filter(([c]) => !FIXED.includes(c)).reduce((s, [, v]) => s + v, 0);
-      if (day >= 5 && day < dim) tips.push(`📈 A este ritmo vais gastar cerca de <b>${eur(t.out + variable / day * (dim - day))}</b> até ao fim do mês.`);
+      if (day >= 5 && day < dim) tips.push(`📈 A este ritmo vais gastar cerca de <b>${eur(t.out + variable / day * (dim - day) + fixedPending(cur).filter(f => f.amount < 0).reduce((s, f) => s - f.amount, 0))}</b> até ao fim do mês.`);
     }
     const prev = totals(txOfMonth(shiftMonth(ui.month, -1)));
     if (prev.out > 0 && t.out > 0 && ui.month !== cur) {
       const d = (t.out - prev.out) / prev.out;
       tips.push(d > 0 ? `🔺 Gastaste <b>${Math.round(d * 100)}%</b> mais que no mês anterior.` : `🔻 Gastaste <b>${Math.round(-d * 100)}%</b> menos que no mês anterior.`);
     }
+    const pend = fixedPending(ui.month).filter(f => ui.month >= monthKey(new Date()));
+    const pendOut = pend.filter(f => f.amount < 0).reduce((s, f) => s - f.amount, 0);
+    if (pendOut) tips.push(`🔁 Ainda vão sair <b>${eur(pendOut)}</b> em pagamentos fixos este mês (${pend.filter(f => f.amount < 0).map(f => esc(f.desc)).join(', ')}).`);
     if (cats[0]) tips.push(`🏷️ A maior fatia foi <b>${esc(cats[0][0])}</b>: ${eur(cats[0][1])}.`);
     const catMap = Object.fromEntries(cats);
     for (const [c, lim] of Object.entries(state.budgets)) {
@@ -274,11 +342,14 @@ function renderStats() {
     }).join('') + '<p class="muted">O traço vertical marca a tua média.</p>'
     : '<p class="empty">Sem dados.</p>';
 
-  const rec = recurring();
+  const fixedKeys = new Set(state.fixed.map(f => ruleKey(f.desc)));
+  const rec = recurring().filter(r => !fixedKeys.has(ruleKey(r.name)));
   const total = rec.reduce((s, r) => s + r.monthly, 0);
+  ui.detected = rec;
   $('#recurring').innerHTML = rec.length
-    ? rec.map(r => `<div class="bar-row"><div class="lbl"><span>${CAT[r.cat]?.ic || ''} ${esc(r.name)}</span><span>${eur(r.monthly)}/mês</span></div></div>`).join('')
+    ? rec.map((r, i) => `<div class="bar-row"><div class="lbl"><span>${CAT[r.cat]?.ic || ''} ${esc(r.name)}</span><span>${eur(r.monthly)}/mês <button class="btn small" data-make-fixed="${i}">Tornar fixo</button></span></div></div>`).join('')
       + `<p>Total: <b>${eur(total)}/mês</b> · <b>${eur(total * 12)}/ano</b>. Vale a pena rever se usas tudo isto.</p>`
+      + '<p class="muted">“Tornar fixo” faz a app lançar o pagamento sozinha nos próximos meses.</p>'
     : '<p class="empty">Ainda não foram encontrados pagamentos que se repetem todos os meses.</p>';
 }
 
@@ -356,6 +427,9 @@ function openTx(t) {
   f.cat.dataset.touched = t ? '1' : '';
   $('#txDialogTitle').textContent = t ? 'Editar movimento' : 'Novo movimento';
   $('#txDelete').hidden = !t;
+  f.repeat.value = 'no';
+  $('#repeatWrap').hidden = !!t;
+  $('#fixedNote').hidden = !(t && t.fixed);
   $('#txDialog').showModal();
   if (!t) setTimeout(() => f.amount.focus(), 50);
 }
@@ -388,6 +462,14 @@ function setupTxForm() {
       const old = ui.editing;
       Object.assign(old, data);
       if (old.cat !== guessCat(old.desc, old.amount)) learnRule(old);
+    } else if (f.repeat.value !== 'no') {
+      // o próprio movimento é a primeira ocorrência; os seguintes são lançados sozinhos
+      const fx = { id: uid(), desc: data.desc, amount, cat: data.cat, day: +data.date.slice(8, 10),
+        freq: f.repeat.value, start: data.date.slice(0, 7), next: shiftMonth(data.date.slice(0, 7), 1) };
+      state.fixed.push(fx);
+      state.tx.push({ id: uid(), ...data, fixed: fx.id });
+      runFixed();
+      toast('Guardado como pagamento fixo. Vê-os em Movimentos.');
     } else {
       state.tx.push({ id: uid(), ...data });
     }
@@ -560,7 +642,13 @@ function renderImport(info) {
   $('#invert').onchange = e => { m.invert = e.target.checked; renderImport(info); };
   const btn = $('#doImport');
   if (btn) btn.onclick = () => {
-    for (const t of fresh) state.tx.push({ id: uid(), ...t, cat: guessCat(t.desc, t.amount) });
+    let merged = 0;
+    for (const t of fresh) {
+      const auto = state.tx.find(x => x.fixed && !x.bank && x.amount === t.amount && Math.abs(new Date(x.date) - new Date(t.date)) <= 6 * 864e5);
+      if (auto) { auto.date = t.date; auto.desc = t.desc; auto.bank = true; merged++; continue; }
+      state.tx.push({ id: uid(), ...t, cat: guessCat(t.desc, t.amount) });
+    }
+    if (merged) setTimeout(() => toast(`${merged} pagamento(s) fixo(s) já lançados foram juntados com o extrato (sem duplicar).`), 3300);
     save();
     const months = fresh.map(t => t.date.slice(0, 7)).sort();
     if (months.length) ui.month = months[months.length - 1];
@@ -625,6 +713,8 @@ function bind() {
   document.body.addEventListener('click', e => {
     const li = e.target.closest('.tx-list li[data-id]');
     if (li) { openTx(state.tx.find(t => t.id === li.dataset.id)); return; }
+    const fli = e.target.closest('li[data-fixed]');
+    if (fli) { fixedMenu(state.fixed.find(f => f.id === fli.dataset.fixed)); return; }
     const d = e.target.dataset;
     if (d.act === 'demo') loadDemo();
     if (d.goalDep) {
@@ -638,10 +728,16 @@ function bind() {
     if (d.goalEdit) goalForm(state.goals.find(x => x.id === d.goalEdit));
     if (d.goalDel) ask('Apagar este objetivo?', 'Apagar').then(ok => { if (ok) { state.goals = state.goals.filter(x => x.id !== d.goalDel); save(); render(); } });
     if (d.budgetDel) { delete state.budgets[d.budgetDel]; save(); render(); }
+    if (d.makeFixed != null) {
+      const r = ui.detected[+d.makeFixed];
+      fixedForm(null, { desc: r.name, amount: -r.monthly, cat: r.cat, first: r.last, next: shiftMonth(r.last.slice(0, 7), 1) });
+    }
     if (d.ruleDel != null) { state.rules.splice(+d.ruleDel, 1); save(); render(); }
   });
 
   $('#addGoal').onclick = () => goalForm();
+  $('#addFixed').onclick = () => fixedForm();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && runFixed()) render(); });
   $('#addBudget').onclick = () => {
     const av = averages();
     openForm('Limite mensal', [
@@ -701,6 +797,20 @@ function bind() {
   $('#loadDemo').onclick = loadDemo;
   $('#wipe').onclick = async () => { if (await ask('Apagar TODOS os dados? Isto não se pode desfazer.', 'Apagar tudo')) { state = blank(); save(); render(); } };
 }
+async function fixedMenu(f) {
+  const d = $('#fixedDialog');
+  $('#fixedTitle').textContent = f.desc;
+  $('#fixedInfo').textContent = `${f.amount >= 0 ? '+' : ''}${eur(f.amount)} · ${freqLabel(f)}`;
+  $('#fixedEdit').onclick = () => { d.close(); fixedForm(f); };
+  $('#fixedStop').onclick = async () => {
+    d.close();
+    if (!(await ask(`Parar “${f.desc}”? Os movimentos já lançados ficam.`, 'Parar'))) return;
+    state.fixed = state.fixed.filter(x => x.id !== f.id);
+    save(); render(); toast('Pagamento fixo parado.');
+  };
+  $('#fixedClose').onclick = () => d.close();
+  d.showModal();
+}
 async function restore(text) {
   let s;
   try { s = JSON.parse(text); if (!Array.isArray(s.tx)) throw new Error('formato'); }
@@ -727,6 +837,17 @@ async function loadDemo() {
   state = blank(); state.tx = demoData();
   state.goals = [{ id: uid(), name: 'Fundo de emergência', target: 3000, saved: 600, deadline: shiftMonth(monthKey(new Date()), 12) }];
   state.budgets = { 'Restauração': 100 };
+  const cur = monthKey(new Date());
+  const fx = (desc, amount, cat, day) => {
+    const id = uid();
+    for (const t of state.tx) if (t.desc === desc) t.fixed = id;
+    state.fixed.push({ id, desc, amount, cat, day, freq: 'monthly', start: shiftMonth(cur, -4), next: fixedDate({ day }, cur) <= todayISO() ? shiftMonth(cur, 1) : cur });
+  };
+  fx('TRF VENCIMENTO EMPRESA XYZ', 1450, 'Salário', 1);
+  fx('DD RENDA CASA', -550, 'Casa', 2);
+  fx('DD MEO SERVICOS', -39.99, 'Contas', 6);
+  fx('COMPRA NETFLIX.COM', -13.99, 'Subscrições', 8);
+  fx('DD FITNESS HUT', -29.9, 'Subscrições', 10);
   ui.month = monthKey(new Date());
   save(); render(); toast('Dados de exemplo carregados. Podes apagá-los em Mais.');
 }
