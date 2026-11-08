@@ -107,3 +107,7 @@ td, th { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: lef
 .chip-x { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 0 0 6px; }
 textarea { font: 12px ui-monospace, monospace; resize: vertical; }
 #askMsg { margin: 0 0 8px; font-size: 15px; }
+.total-line { display: flex; justify-content: space-between; gap: 8px; margin: 10px 0 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.total-line b { font-size: 17px; }
+.hint { margin: -6px 0 10px; }
+.seg span { font-size: 14px; padding: 8px 4px; }

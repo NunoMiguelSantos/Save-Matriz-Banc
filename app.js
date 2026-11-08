@@ -17,11 +17,14 @@ const CATS = [
   { id: 'Levantamentos', ic: '🏧', group: 'want' },
   { id: 'Transferências', ic: '🔁', group: 'none' },
   { id: 'Poupança', ic: '🐷', group: 'save' },
+  { id: 'Investimento', ic: '📈', group: 'save' },
   { id: 'Outros', ic: '📦', group: 'want' },
   { id: 'Salário', ic: '💼', group: 'income' },
   { id: 'Outras receitas', ic: '💰', group: 'income' },
 ];
 const CAT = Object.fromEntries(CATS.map(c => [c.id, c]));
+// Dinheiro que só muda de sítio (entre contas tuas ou para investir): não é gasto nem receita.
+const NEUTRAL = ['Transferências', 'Poupança', 'Investimento'];
 const EXPENSE_CATS = CATS.filter(c => c.group !== 'income').map(c => c.id);
 const INCOME_CATS = CATS.filter(c => c.group === 'income').map(c => c.id);
 
@@ -38,7 +41,7 @@ const BUILTIN_RULES = Object.entries({
   'Lazer': 'cinema,cinemas nos,ucicinemas,ticketline,bol pt,steam,playstation,xbox,nintendo,booking,airbnb',
   'Educação': 'escola,universidade,propina,livraria,bertrand,wook',
   'Levantamentos': 'levantamento,lev atm,atm',
-  'Transferências': 'transferencia,trf,mb way,mbway',
+  'Investimento': 'xtb,x trade brokers,degiro,trading 212,trade republic,interactive brokers,etoro,lightyear,bison,certificados aforro,aforro,igcp,ppr',
   'Salário': 'salario,vencimento,ordenado,remuneracao',
 }).flatMap(([cat, kws]) => kws.split(',').map(kw => ({ kw, cat })));
 
@@ -49,10 +52,20 @@ const KEY = 'mealheiro-v1';
 let state = load();
 const ui = { month: monthKey(new Date()), editing: null };
 
-function blank() { return { tx: [], rules: [], budgets: {}, goals: [], fixed: [] }; }
+function blank() { return { tx: [], rules: [], budgets: {}, goals: [], fixed: [], accounts: [] }; }
+/** Garante pelo menos uma conta bancária e que cada movimento pertence a uma conta. */
+function migrate(s) {
+  s = { ...blank(), ...s };
+  if (!s.accounts.some(a => a.type === 'bank')) s.accounts.unshift({ id: uid(), name: 'Conta principal', type: 'bank', opening: null });
+  const main = s.accounts.find(a => a.type === 'bank').id;
+  const ids = new Set(s.accounts.map(a => a.id));
+  for (const t of s.tx) if (!ids.has(t.account)) t.account = main;
+  for (const f of s.fixed) if (!ids.has(f.account)) f.account = main;
+  return s;
+}
 function load() {
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.tx)) return { ...blank(), ...s }; } catch (e) {}
-  return blank();
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.tx)) return migrate(s); } catch (e) {}
+  return migrate(blank());
 }
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
@@ -63,7 +76,7 @@ function save() {
 const $ = s => document.querySelector(s);
 const fmt = new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' });
 const eur = n => fmt.format(n || 0);
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 function monthKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
 function shiftMonth(mk, n) { const [y, m] = mk.split('-').map(Number); return monthKey(new Date(y, m - 1 + n, 1)); }
@@ -92,7 +105,7 @@ function guessCat(desc, amount) {
   candidates.sort((a, b) => b.kw.length - a.kw.length);
   const hit = candidates.find(r => (amount > 0) === INCOME_CATS.includes(r.cat)) || candidates[0];
   if (hit) {
-    if (amount > 0 && !INCOME_CATS.includes(hit.cat) && hit.cat !== 'Transferências') return 'Outras receitas';
+    if (amount > 0 && !INCOME_CATS.includes(hit.cat) && !NEUTRAL.includes(hit.cat)) return 'Outras receitas';
     return hit.cat;
   }
   return amount > 0 ? 'Outras receitas' : 'Outros';
@@ -105,13 +118,17 @@ function ruleKey(desc) {
 // ---------- Cálculos ----------
 function txOfMonth(mk) { return state.tx.filter(t => t.date.startsWith(mk)); }
 function totals(list) {
-  let inc = 0, out = 0;
-  for (const t of list) { if (t.cat === 'Transferências') continue; t.amount >= 0 ? inc += t.amount : out -= t.amount; }
-  return { inc, out, bal: inc - out };
+  let inc = 0, out = 0, inv = 0;
+  for (const t of list) {
+    if (t.cat === 'Poupança' || t.cat === 'Investimento') { inv -= t.amount; continue; }
+    if (t.cat === 'Transferências') continue;
+    t.amount >= 0 ? inc += t.amount : out -= t.amount;
+  }
+  return { inc, out, bal: inc - out, inv };
 }
 function byCat(list) {
   const m = {};
-  for (const t of list) if (t.amount < 0 && t.cat !== 'Transferências') m[t.cat] = (m[t.cat] || 0) - t.amount;
+  for (const t of list) if (t.amount < 0 && !NEUTRAL.includes(t.cat)) m[t.cat] = (m[t.cat] || 0) - t.amount;
   return Object.entries(m).sort((a, b) => b[1] - a[1]);
 }
 /** Médias dos últimos n meses completos (antes do mês atual) que tenham movimentos. */
@@ -134,7 +151,7 @@ function recurring() {
   const since = shiftMonth(cur, -5);
   const groups = {};
   for (const t of state.tx) {
-    if (t.amount >= 0 || t.fixed || t.date.slice(0, 7) < since || t.cat === 'Transferências' || t.cat === 'Levantamentos') continue;
+    if (t.amount >= 0 || t.fixed || t.date.slice(0, 7) < since || NEUTRAL.includes(t.cat) || t.cat === 'Levantamentos') continue;
     const k = ruleKey(t.desc) || norm(t.desc).trim();
     (groups[k] ||= []).push(t);
   }
@@ -153,6 +170,121 @@ function recurring() {
   return res.sort((a, b) => b.monthly - a.monthly);
 }
 
+// ---------- Contas ----------
+const ACC_IC = { bank: '🏦', invest: '📈' };
+const banks = () => state.accounts.filter(a => a.type === 'bank');
+const invests = () => state.accounts.filter(a => a.type === 'invest');
+const accById = id => state.accounts.find(a => a.id === id);
+const accByName = n => state.accounts.find(a => a.name === n);
+function accSum(id) { return state.tx.reduce((s, t) => s + (t.account === id ? t.amount : 0), 0); }
+function bankBalance(a) { return a.opening == null ? null : a.opening + accSum(a.id); }
+/** Dinheiro posto num investimento: o que já lá tinhas + transferências para lá − resgates. */
+function invested(a, since = '') {
+  const only = invests().length === 1;
+  return (since ? 0 : a.base || 0) - state.tx.reduce((s, t) => s + (t.cat === 'Investimento' && t.date >= since && (t.to === a.id || (!t.to && only)) ? t.amount : 0), 0);
+}
+/** Valor atual: último valor que indicaste + depósitos/resgates registados depois disso
+ *  (com data a partir desse dia; os anteriores já estavam incluídos no valor). */
+function investValue(a) {
+  const snap = (a.values || []).at(-1);
+  if (!snap) return invested(a);
+  const since = invested(a, snap.date);
+  return snap.value + since - (snap.since ?? since);
+}
+function accValue(a) { return a.type === 'invest' ? investValue(a) : bankBalance(a); }
+function uniqueName(n, except) {
+  let name = n.trim() || 'Conta', i = 2;
+  while (state.accounts.some(a => a.name === name && a !== except)) name = `${n.trim()} ${i++}`;
+  return name;
+}
+function renderAccounts() {
+  let total = 0, unknown = false;
+  const rows = state.accounts.map(a => {
+    const v = accValue(a);
+    if (v == null) unknown = true; else total += v;
+    let sub = a.type === 'invest' ? 'Investimentos' : 'Banco';
+    if (a.type === 'invest') {
+      const inv = invested(a), g = v - inv;
+      sub = `Investido ${eur(inv)}${(a.values || []).length ? ` · <span class="${g >= 0 ? 'pos' : 'neg'}">${g >= 0 ? '+' : ''}${eur(g)}${inv > 0 ? ` (${(g / inv * 100).toFixed(1).replace('.', ',')}%)` : ''}</span>` : ' · toca para indicar o valor atual'}`;
+    }
+    return `<li data-acc="${a.id}"><span class="ic">${ACC_IC[a.type]}</span><span class="info"><b>${esc(a.name)}</b><small>${sub}</small></span><span class="amt">${v == null ? '<small class="muted">definir saldo</small>' : eur(v)}</span></li>`;
+  }).join('');
+  $('#accounts').innerHTML = `<ul class="tx-list">${rows}</ul>
+    <p class="total-line"><span>Património total${unknown ? ' <small class="muted">(falta o saldo de alguma conta)</small>' : ''}</span><b>${eur(total)}</b></p>`;
+  // seletores de conta
+  const bankOpts = banks().map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  const f = $('#txForm');
+  const keep = f.account.value;
+  f.account.innerHTML = bankOpts;
+  if (keep && accById(keep)) f.account.value = keep;
+  const cf = $('#txAccFilter'), cv = cf.value;
+  cf.innerHTML = '<option value="">Todas as contas</option>' + bankOpts;
+  cf.value = accById(cv) ? cv : '';
+  cf.hidden = banks().length < 2;
+}
+function accountForm(a) {
+  const isInv = a ? a.type === 'invest' : false;
+  const fields = [
+    { name: 'name', label: 'Nome', value: a?.name, required: true, placeholder: 'ex.: CGD, Millennium, XTB' },
+  ];
+  if (!a) fields.push({ name: 'type', label: 'Tipo', options: [['bank', 'Conta bancária'], ['invest', 'Investimentos (corretora, PPR, certificados…)']], value: 'bank' });
+  if (!a || !isInv) fields.push({ name: 'balance', label: 'Saldo atual hoje (€)', type: 'money', value: a && a.opening != null ? String(Math.round(bankBalance(a) * 100) / 100).replace('.', ',') : '', placeholder: 'vê na app do banco', hint: 'Daqui para a frente o saldo é atualizado com os movimentos.' });
+  if (!a || isInv) {
+    fields.push({ name: 'value', label: 'Valor atual hoje (€)', type: 'money', value: '', placeholder: a ? 'deixa vazio para não mudar' : 'ex.: 5230,40', hint: 'Vê o valor da conta na app da corretora. Atualiza quando quiseres (ex.: uma vez por mês).' });
+    fields.push({ name: 'base', label: 'Quanto já tinhas investido antes de usar esta app (€)', type: 'money', value: a?.base ? String(a.base).replace('.', ',') : '', placeholder: 'para calcular o ganho/perda' });
+  }
+  openForm(a ? 'Editar conta' : 'Nova conta', fields, v => {
+    const type = a ? a.type : v.type;
+    const acc = a || { id: uid(), type };
+    if (!a) state.accounts.push(acc);
+    acc.name = uniqueName(v.name, a);
+    if (type === 'bank' && v.balance?.trim()) {
+      const b = parseAmount(v.balance); if (isNaN(b)) { if (!a) state.accounts.pop(); toast('Saldo inválido.'); return false; }
+      acc.opening = b - accSum(acc.id);
+    } else if (type === 'bank' && !a) acc.opening = null;
+    if (type === 'invest') {
+      if (v.base?.trim()) acc.base = Math.max(0, parseAmount(v.base) || 0);
+      if (v.value?.trim()) {
+        const val = parseAmount(v.value); if (isNaN(val)) { if (!a) state.accounts.pop(); toast('Valor inválido.'); return false; }
+        acc.values = (acc.values || []).filter(x => x.date !== todayISO());
+        acc.values.push({ date: todayISO(), value: val, since: invested(acc, todayISO()) });
+      }
+      acc.values ||= [];
+    }
+    toast(a ? 'Conta atualizada.' : 'Conta criada.');
+  }, a && state.accounts.length > 1 ? async () => {
+    const n = state.tx.filter(t => t.account === a.id).length;
+    if (!(await ask(n ? `Apagar “${a.name}” e os seus ${n} movimentos?` : `Apagar “${a.name}”?`, 'Apagar'))) return;
+    state.tx = state.tx.filter(t => t.account !== a.id);
+    for (const t of state.tx) if (t.to === a.id) delete t.to;
+    state.fixed = state.fixed.filter(f => f.account !== a.id);
+    state.accounts = state.accounts.filter(x => x !== a);
+    if (!banks().length) state = migrate(state);
+    save(); render(); toast('Conta apagada.');
+  } : null);
+}
+/** Cria os movimentos de uma transferência entre contas tuas (ou para um investimento). */
+function makeTransfer(date, desc, amount, from, to, extra = {}) {
+  amount = Math.abs(amount);
+  const dest = accById(to);
+  if (dest?.type === 'invest') return [{ id: uid(), date, desc: desc || `Para ${dest.name}`, amount: -amount, cat: 'Investimento', account: from, to, ...extra }];
+  const a = { id: uid(), date, desc: desc || `Para ${dest?.name || 'outra conta'}`, amount: -amount, cat: 'Transferências', account: from, ...extra };
+  const b = { id: uid(), date, desc: desc || `De ${accById(from)?.name || 'outra conta'}`, amount, cat: 'Transferências', account: to, pair: a.id, ...extra };
+  a.pair = b.id;
+  return [a, b];
+}
+/** Depois de importar: um movimento que sai de uma conta tua e entra noutra (mesmo valor, até 4 dias) é transferência. */
+function matchTransfers(newTx) {
+  let n = 0;
+  for (const t of newTx) {
+    if (t.pair) continue;
+    const o = state.tx.find(x => !x.pair && x.account !== t.account && accById(x.account)?.type === 'bank' && x.amount === -t.amount && Math.abs(new Date(x.date) - new Date(t.date)) <= 4 * 864e5);
+    if (!o) continue;
+    t.cat = o.cat = 'Transferências'; t.pair = o.id; o.pair = t.id; n++;
+  }
+  return n;
+}
+
 // ---------- Pagamentos fixos ----------
 // Cada pagamento fixo guarda `next`: o próximo mês ainda por lançar. Ao abrir a app,
 // lança todos os meses em falta cuja data já chegou.
@@ -164,7 +296,11 @@ function runFixed() {
   for (const f of state.fixed) {
     let mk = f.next || f.start;
     for (let guard = 0; guard < 120 && fixedDate(f, mk) <= today; guard++) {
-      if (fixedDue(f, mk)) { state.tx.push({ id: uid(), date: fixedDate(f, mk), desc: f.desc, amount: f.amount, cat: f.cat, fixed: f.id }); n++; }
+      if (fixedDue(f, mk)) {
+        if (f.to) state.tx.push(...makeTransfer(fixedDate(f, mk), f.desc, f.amount, f.account, f.to, { fixed: f.id }));
+        else state.tx.push({ id: uid(), date: fixedDate(f, mk), desc: f.desc, amount: f.amount, cat: f.cat, account: f.account, fixed: f.id });
+        n++;
+      }
       mk = shiftMonth(mk, 1);
     }
     f.next = mk;
@@ -177,7 +313,8 @@ function fixedPending(mk) {
   return state.fixed.filter(f => (f.next || f.start) <= mk && f.start <= mk && fixedDue(f, mk));
 }
 function freqLabel(f) {
-  return f.freq === 'yearly' ? `todos os anos, a ${f.day} de ${monthName(f.start).split(' ')[0]}` : `dia ${f.day} de cada mês`;
+  const where = f.to ? ` · para ${accById(f.to)?.name || '?'}` : (banks().length > 1 ? ` · ${accById(f.account)?.name || ''}` : '');
+  return (f.freq === 'yearly' ? `todos os anos, a ${f.day} de ${monthName(f.start).split(' ')[0]}` : `dia ${f.day} de cada mês`) + where;
 }
 function fixedForm(f, preset) {
   const base = f || preset || {};
@@ -186,6 +323,7 @@ function fixedForm(f, preset) {
     { name: 'desc', label: 'Descrição', value: base.desc, required: true, placeholder: 'ex.: Renda, Ginásio, Salário' },
     { name: 'amount', label: 'Valor (€)', type: 'money', value: base.amount ? String(Math.abs(base.amount)).replace('.', ',') : '', required: true },
     { name: 'cat', label: 'Categoria', options: CATS.map(c => c.id), value: base.cat || 'Casa' },
+    ...(banks().length > 1 ? [{ name: 'account', label: 'Conta', options: banks().map(a => [a.id, a.name]), value: base.account }] : []),
     { name: 'freq', label: 'Repete', options: ['Todos os meses', 'Todos os anos'], value: base.freq === 'yearly' ? 'Todos os anos' : 'Todos os meses' },
     { name: 'first', label: f ? 'Data (dia do mês em que acontece)' : 'Primeira vez (ou próxima)', type: 'date', value: base.first || (f ? fixedDate(f, f.next || f.start) : todayISO()), required: true },
   ], v => {
@@ -193,7 +331,7 @@ function fixedForm(f, preset) {
     if (!n) { toast('Valor inválido.'); return false; }
     const amount = Math.abs(n) * (v.kind === 'Receita' ? 1 : -1);
     const day = +v.first.slice(8, 10), mk = v.first.slice(0, 7);
-    const data = { desc: v.desc.trim(), amount, cat: v.cat, day, freq: v.freq === 'Todos os anos' ? 'yearly' : 'monthly' };
+    const data = { desc: v.desc.trim(), amount, cat: v.cat, day, freq: v.freq === 'Todos os anos' ? 'yearly' : 'monthly', account: v.account || base.account || banks()[0].id };
     if (f) {
       Object.assign(f, data);
       // nunca recuar `next`, para não lançar outra vez meses que já foram lançados
@@ -221,12 +359,13 @@ function render() {
   runFixed();
   const ml = monthName(ui.month).replace(' de ', ' ');
   $('#monthLabel').textContent = ml[0].toUpperCase() + ml.slice(1);
-  renderHome(); renderTxList(); renderFixed(); renderStats(); renderSave(); renderRules();
+  renderAccounts(); renderHome(); renderTxList(); renderFixed(); renderStats(); renderSave(); renderRules();
 }
 
 function txItem(t) {
   const c = CAT[t.cat] || CAT['Outros'];
-  return `<li data-id="${t.id}"><span class="ic">${c.ic}</span><span class="info"><b>${esc(t.desc)}</b><small>${t.fixed ? '🔁 ' : ''}${esc(t.cat)} · ${t.date.split('-').reverse().join('/')}</small></span><span class="amt ${t.amount >= 0 ? 'pos' : ''}">${t.amount >= 0 ? '+' : ''}${eur(t.amount)}</span></li>`;
+  const accName = state.accounts.length > 1 ? ' · ' + esc(accById(t.account)?.name || '') : '';
+  return `<li data-id="${t.id}"><span class="ic">${c.ic}</span><span class="info"><b>${esc(t.desc)}</b><small>${t.fixed ? '🔁 ' : ''}${esc(t.cat)} · ${t.date.split('-').reverse().join('/')}${accName}</small></span><span class="amt ${t.amount >= 0 ? 'pos' : ''}">${t.amount >= 0 ? '+' : ''}${eur(t.amount)}</span></li>`;
 }
 function barRow(label, value, max, extra = '', over = false, mark) {
   const w = max ? Math.min(100, value / max * 100) : 0;
@@ -267,7 +406,7 @@ function renderHome() {
       const day = new Date().getDate(), dim = daysInMonth(cur);
       const FIXED = ['Casa', 'Contas', 'Subscrições', 'Educação', 'Poupança'];
       const variable = cats.filter(([c]) => !FIXED.includes(c)).reduce((s, [, v]) => s + v, 0);
-      if (day >= 5 && day < dim) tips.push(`📈 A este ritmo vais gastar cerca de <b>${eur(t.out + variable / day * (dim - day) + fixedPending(cur).filter(f => f.amount < 0).reduce((s, f) => s - f.amount, 0))}</b> até ao fim do mês.`);
+      if (day >= 5 && day < dim) tips.push(`📈 A este ritmo vais gastar cerca de <b>${eur(t.out + variable / day * (dim - day) + fixedPending(cur).filter(f => f.amount < 0 && !f.to && !NEUTRAL.includes(f.cat)).reduce((s, f) => s - f.amount, 0))}</b> até ao fim do mês.`);
     }
     const prev = totals(txOfMonth(shiftMonth(ui.month, -1)));
     if (prev.out > 0 && t.out > 0 && ui.month !== cur) {
@@ -275,8 +414,10 @@ function renderHome() {
       tips.push(d > 0 ? `🔺 Gastaste <b>${Math.round(d * 100)}%</b> mais que no mês anterior.` : `🔻 Gastaste <b>${Math.round(-d * 100)}%</b> menos que no mês anterior.`);
     }
     const pend = fixedPending(ui.month).filter(f => ui.month >= monthKey(new Date()));
-    const pendOut = pend.filter(f => f.amount < 0).reduce((s, f) => s - f.amount, 0);
-    if (pendOut) tips.push(`🔁 Ainda vão sair <b>${eur(pendOut)}</b> em pagamentos fixos este mês (${pend.filter(f => f.amount < 0).map(f => esc(f.desc)).join(', ')}).`);
+    const pendList = pend.filter(f => f.amount < 0 && !f.to && !NEUTRAL.includes(f.cat));
+    const pendOut = pendList.reduce((s, f) => s - f.amount, 0);
+    if (pendOut) tips.push(`🔁 Ainda vão sair <b>${eur(pendOut)}</b> em pagamentos fixos este mês (${pendList.map(f => esc(f.desc)).join(', ')}).`);
+    if (t.inv > 0) tips.push(`📈 Puseste <b>${eur(t.inv)}</b> de parte em poupança/investimentos este mês (não conta como gasto).`);
     if (cats[0]) tips.push(`🏷️ A maior fatia foi <b>${esc(cats[0][0])}</b>: ${eur(cats[0][1])}.`);
     const catMap = Object.fromEntries(cats);
     for (const [c, lim] of Object.entries(state.budgets)) {
@@ -288,9 +429,9 @@ function renderHome() {
 
 function renderTxList() {
   const q = norm($('#txSearch').value).trim();
-  const cf = $('#txCatFilter').value;
+  const cf = $('#txCatFilter').value, af = $('#txAccFilter').value;
   const list = txOfMonth(ui.month)
-    .filter(t => (!q || norm(t.desc).includes(q)) && (!cf || t.cat === cf))
+    .filter(t => (!q || norm(t.desc).includes(q)) && (!cf || t.cat === cf) && (!af || t.account === af))
     .sort((a, b) => b.date.localeCompare(a.date));
   let html = '', lastDay = '';
   for (const t of list) {
@@ -412,7 +553,7 @@ function renderRules() {
 
 // ---------- Movimentos: adicionar / editar ----------
 function fillCatSelect(sel, kind, value) {
-  const cats = kind === 'in' ? [...INCOME_CATS, 'Transferências'] : EXPENSE_CATS;
+  const cats = kind === 'in' ? [...INCOME_CATS, ...NEUTRAL] : EXPENSE_CATS;
   sel.innerHTML = cats.map(c => `<option ${c === value ? 'selected' : ''}>${c}</option>`).join('');
 }
 function openTx(t) {
@@ -423,6 +564,9 @@ function openTx(t) {
   f.amount.value = t ? String(Math.abs(t.amount)).replace('.', ',') : '';
   f.desc.value = t ? t.desc : '';
   f.date.value = t ? t.date : (ui.month === monthKey(new Date()) ? todayISO() : ui.month + '-01');
+  if (t) f.account.value = t.account;
+  $('#kindTransfer').hidden = !!t || state.accounts.length < 2;
+  setKindUI();
   fillCatSelect(f.cat, kind, t ? t.cat : (kind === 'in' ? 'Salário' : 'Supermercado'));
   f.cat.dataset.touched = t ? '1' : '';
   $('#txDialogTitle').textContent = t ? 'Editar movimento' : 'Novo movimento';
@@ -433,9 +577,23 @@ function openTx(t) {
   $('#txDialog').showModal();
   if (!t) setTimeout(() => f.amount.focus(), 50);
 }
+function setKindUI() {
+  const f = $('#txForm'), tr = f.kind.value === 'tr';
+  $('#catWrap').hidden = tr;
+  $('#toWrap').hidden = !tr;
+  $('#accWrap').hidden = banks().length < 2 && !tr;
+  $('#accLabel').textContent = tr ? 'De' : 'Conta';
+  f.desc.required = !tr;
+  if (tr) {
+    f.to.innerHTML = state.accounts.filter(a => a.id !== f.account.value).map(a => `<option value="${a.id}">${ACC_IC[a.type]} ${esc(a.name)}</option>`).join('');
+  }
+}
 function setupTxForm() {
   const f = $('#txForm');
+  f.account.addEventListener('change', setKindUI);
   f.querySelectorAll('input[name=kind]').forEach(r => r.addEventListener('change', () => {
+    setKindUI();
+    if (f.kind.value === 'tr') return;
     fillCatSelect(f.cat, f.kind.value, f.kind.value === 'in' ? 'Salário' : 'Supermercado');
     f.cat.dataset.touched = '';
   }));
@@ -448,23 +606,37 @@ function setupTxForm() {
   f.cat.addEventListener('change', () => { f.cat.dataset.touched = '1'; });
   $('#txCancel').onclick = () => $('#txDialog').close();
   $('#txDelete').onclick = async () => {
-    if (!ui.editing || !(await ask('Apagar este movimento?', 'Apagar'))) return;
-    state.tx = state.tx.filter(x => x.id !== ui.editing.id);
+    const t = ui.editing;
+    if (!t || !(await ask(t.pair ? 'Apagar esta transferência (nas duas contas)?' : 'Apagar este movimento?', 'Apagar'))) return;
+    state.tx = state.tx.filter(x => x.id !== t.id && x.id !== t.pair);
     save(); $('#txDialog').close(); render(); toast('Movimento apagado.');
   };
   f.addEventListener('submit', e => {
     e.preventDefault();
     const v = parseAmount(f.amount.value);
     if (!v) { toast('Valor inválido.'); return; }
+    if (f.kind.value === 'tr') {
+      const from = f.account.value, to = f.to.value;
+      if (!to) { toast('Escolhe a conta de destino.'); return; }
+      if (f.repeat.value !== 'no') {
+        const fx = { id: uid(), desc: f.desc.value.trim() || `Para ${accById(to).name}`, amount: -Math.abs(v), cat: accById(to).type === 'invest' ? 'Investimento' : 'Transferências',
+          day: +f.date.value.slice(8, 10), freq: f.repeat.value, start: f.date.value.slice(0, 7), next: f.date.value.slice(0, 7), account: from, to };
+        state.fixed.push(fx);
+        runFixed();
+      } else state.tx.push(...makeTransfer(f.date.value, f.desc.value.trim(), v, from, to));
+      save(); $('#txDialog').close(); ui.month = f.date.value.slice(0, 7); render();
+      toast('Transferência registada. Não conta como gasto.');
+      return;
+    }
     const amount = Math.abs(v) * (f.kind.value === 'in' ? 1 : -1);
-    const data = { date: f.date.value, desc: f.desc.value.trim(), amount, cat: f.cat.value };
+    const data = { date: f.date.value, desc: f.desc.value.trim(), amount, cat: f.cat.value, account: f.account.value || banks()[0].id };
     if (ui.editing) {
       const old = ui.editing;
       Object.assign(old, data);
       if (old.cat !== guessCat(old.desc, old.amount)) learnRule(old);
     } else if (f.repeat.value !== 'no') {
       // o próprio movimento é a primeira ocorrência; os seguintes são lançados sozinhos
-      const fx = { id: uid(), desc: data.desc, amount, cat: data.cat, day: +data.date.slice(8, 10),
+      const fx = { id: uid(), desc: data.desc, amount, cat: data.cat, account: data.account, day: +data.date.slice(8, 10),
         freq: f.repeat.value, start: data.date.slice(0, 7), next: shiftMonth(data.date.slice(0, 7), 1) };
       state.fixed.push(fx);
       state.tx.push({ id: uid(), ...data, fixed: fx.id });
@@ -492,12 +664,16 @@ function learnRule(t) {
 }
 
 // ---------- Formulário genérico ----------
-function openForm(title, fields, onSubmit) {
+function openForm(title, fields, onSubmit, onDelete) {
   $('#genTitle').textContent = title;
-  $('#genFields').innerHTML = fields.map(fl => fl.options
-    ? `<label>${fl.label}<select name="${fl.name}">${fl.options.map(o => `<option ${o === fl.value ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`
-    : `<label>${fl.label}<input name="${fl.name}" type="${fl.type || 'text'}" ${fl.type === 'money' ? 'inputmode="decimal"' : ''} value="${esc(fl.value ?? '')}" ${fl.required ? 'required' : ''} placeholder="${esc(fl.placeholder || '')}"></label>`
+  const opt = (o, sel) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${v === sel ? 'selected' : ''}>${esc(l)}</option>`; };
+  $('#genFields').innerHTML = fields.map(fl => (fl.options
+    ? `<label>${fl.label}<select name="${fl.name}">${fl.options.map(o => opt(o, fl.value)).join('')}</select></label>`
+    : `<label>${fl.label}<input name="${fl.name}" type="${fl.type || 'text'}" ${fl.type === 'money' ? 'inputmode="decimal"' : ''} value="${esc(fl.value ?? '')}" ${fl.required ? 'required' : ''} placeholder="${esc(fl.placeholder || '')}"></label>`)
+    + (fl.hint ? `<p class="muted hint">${fl.hint}</p>` : '')
   ).join('').replaceAll('type="money"', 'type="text"');
+  $('#genDelete').hidden = !onDelete;
+  $('#genDelete').onclick = () => { $('#genDialog').close(); onDelete(); };
   const form = $('#genForm');
   form.onsubmit = e => {
     e.preventDefault();
@@ -623,11 +799,14 @@ function renderImport(info) {
   // (ex.: dois cafés de 1,20 €) sejam ambos contabilizados.
   const key = t => t.date + '|' + t.amount + '|' + norm(t.desc);
   const existing = {};
-  for (const t of state.tx) existing[key(t)] = (existing[key(t)] || 0) + 1;
+  if (!accById(ui.importAcc) || accById(ui.importAcc).type !== 'bank') ui.importAcc = banks()[0].id;
+  const acc = ui.importAcc;
+  for (const t of state.tx) if (t.account === acc) existing[key(t)] = (existing[key(t)] || 0) + 1;
   const fresh = parsed.filter(t => existing[key(t)] > 0 ? (existing[key(t)]--, false) : true);
   const two = m.debit >= 0 || m.credit >= 0;
   $('#importArea').innerHTML = `
-    <p class="muted">Confirma se as colunas estão certas:</p>
+    <label>De que conta é este extrato?<select id="importAcc">${banks().map(a => `<option value="${a.id}" ${a.id === acc ? 'selected' : ''}>${esc(a.name)}</option>`).join('')}</select></label>
+    <p class="muted">Tens mais bancos? Cria as contas no Resumo → “As minhas contas”. Confirma se as colunas estão certas:</p>
     <label>Data<select data-map="date">${opts(m.date)}</select></label>
     <label>Descrição<select data-map="desc">${opts(m.desc)}</select></label>
     <div class="seg"><label><input type="radio" name="amode" value="one" ${two ? '' : 'checked'}><span>Uma coluna de valor</span></label><label><input type="radio" name="amode" value="two" ${two ? 'checked' : ''}><span>Débito + Crédito</span></label></div>
@@ -645,14 +824,19 @@ function renderImport(info) {
     renderImport(info);
   });
   $('#invert').onchange = e => { m.invert = e.target.checked; renderImport(info); };
+  $('#importAcc').onchange = e => { ui.importAcc = e.target.value; renderImport(info); };
   const btn = $('#doImport');
   if (btn) btn.onclick = () => {
     let merged = 0;
+    const added = [];
     for (const t of fresh) {
-      const auto = state.tx.find(x => x.fixed && !x.bank && x.amount === t.amount && Math.abs(new Date(x.date) - new Date(t.date)) <= 6 * 864e5);
+      const auto = state.tx.find(x => x.fixed && !x.bank && x.account === acc && x.amount === t.amount && Math.abs(new Date(x.date) - new Date(t.date)) <= 6 * 864e5);
       if (auto) { auto.date = t.date; auto.desc = t.desc; auto.bank = true; merged++; continue; }
-      state.tx.push({ id: uid(), ...t, cat: guessCat(t.desc, t.amount) });
+      const nt = { id: uid(), ...t, cat: guessCat(t.desc, t.amount), account: acc };
+      state.tx.push(nt); added.push(nt);
     }
+    const tr = matchTransfers(added);
+    if (tr) setTimeout(() => toast(`${tr} transferência(s) entre as tuas contas encontradas — não contam como gasto.`), merged ? 6600 : 3300);
     if (merged) setTimeout(() => toast(`${merged} pagamento(s) fixo(s) já lançados foram juntados com o extrato (sem duplicar).`), 3300);
     save();
     const months = fresh.map(t => t.date.slice(0, 7)).sort();
@@ -718,6 +902,8 @@ function bind() {
   document.body.addEventListener('click', e => {
     const li = e.target.closest('.tx-list li[data-id]');
     if (li) { openTx(state.tx.find(t => t.id === li.dataset.id)); return; }
+    const ali = e.target.closest('li[data-acc]');
+    if (ali) { accountForm(accById(ali.dataset.acc)); return; }
     const fli = e.target.closest('li[data-fixed]');
     if (fli) { fixedMenu(state.fixed.find(f => f.id === fli.dataset.fixed)); return; }
     const d = e.target.dataset;
@@ -742,6 +928,8 @@ function bind() {
 
   $('#addGoal').onclick = () => goalForm();
   $('#addFixed').onclick = () => fixedForm();
+  $('#addAccount').onclick = () => accountForm();
+  $('#txAccFilter').onchange = renderTxList;
   document.addEventListener('visibilitychange', () => { if (!document.hidden && runFixed()) render(); });
   $('#addBudget').onclick = () => {
     const av = averages();
@@ -800,7 +988,7 @@ function bind() {
     restore(await file.text());
   };
   $('#loadDemo').onclick = loadDemo;
-  $('#wipe').onclick = async () => { if (await ask('Apagar TODOS os dados? Isto não se pode desfazer.', 'Apagar tudo')) { state = blank(); save(); render(); } };
+  $('#wipe').onclick = async () => { if (await ask('Apagar TODOS os dados? Isto não se pode desfazer.', 'Apagar tudo')) { state = migrate(blank()); save(); render(); } };
 }
 async function fixedMenu(f) {
   const d = $('#fixedDialog');
@@ -821,7 +1009,7 @@ async function restore(text) {
   try { s = JSON.parse(text); if (!Array.isArray(s.tx)) throw new Error('formato'); }
   catch { toast('Cópia inválida.'); return; }
   if (!(await ask(`Substituir os dados atuais pelos da cópia (${s.tx.length} movimentos)?`, 'Restaurar'))) return;
-  state = { ...blank(), ...s }; save(); render();
+  state = migrate(s); save(); render();
   if ($('#backupDialog').open) $('#backupDialog').close();
   toast('Cópia restaurada.');
 }
@@ -839,25 +1027,42 @@ function ask(msg, okLabel = 'Continuar') {
 }
 async function loadDemo() {
   if (state.tx.length && !(await ask('Isto substitui os teus dados pelos de exemplo. Continuar?'))) return;
-  state = blank(); state.tx = demoData();
+  state = blank();
+  state.accounts = [
+    { id: 'demo-a', name: 'Conta ordenado', type: 'bank', opening: 0 },
+    { id: 'demo-b', name: 'Conta poupança', type: 'bank', opening: 0 },
+    { id: 'demo-x', name: 'XTB', type: 'invest', base: 4000, values: [] },
+  ];
+  state.tx = demoData().map(t => ({ ...t, account: 'demo-a' }));
   state.goals = [{ id: uid(), name: 'Fundo de emergência', target: 3000, saved: 600, deadline: shiftMonth(monthKey(new Date()), 12) }];
   state.budgets = { 'Restauração': 100 };
   const cur = monthKey(new Date());
   const fx = (desc, amount, cat, day) => {
     const id = uid();
     for (const t of state.tx) if (t.desc === desc) t.fixed = id;
-    state.fixed.push({ id, desc, amount, cat, day, freq: 'monthly', start: shiftMonth(cur, -4), next: fixedDate({ day }, cur) <= todayISO() ? shiftMonth(cur, 1) : cur });
+    state.fixed.push({ id, desc, amount, cat, day, account: 'demo-a', freq: 'monthly', start: shiftMonth(cur, -4), next: fixedDate({ day }, cur) <= todayISO() ? shiftMonth(cur, 1) : cur });
   };
   fx('TRF VENCIMENTO EMPRESA XYZ', 1450, 'Salário', 1);
   fx('DD RENDA CASA', -550, 'Casa', 2);
   fx('DD MEO SERVICOS', -39.99, 'Contas', 6);
   fx('COMPRA NETFLIX.COM', -13.99, 'Subscrições', 8);
   fx('DD FITNESS HUT', -29.9, 'Subscrições', 10);
+  // 200 €/mês para a XTB e uma transferência para a conta poupança
+  const xf = { id: uid(), desc: 'TRF XTB', amount: -200, cat: 'Investimento', day: 3, freq: 'monthly', start: shiftMonth(cur, -4), next: shiftMonth(cur, -4), account: 'demo-a', to: 'demo-x' };
+  state.fixed.push(xf);
+  runFixed();
+  state.tx.push(...makeTransfer(`${shiftMonth(cur, -1)}-15`, 'TRF PARA POUPANCA', 300, 'demo-a', 'demo-b'));
+  state.accounts[0].opening = 2350 - accSum('demo-a');
+  state.accounts[1].opening = 6000 - accSum('demo-b');
+  // valor indicado no fim do mês passado (antes do depósito deste mês)
+  const thisMonth = state.tx.filter(t => t.to === 'demo-x' && t.date.startsWith(cur)).reduce((s, t) => s - t.amount, 0);
+  state.accounts[2].values = [{ date: `${shiftMonth(cur, -1)}-28`, value: 5180, since: invested(state.accounts[2], `${shiftMonth(cur, -1)}-28`) - thisMonth }];
   ui.month = monthKey(new Date());
   save(); render(); toast('Dados de exemplo carregados. Podes apagá-los em Mais.');
 }
 
 bind();
+save();
 render();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 

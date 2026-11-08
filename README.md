@@ -11,6 +11,9 @@ Funciona no browser do telemóvel e pode ser "instalada" como app (ecrã inicial
   (reconhece ~150 lojas/serviços comuns em Portugal).
 - **Pagamentos fixos** (renda, ginásio, salário…): mensais ou anuais, lançados sozinhos na data certa. Ao importar o extrato,
   o movimento do banco junta-se ao lançado automaticamente, sem duplicar. Os pagamentos repetidos detetados podem virar fixos com um toque.
+- **Várias contas** (bancos e investimentos): saldo de cada conta, património total, extrato importado para a conta certa.
+  Transferências entre contas tuas são detetadas sozinhas (mesmo valor a sair de uma e a entrar noutra até 4 dias) e não contam como gasto.
+- **Investimentos** (ex.: XTB): indicas o valor atual de vez em quando; as transferências para lá são somadas e a app mostra o ganho/perda.
 - **Aprende**: se corriges a categoria de um movimento, cria uma regra e aplica-a a movimentos parecidos.
 - **Resumo do mês**: entradas, saídas, saldo, taxa de poupança, previsão até ao fim do mês, alertas.
 - **Estatísticas**: últimos 6 meses, médias, cada categoria vs. a tua média, pagamentos recorrentes (subscrições, contas).

@@ -28,6 +28,11 @@
       </div>
       <div class="card" id="insights"></div>
       <div class="card">
+        <h2>As minhas contas</h2>
+        <div id="accounts"></div>
+        <button class="btn" id="addAccount">+ Adicionar conta</button>
+      </div>
+      <div class="card">
         <h2>Para onde foi o dinheiro</h2>
         <div id="homeCats"></div>
       </div>
@@ -47,6 +52,7 @@
       <div class="card">
         <input type="search" id="txSearch" placeholder="Pesquisar descrição…">
         <select id="txCatFilter"><option value="">Todas as categorias</option></select>
+        <select id="txAccFilter" hidden></select>
       </div>
       <ul class="tx-list card" id="txList"></ul>
     </section>
@@ -139,10 +145,13 @@
       <div class="seg">
         <label><input type="radio" name="kind" value="out" checked><span>Despesa</span></label>
         <label><input type="radio" name="kind" value="in"><span>Receita</span></label>
+        <label id="kindTransfer"><input type="radio" name="kind" value="tr"><span>Transferência</span></label>
       </div>
       <label>Valor (€)<input name="amount" type="text" inputmode="decimal" required placeholder="0,00"></label>
       <label>Descrição<input name="desc" type="text" required placeholder="ex.: Continente"></label>
-      <label>Categoria<select name="cat"></select></label>
+      <label id="accWrap"><span id="accLabel">Conta</span><select name="account"></select></label>
+      <label id="toWrap" hidden>Para<select name="to"></select></label>
+      <label id="catWrap">Categoria<select name="cat"></select></label>
       <label>Data<input name="date" type="date" required></label>
       <label id="repeatWrap">Repetir<select name="repeat">
         <option value="no">Não repetir</option>
@@ -165,6 +174,7 @@
       <h2 id="genTitle"></h2>
       <div id="genFields"></div>
       <div class="row">
+        <button type="button" class="btn danger" id="genDelete" hidden>Apagar</button>
         <span class="grow"></span>
         <button type="button" class="btn" id="genCancel">Cancelar</button>
         <button type="submit" class="btn primary">Guardar</button>
