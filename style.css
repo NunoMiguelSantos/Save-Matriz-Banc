@@ -111,3 +111,5 @@ textarea { font: 12px ui-monospace, monospace; resize: vertical; }
 .total-line b { font-size: 17px; }
 .hint { margin: -6px 0 10px; }
 .seg span { font-size: 14px; padding: 8px 4px; }
+.bank-help { margin: 0 0 10px; } .bank-help summary { cursor: pointer; color: var(--brand); } .bank-help p { margin: 6px 0; }
+.total-line.sub { border-top: 0; margin: 6px 0 0; padding-top: 4px; color: var(--muted); } .total-line.sub b { font-size: 15px; }

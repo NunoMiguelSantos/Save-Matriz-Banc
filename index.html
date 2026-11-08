@@ -101,9 +101,14 @@
     <section class="view" id="view-more">
       <div class="card">
         <h2>Importar extrato do banco</h2>
-        <p class="muted">No site/app do teu banco, exporta os movimentos em <b>CSV</b> (às vezes chamado “Excel” ou “exportar movimentos”). Depois escolhe o ficheiro aqui. As categorias são atribuídas automaticamente e os duplicados são ignorados.</p>
-        <label class="btn primary file-btn">Escolher ficheiro CSV
-          <input type="file" id="csvFile" accept=".csv,.txt,text/csv" hidden>
+        <p class="muted">No site/app do teu banco, exporta os movimentos em <b>Excel</b> ou <b>CSV</b> (procura “exportar movimentos” ou “extrato”). Depois escolhe o ficheiro aqui e diz de que conta é. As categorias são atribuídas automaticamente, os duplicados são ignorados e as transferências entre as tuas contas são reconhecidas.</p>
+        <details class="muted bank-help"><summary>Onde encontro isto no meu banco?</summary>
+          <p><b>Revolut</b> (app): na conta em euros → ⋯ → Extrato → formato <b>Excel</b> → escolhe o período. Movimentos anulados ou noutra moeda são ignorados e as comissões somadas.</p>
+          <p><b>ActivoBank</b> e <b>Santander</b>: no site (no computador é mais fácil), abre a lista de movimentos da conta, escolhe as datas e usa o botão de exportar / descarregar em Excel.</p>
+          <p>Os menus mudam de vez em quando; se não encontrares, procura “exportar” na ajuda do banco.</p>
+        </details>
+        <label class="btn primary file-btn">Escolher ficheiro (CSV ou Excel)
+          <input type="file" id="csvFile" accept=".csv,.txt,.xls,.xlsx,.ods,text/csv" hidden>
         </label>
         <div id="importArea"></div>
       </div>

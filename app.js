@@ -33,7 +33,7 @@ const BUILTIN_RULES = Object.entries({
   'Restauração': 'mcdonald,burger king,kfc,restaurante,pastelaria,padaria,glovo,uber eats,bolt food,telepizza,pizza hut,starbucks,h3,vitaminas,cafe,taberna,churrasqueira,sushi',
   'Transportes': 'uber,bolt,cp,comboios,metro,carris,navegante,via verde,emel,portagem,brisa,stcp,fertagus,flixbus,ryanair,tap,easyjet,saba,empark,parque',
   'Combustível': 'galp,bp,repsol,prio,cepsa,shell,moeve',
-  'Casa': 'renda,condominio,credito habitacao,prestacao habitacao,seguro casa',
+  'Casa': 'renda,condominio,credito habitacao,prestacao habitacao,prestacao emprestimo,emprestimo habitacao,prestacao,amortizacao,juros emprestimo,juros credito,seguro vida credito,seguro casa,imi',
   'Contas': 'edp,epal,endesa,goldenergy,iberdrola,meo,nos,vodafone,nowo,digi,aguas,smas,ageas,fidelidade,seguro',
   'Saúde': 'farmacia,hospital,clinica,cuf,luz saude,lusiadas,dentista,wells,medicare,multicare,optica',
   'Subscrições': 'netflix,spotify,disney,hbo,apple com,icloud,google one,amazon prime,youtube,ginasio,fitness hut,solinca,chatgpt,openai,claude',
@@ -41,11 +41,13 @@ const BUILTIN_RULES = Object.entries({
   'Lazer': 'cinema,cinemas nos,ucicinemas,ticketline,bol pt,steam,playstation,xbox,nintendo,booking,airbnb',
   'Educação': 'escola,universidade,propina,livraria,bertrand,wook',
   'Levantamentos': 'levantamento,lev atm,atm',
+  'Poupança': 'pocket,vault,cofre,savings,poupanca',
+  'Transferências': 'top up,topup,carregamento revolut,payment from,money added',
   'Investimento': 'xtb,x trade brokers,degiro,trading 212,trade republic,interactive brokers,etoro,lightyear,bison,certificados aforro,aforro,igcp,ppr',
   'Salário': 'salario,vencimento,ordenado,remuneracao',
 }).flatMap(([cat, kws]) => kws.split(',').map(kw => ({ kw, cat })));
 
-const STOPWORDS = new Set('compra compras pag pagamento pagamentos trf transf mb way dd cartao card debito credito tpa ref de da do das dos a o e em no na para por com sem the visa mastercard apple pay google lda sa unipessoal pt lisboa porto'.split(' '));
+const STOPWORDS = new Set('to from top up compra compras pag pagamento pagamentos trf transf mb way dd cartao card debito credito tpa ref de da do das dos a o e em no na para por com sem the visa mastercard apple pay google lda sa unipessoal pt lisboa porto'.split(' '));
 
 // ---------- Estado ----------
 const KEY = 'mealheiro-v1';
@@ -171,13 +173,23 @@ function recurring() {
 }
 
 // ---------- Contas ----------
-const ACC_IC = { bank: '🏦', invest: '📈' };
+const ACC_IC = { bank: '🏦', invest: '📈', loan: '🏠' };
+const ACC_TYPES = [['bank', '🏦 Conta bancária'], ['invest', '📈 Investimentos (corretora, PPR, certificados…)'], ['loan', '🏠 Crédito (habitação, carro…)']];
 const banks = () => state.accounts.filter(a => a.type === 'bank');
 const invests = () => state.accounts.filter(a => a.type === 'invest');
 const accById = id => state.accounts.find(a => a.id === id);
 const accByName = n => state.accounts.find(a => a.name === n);
 function accSum(id) { return state.tx.reduce((s, t) => s + (t.account === id ? t.amount : 0), 0); }
-function bankBalance(a) { return a.opening == null ? null : a.opening + accSum(a.id); }
+/** Saldo = o saldo que indicaste numa data + movimentos depois dessa data
+ *  (os anteriores já estavam incluídos, mesmo que sejam importados mais tarde). */
+// Movimentos depois da data + os escritos à mão nesse próprio dia (os importados desse dia já vinham no saldo)
+function accSince(id, date) {
+  return state.tx.reduce((s, t) => s + (t.account === id && (t.date > date || (t.date === date && !t.imp)) ? t.amount : 0), 0);
+}
+function bankBalance(a) {
+  if (a.anchor) return a.anchor.value + accSince(a.id, a.anchor.date) - (a.anchor.sameDay || 0);
+  return a.opening == null ? null : a.opening + accSum(a.id);
+}
 /** Dinheiro posto num investimento: o que já lá tinhas + transferências para lá − resgates. */
 function invested(a, since = '') {
   const only = invests().length === 1;
@@ -191,7 +203,12 @@ function investValue(a) {
   const since = invested(a, snap.date);
   return snap.value + since - (snap.since ?? since);
 }
-function accValue(a) { return a.type === 'invest' ? investValue(a) : bankBalance(a); }
+function loanDebt(a) { const v = (a.values || []).at(-1); return v ? v.value : null; }
+function accValue(a) {
+  if (a.type === 'invest') return investValue(a);
+  if (a.type === 'loan') { const d = loanDebt(a); return d == null ? null : -d; }
+  return bankBalance(a);
+}
 function uniqueName(n, except) {
   let name = n.trim() || 'Conta', i = 2;
   while (state.accounts.some(a => a.name === name && a !== except)) name = `${n.trim()} ${i++}`;
@@ -203,13 +220,19 @@ function renderAccounts() {
     const v = accValue(a);
     if (v == null) unknown = true; else total += v;
     let sub = a.type === 'invest' ? 'Investimentos' : 'Banco';
+    if (a.type === 'loan') {
+      const last = (a.values || []).at(-1), first = (a.values || [])[0];
+      sub = last ? `Em dívida · atualizado a ${last.date.split('-').reverse().join('/')}` : 'Crédito';
+      if (first && last && first !== last && first.value > last.value) sub += ` · já abateste ${eur(first.value - last.value)}`;
+    }
     if (a.type === 'invest') {
       const inv = invested(a), g = v - inv;
       sub = `Investido ${eur(inv)}${(a.values || []).length ? ` · <span class="${g >= 0 ? 'pos' : 'neg'}">${g >= 0 ? '+' : ''}${eur(g)}${inv > 0 ? ` (${(g / inv * 100).toFixed(1).replace('.', ',')}%)` : ''}</span>` : ' · toca para indicar o valor atual'}`;
     }
-    return `<li data-acc="${a.id}"><span class="ic">${ACC_IC[a.type]}</span><span class="info"><b>${esc(a.name)}</b><small>${sub}</small></span><span class="amt">${v == null ? '<small class="muted">definir saldo</small>' : eur(v)}</span></li>`;
+    return `<li data-acc="${a.id}"><span class="ic">${ACC_IC[a.type]}</span><span class="info"><b>${esc(a.name)}</b><small>${sub}</small></span><span class="amt ${v < 0 ? 'neg' : ''}">${v == null ? `<small class="muted">${a.type === 'loan' ? 'indicar dívida' : 'definir saldo'}</small>` : eur(v)}</span></li>`;
   }).join('');
   $('#accounts').innerHTML = `<ul class="tx-list">${rows}</ul>
+    ${state.accounts.some(a => a.type === 'loan') ? `<p class="total-line sub"><span>Bancos + investimentos</span><b>${eur(state.accounts.filter(a => a.type !== 'loan').reduce((s, a) => s + (accValue(a) || 0), 0))}</b></p>` : ''}
     <p class="total-line"><span>Património total${unknown ? ' <small class="muted">(falta o saldo de alguma conta)</small>' : ''}</span><b>${eur(total)}</b></p>`;
   // seletores de conta
   const bankOpts = banks().map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
@@ -222,26 +245,41 @@ function renderAccounts() {
   cf.value = accById(cv) ? cv : '';
   cf.hidden = banks().length < 2;
 }
-function accountForm(a) {
-  const isInv = a ? a.type === 'invest' : false;
+function accountForm(a, newType) {
+  if (!a && !newType) {
+    // primeiro escolhe o tipo, depois mostra só os campos desse tipo
+    openForm('Nova conta', [{ name: 'type', label: 'Que tipo de conta?', options: ACC_TYPES, value: 'bank' }],
+      v => { setTimeout(() => accountForm(null, v.type), 0); });
+    return;
+  }
+  const type = a ? a.type : newType;
+  const isInv = type === 'invest';
   const fields = [
-    { name: 'name', label: 'Nome', value: a?.name, required: true, placeholder: 'ex.: CGD, Millennium, XTB' },
+    { name: 'name', label: 'Nome', value: a?.name, required: true, placeholder: { bank: 'ex.: ActivoBank, Santander, Revolut', invest: 'ex.: XTB', loan: 'ex.: Crédito casa' }[type] },
   ];
-  if (!a) fields.push({ name: 'type', label: 'Tipo', options: [['bank', 'Conta bancária'], ['invest', 'Investimentos (corretora, PPR, certificados…)']], value: 'bank' });
-  if (!a || !isInv) fields.push({ name: 'balance', label: 'Saldo atual hoje (€)', type: 'money', value: a && a.opening != null ? String(Math.round(bankBalance(a) * 100) / 100).replace('.', ',') : '', placeholder: 'vê na app do banco', hint: 'Daqui para a frente o saldo é atualizado com os movimentos.' });
-  if (!a || isInv) {
+  if (type === 'loan') fields.push({ name: 'debt', label: 'Quanto falta pagar hoje (€)', type: 'money', value: '', required: !a, placeholder: a ? 'deixa vazio para não mudar' : 'vê no extrato do crédito', hint: 'Atualiza de vez em quando (ex.: quando chega o extrato anual) para veres a dívida a descer.' });
+  if (type === 'bank') fields.push({ name: 'balance', label: 'Saldo atual hoje (€)', type: 'money', value: a && bankBalance(a) != null ? String(Math.round(bankBalance(a) * 100) / 100).replace('.', ',') : '', placeholder: 'vê na app do banco', hint: 'Os movimentos a partir de amanhã são somados sozinhos. Podes importar extratos antigos à vontade: não mexem neste saldo.' });
+  if (isInv) {
     fields.push({ name: 'value', label: 'Valor atual hoje (€)', type: 'money', value: '', placeholder: a ? 'deixa vazio para não mudar' : 'ex.: 5230,40', hint: 'Vê o valor da conta na app da corretora. Atualiza quando quiseres (ex.: uma vez por mês).' });
     fields.push({ name: 'base', label: 'Quanto já tinhas investido antes de usar esta app (€)', type: 'money', value: a?.base ? String(a.base).replace('.', ',') : '', placeholder: 'para calcular o ganho/perda' });
   }
   openForm(a ? 'Editar conta' : 'Nova conta', fields, v => {
-    const type = a ? a.type : v.type;
     const acc = a || { id: uid(), type };
     if (!a) state.accounts.push(acc);
     acc.name = uniqueName(v.name, a);
     if (type === 'bank' && v.balance?.trim()) {
       const b = parseAmount(v.balance); if (isNaN(b)) { if (!a) state.accounts.pop(); toast('Saldo inválido.'); return false; }
-      acc.opening = b - accSum(acc.id);
+      const d = todayISO();
+      acc.anchor = { date: d, value: b, sameDay: accSince(acc.id, d) - accSince(acc.id, d.replace(/\d\d$/, '99')) }; delete acc.opening;
     } else if (type === 'bank' && !a) acc.opening = null;
+    if (type === 'loan') {
+      acc.values ||= [];
+      if (v.debt?.trim()) {
+        const d = parseAmount(v.debt); if (isNaN(d)) { if (!a) state.accounts.pop(); toast('Valor inválido.'); return false; }
+        acc.values = acc.values.filter(x => x.date !== todayISO());
+        acc.values.push({ date: todayISO(), value: Math.abs(d) });
+      }
+    }
     if (type === 'invest') {
       if (v.base?.trim()) acc.base = Math.max(0, parseAmount(v.base) || 0);
       if (v.value?.trim()) {
@@ -565,7 +603,7 @@ function openTx(t) {
   f.desc.value = t ? t.desc : '';
   f.date.value = t ? t.date : (ui.month === monthKey(new Date()) ? todayISO() : ui.month + '-01');
   if (t) f.account.value = t.account;
-  $('#kindTransfer').hidden = !!t || state.accounts.length < 2;
+  $('#kindTransfer').hidden = !!t || state.accounts.filter(a => a.type !== 'loan').length < 2;
   setKindUI();
   fillCatSelect(f.cat, kind, t ? t.cat : (kind === 'in' ? 'Salário' : 'Supermercado'));
   f.cat.dataset.touched = t ? '1' : '';
@@ -585,7 +623,7 @@ function setKindUI() {
   $('#accLabel').textContent = tr ? 'De' : 'Conta';
   f.desc.required = !tr;
   if (tr) {
-    f.to.innerHTML = state.accounts.filter(a => a.id !== f.account.value).map(a => `<option value="${a.id}">${ACC_IC[a.type]} ${esc(a.name)}</option>`).join('');
+    f.to.innerHTML = state.accounts.filter(a => a.id !== f.account.value && a.type !== 'loan').map(a => `<option value="${a.id}">${ACC_IC[a.type]} ${esc(a.name)}</option>`).join('');
   }
 }
 function setupTxForm() {
@@ -746,7 +784,11 @@ function guessMapping(rows) {
   const n = Math.max(...body.slice(0, 20).map(r => r.length), header.length);
   const H = Array.from({ length: n }, (_, i) => norm(header[i] || '').trim());
   const find = (re, not) => H.findIndex(x => re.test(x) && !(not && not.test(x)));
-  const map = { date: -1, desc: -1, amount: -1, debit: -1, credit: -1, invert: false };
+  const map = { date: -1, desc: -1, amount: -1, debit: -1, credit: -1, fee: -1, state: -1, currency: -1, invert: false };
+  // Extras do Revolut (e outros): comissão a somar, estado (ignorar anulados/pendentes) e moeda
+  map.fee = find(/^fee$|^comissao$|^taxa$/);
+  map.state = find(/^state$|^estado$/);
+  map.currency = find(/^currency$|^moeda$|^divisa$/);
   map.date = find(/data (mov|lanc|oper|transa)|^data$|^date|fecha/);
   if (map.date < 0) map.date = find(/data/);
   map.desc = find(/descri|detalhe|movimento|concept|narrativ|description|referencia/, /data/);
@@ -784,6 +826,9 @@ function rowsToTx(info) {
     } else amount = parseAmount(r[map.amount]);
     if (!amount || isNaN(amount)) continue;
     if (map.invert) amount = -amount;
+    if (map.state >= 0 && r[map.state] && !/complet|conclu/i.test(r[map.state])) continue;
+    if (map.currency >= 0 && r[map.currency] && !/^eur$/i.test(r[map.currency].trim())) continue;
+    if (map.fee >= 0) amount -= Math.abs(parseAmount(r[map.fee]) || 0);
     const desc = (r[map.desc] || 'Sem descrição').replace(/\s+/g, ' ').trim();
     out.push({ date, desc, amount: Math.round(amount * 100) / 100 });
   }
@@ -831,8 +876,8 @@ function renderImport(info) {
     const added = [];
     for (const t of fresh) {
       const auto = state.tx.find(x => x.fixed && !x.bank && x.account === acc && x.amount === t.amount && Math.abs(new Date(x.date) - new Date(t.date)) <= 6 * 864e5);
-      if (auto) { auto.date = t.date; auto.desc = t.desc; auto.bank = true; merged++; continue; }
-      const nt = { id: uid(), ...t, cat: guessCat(t.desc, t.amount), account: acc };
+      if (auto) { auto.date = t.date; auto.desc = t.desc; auto.bank = true; auto.imp = true; merged++; continue; }
+      const nt = { id: uid(), ...t, cat: guessCat(t.desc, t.amount), account: acc, imp: true };
       state.tx.push(nt); added.push(nt);
     }
     const tr = matchTransfers(added);
@@ -844,6 +889,26 @@ function renderImport(info) {
     $('#importArea').innerHTML = `<p class="pos">✅ ${fresh.length} movimentos importados.</p>`;
     render(); toast('Importado! Revê as categorias em Movimentos.');
   };
+}
+// Excel: a biblioteca só é carregada quando é preciso
+const XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+function loadXLSX() {
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return new Promise((ok, fail) => {
+    const sc = document.createElement('script');
+    sc.src = XLSX_URL; sc.onload = () => ok(window.XLSX); sc.onerror = () => fail(new Error('sem internet'));
+    document.head.appendChild(sc);
+  });
+}
+async function readExcel(file) {
+  let X;
+  try { X = await loadXLSX(); } catch { toast('Para ler Excel é preciso internet. Tenta outra vez ou exporta em CSV.'); throw new Error('xlsx'); }
+  const wb = X.read(await file.arrayBuffer(), { type: 'array', cellDates: true });
+  const sh = wb.Sheets[wb.SheetNames[0]];
+  const pad = n => String(n).padStart(2, '0');
+  return X.utils.sheet_to_json(sh, { header: 1, raw: true, defval: '' })
+    .map(r => r.map(c => c instanceof Date ? `${c.getFullYear()}-${pad(c.getMonth() + 1)}-${pad(c.getDate())}` : String(c).trim()))
+    .filter(r => r.some(c => c));
 }
 async function readFileText(file) {
   const buf = await file.arrayBuffer();
@@ -956,9 +1021,9 @@ function bind() {
   $('#csvFile').onchange = async e => {
     const file = e.target.files[0]; e.target.value = '';
     if (!file) return;
-    if (/\.xlsx?$/i.test(file.name)) { toast('Ficheiros Excel ainda não são suportados — exporta como CSV.'); return; }
     try {
-      const info = guessMapping(parseCSV(await readFileText(file)));
+      const rows = /\.(xlsx?|ods)$/i.test(file.name) ? await readExcel(file) : parseCSV(await readFileText(file));
+      const info = guessMapping(rows);
       if (!info.body.length) { $('#importArea').innerHTML = '<p class="neg">Não encontrei movimentos com datas neste ficheiro.</p>'; return; }
       renderImport(info);
     } catch (err) { console.error(err); toast('Não consegui ler o ficheiro.'); }
@@ -1052,8 +1117,8 @@ async function loadDemo() {
   state.fixed.push(xf);
   runFixed();
   state.tx.push(...makeTransfer(`${shiftMonth(cur, -1)}-15`, 'TRF PARA POUPANCA', 300, 'demo-a', 'demo-b'));
-  state.accounts[0].opening = 2350 - accSum('demo-a');
-  state.accounts[1].opening = 6000 - accSum('demo-b');
+  state.accounts[0].anchor = { date: todayISO(), value: 2350 };
+  state.accounts[1].anchor = { date: todayISO(), value: 6000 };
   // valor indicado no fim do mês passado (antes do depósito deste mês)
   const thisMonth = state.tx.filter(t => t.to === 'demo-x' && t.date.startsWith(cur)).reduce((s, t) => s - t.amount, 0);
   state.accounts[2].values = [{ date: `${shiftMonth(cur, -1)}-28`, value: 5180, since: invested(state.accounts[2], `${shiftMonth(cur, -1)}-28`) - thisMonth }];
