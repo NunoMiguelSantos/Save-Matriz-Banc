@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=22`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=23`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.7.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.8.0).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -73,3 +73,13 @@ Arrastar com um dedo, pinça com dois (arredonda ao nível de zoom mais próximo
 ## Meteorologia: horas de um dia escolhido (?v=22)
 
 Na janela da meteorologia, tocar num dia da lista mostra na faixa de cima as horas desse dia (0h–23h), com o título "Domingo, 8 nov · hora a hora"; o dia fica destacado (fundo ciano e barra à esquerda). Tocar outra vez nesse dia ou em "Hoje" volta às próximas 24 horas. O IPMA só tem horas para ~3 dias: os outros dias ficam mais apagados e, ao tocar, aparece a nota "só há horas para os próximos 3 dias". Trocas: `meteo-dia-trocas.json`.
+
+## Meteorologia: aviso, chuva, sol, UV, incêndio e vento (?v=23)
+
+- Aviso do IPMA (`weather_alert: sensor.leiria_weather_alert`): faixa amarela/laranja/vermelha no topo da janela e pontinho dessa cor no botão do tempo. Verde = nada.
+- Frase "quando vai chover" a partir das horas do IPMA ("Chuva amanhã a partir das 13h (45%)", "A chover agora · deve parar por volta das 15h", "Sem chuva prevista nas próximas 52 h"); azul se for nas próximas 24 h.
+- Caixa "Sol · Xh de luz" com nascer e pôr (`sun.sun`).
+- UV (`weather_uv: sensor.leiria_uv_index`) só de 6 para cima; risco de incêndio (`weather_fire: sensor.leiria_fire_risk`) só de elevado (3) para cima.
+- Vento em cada hora, a laranja a partir de 40 km/h.
+
+As três opções novas foram postas no YAML do cartão do telemóvel e do tablet. Trocas: `meteo-extras-trocas.json`.

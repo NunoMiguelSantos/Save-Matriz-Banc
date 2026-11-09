@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.7.0";
+const VERSAO = "2.8.0";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -32,6 +32,9 @@ const PADRAO = {
   weather: null, // tempo agora e previsão por hora (ex.: met.no)
   weather_days: null, // previsão por dias na janela da meteorologia (ex.: IPMA); sem isto usa weather
   weather_name: null, // nome no topo da janela (por omissão o nome de weather_days)
+  weather_alert: null, // aviso do IPMA (ex.: sensor.leiria_weather_alert): faixa na janela e pontinho no botão do tempo
+  weather_uv: null, // índice UV (só aparece quando está alto)
+  weather_fire: null, // risco de incêndio 1–5 (só aparece de elevado para cima)
   alarm: null,
   top_alarm: true, // escudo do alarme no topo do telemóvel (false = não mostra)
   water_alert: null,
@@ -218,6 +221,7 @@ class CasaTlmCard extends HTMLElement {
       ids = [
         c.weather,
         c.weather_days,
+        c.weather_alert,
         c.alarm,
         c.water_alert,
         c.boiler,
@@ -624,7 +628,7 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     const wx = this._st(this._wxId());
     const date = new Date().toLocaleDateString("pt-PT", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "");
     const wxTxt = wx
-      ? `<button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button><span><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button></span>`
+      ? `<button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°${this._wxDot()}</button><span><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button></span>`
       : `<span><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button></span>`;
     const people = c.persons
       .map((p) => {
@@ -887,7 +891,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
     const gar = c.rooms.find((r) => r.gate);
     this.shadowRoot.innerHTML = `<style>${ESTILOS.CORES}${ESTILOS.BASE}${ESTILOS.TELEMOVEL}${ESTILOS.TABLET}</style>
 <div class="tab" style="--h:${c.tablet_height}">
-<div class="ttop"><div class="clock">${hhmm}</div><div class="tdate"><b>${hello}</b><br><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button>${wx ? ` · <button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:2px 10px 2px 6px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°</button>` : ""}</div>
+<div class="ttop"><div class="clock">${hhmm}</div><div class="tdate"><b>${hello}</b><br><button data-calpop aria-label="Ver calendário" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:1px 8px 1px 5px"><ha-icon icon="mdi:calendar-month-outline"></ha-icon>${esc(date)}</button>${wx ? ` · <button data-wxpop aria-label="Ver meteorologia" style="display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;cursor:pointer;background:rgba(101,216,222,.08);border:1px solid rgba(101,216,222,.32);border-radius:999px;padding:2px 10px 2px 6px"><ha-icon icon="${WX[wx.state] || "mdi:weather-cloudy"}"></ha-icon>${Math.round(num(wx.attributes.temperature, 0))}°${this._wxDot()}</button>` : ""}</div>
 <div class="tmid">${chip}</div>
 <button class="pill ${armed ? "arm" : ""}" data-alarmpop><ha-icon icon="${armed ? "mdi:shield-lock" : "mdi:shield-off-outline"}"></ha-icon>${armed ? "Armado" : "Desarmado"}</button>
 <div style="display:flex;padding-left:6px">${people}</div></div>
@@ -1029,6 +1033,16 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
       if (this._sheet?.kind === "wx") this._renderSheet();
     });
   }
+  // aviso do IPMA (amarelo, laranja ou vermelho); verde ou sem sensor = nada
+  _wxAlert() {
+    const st = this._st(this._cfg.weather_alert)?.state,
+      A = { yellow: ["amarelo", "#FBBF24"], orange: ["laranja", "#FB923C"], red: ["vermelho", "#F87171"] }[st];
+    return A ? { nome: A[0], cor: A[1] } : null;
+  }
+  _wxDot() {
+    const al = this._wxAlert();
+    return al ? `<i style="width:8px;height:8px;border-radius:50%;background:${al.cor};margin-left:2px;flex:none" title="Aviso ${al.nome}"></i>` : "";
+  }
   _wxHtml() {
     const c = this._cfg,
       o = this._st(this._wxId()),
@@ -1045,12 +1059,32 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
     const Dd = (D?.d || []).slice(0, 10),
       hoje = Dd[0] && new Date(Dd[0].datetime).toDateString() === new Date().toDateString() ? Dd[0] : null;
     const prob = hoje?.precipitation_probability;
+    // sol (nascer e pôr), UV e risco de incêndio (estes dois só quando estão altos)
+    const sun = this._st("sun.sun")?.attributes || {},
+      hm = (x) => {
+        const d = new Date(x);
+        return p2(d.getHours()) + ":" + p2(d.getMinutes());
+      };
+    let sol = null;
+    if (sun.next_rising && sun.next_setting) {
+      const r = new Date(sun.next_rising),
+        s = new Date(sun.next_setting),
+        min = (s.getHours() * 60 + s.getMinutes() - r.getHours() * 60 - r.getMinutes() + 1440) % 1440;
+      sol = [`Sol · ${Math.floor(min / 60)}h${p2(min % 60)} de luz`, `${hm(r)} – ${hm(s)}`];
+    }
+    const uv = num(this._st(c.weather_uv)?.state),
+      fogo = num(this._st(c.weather_fire)?.state),
+      uvT = uv == null ? null : uv >= 11 ? "extremo" : uv >= 8 ? "muito alto" : uv >= 6 ? "alto" : null,
+      fogoT = fogo == null ? null : ["", "reduzido", "moderado", "elevado", "muito elevado", "máximo"][Math.round(fogo)];
     const chips = [
       ["Humidade", a.humidity != null ? r0(a.humidity) + "%" : null],
       ["Vento", a.wind_speed != null ? `${r0(a.wind_speed)} ${a.wind_speed_unit || "km/h"} ${rumo(a.wind_bearing)}` : null],
       prob != null ? ["Chuva hoje", r0(prob) + "%"] : ["Índice UV", a.uv_index != null ? d1(a.uv_index) : null],
       ["Pressão", a.pressure != null ? `${r0(a.pressure)} ${a.pressure_unit || "hPa"}` : null],
-    ].filter((x) => x[1] != null);
+      sol,
+      uvT ? ["Índice UV", r0(uv) + " · " + uvT] : null,
+      fogo >= 3 ? ["Risco de incêndio", fogoT] : null,
+    ].filter((x) => x && x[1] != null);
     // próximas 24 horas: colunas + curva da temperatura por cima
     // dia escolhido na lista dos próximos dias (só os que têm previsão hora a hora); sem escolha mostra as próximas 24 horas
     const ymd = (x) => {
@@ -1087,7 +1121,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
           novo = i > 0 && hh === 0,
           mm = f.precipitation,
           pr = mm != null ? d1(mm) + " mm" : f.precipitation_probability != null ? r0(f.precipitation_probability) + "%" : "";
-        return `<div class="wc ${novo ? "nd" : ""}" ${novo ? `data-d="${esc(d.toLocaleDateString("pt-PT", { weekday: "long" }))}"` : ""}><span class="wh ${i || sel ? "" : "now"}">${i || sel ? String(hh).padStart(2, "0") + "h" : "Agora"}</span>${ico(f.condition)}<span class="wm ${mm > 0 || f.precipitation_probability > 0 ? "r" : ""}">${pr}</span></div>`;
+        return `<div class="wc ${novo ? "nd" : ""}" ${novo ? `data-d="${esc(d.toLocaleDateString("pt-PT", { weekday: "long" }))}"` : ""}><span class="wh ${i || sel ? "" : "now"}">${i || sel ? String(hh).padStart(2, "0") + "h" : "Agora"}</span>${ico(f.condition)}<span class="wm ${mm > 0 || f.precipitation_probability > 0 ? "r" : ""}">${pr}</span><span class="ww ${f.wind_speed >= 40 ? "hi" : ""}">${f.wind_speed != null ? r0(f.wind_speed) + " km/h" : ""}</span></div>`;
       }).join("");
       hrs = `<div class="wst">${sel ? esc(titSel) + " · hora a hora" : "Próximas 24 horas"}<em>${aviso ? "só há horas para os próximos 3 dias" : "desliza para o lado"}</em></div><div class="wxh"><div class="wxt" style="width:${n * W}px">${svg}${cols}</div></div>`;
     }
@@ -1107,11 +1141,45 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
         return `<button class="wd ${k === sel ? "sel" : ""} ${comHoras.has(k) ? "" : "nh"}" data-wxd="${k}"><div class="dn">${esc(dn.charAt(0).toUpperCase() + dn.slice(1))}<small>${d.getDate()} ${esc(d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", ""))}</small></div>${ico(f.condition === "clear-night" ? "sunny" : f.condition)}<span class="pp">${pr}</span><span class="lo">${r0(tl(f))}°</span><span class="rg"><i style="left:${p(tl(f)).toFixed(1)}%;right:${(100 - p(f.temperature)).toFixed(1)}%"></i></span><span class="hi">${r0(f.temperature)}°</span></button>`;
       }).join("")}</div>`;
     }
+    // quando vai chover: primeira hora com chuva nas horas do IPMA
+    const CH = ["rainy", "pouring", "lightning-rainy", "snowy-rainy", "hail", "snowy"],
+      HR = (D?.h || []).filter((f) => Date.parse(f.datetime) > Date.now() - 3600000),
+      molha = (f) => CH.includes(f.condition) || (f.precipitation || 0) > 0.2 || (f.precipitation_probability ?? 0) >= 60;
+    let chuva = "";
+    if (HR.length) {
+      const quando = (f) => {
+          const d = new Date(f.datetime),
+            t = new Date(),
+            dd = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(t.getFullYear(), t.getMonth(), t.getDate())) / 864e5);
+          return dd === 0 ? "hoje" : dd === 1 ? "amanhã" : dd === 2 ? "depois de amanhã" : d.toLocaleDateString("pt-PT", { weekday: "long" }).replace("-feira", "");
+        },
+        hh = (f) => new Date(f.datetime).getHours() + "h",
+        pp = (i) => {
+          for (const k of [0, -1, 1, -2, 2]) {
+            const p = HR[i + k]?.precipitation_probability;
+            if (p != null) return p;
+          }
+          return null;
+        },
+        i0 = HR.findIndex(molha);
+      let txt;
+      if (i0 === 0) {
+        const fim = HR.findIndex((f, i) => i > 0 && !molha(f)),
+          q = fim > 0 ? quando(HR[fim]) : "";
+        txt = fim > 0 ? `A chover agora · deve parar ${q === "hoje" ? "" : q + " "}por volta das ${hh(HR[fim])}` : "A chover agora · e continua nas próximas horas";
+      } else if (i0 > 0) {
+        const p = pp(i0);
+        txt = `Chuva ${quando(HR[i0])} a partir das ${hh(HR[i0])}${p ? ` (${r0(p)}%)` : ""}`;
+      } else txt = `Sem chuva prevista nas próximas ${Math.max(1, Math.round((Date.parse(HR[HR.length - 1].datetime) - Date.now()) / 36e5))} h`;
+      chuva = `<div class="wxr ${i0 >= 0 && i0 < 24 ? "on" : ""}"><ha-icon icon="mdi:${i0 >= 0 ? "umbrella-outline" : "weather-sunny"}"></ha-icon>${esc(txt)}</div>`;
+    }
+    const al = this._wxAlert(),
+      alHtml = al ? `<div class="wxal" style="--ac:${al.cor}"><ha-icon icon="mdi:alert"></ha-icon><div><b>Aviso ${al.nome} do IPMA</b><small>${esc(nome || "")}${nome ? " · " : ""}detalhes em ipma.pt</small></div></div>` : "";
     const resto = !D ? `<p class="sub">A carregar a previsão…</p>` : hrs || days ? hrs + days : `<p class="sub">Não foi possível obter a previsão. Tenta outra vez daqui a pouco.</p>`;
-    return `<style>.wxn{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:18px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px}.wxa{display:flex;align-items:center;gap:10px}.wxa>ha-icon{--mdc-icon-size:46px}.wxa .big{font-size:46px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}.wxa b{display:block;font-size:15px}.wxa small{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}.wxc{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}@media (min-width:521px){.wxc{grid-template-columns:repeat(4,1fr)}}.wxc div{padding:7px 9px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line2)}.wxc span{display:block;font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.wxc b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}.wst{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:4px 2px 6px}.wst em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}.wxh{overflow-x:auto;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px;-webkit-overflow-scrolling:touch}.wxt{position:relative;height:150px;display:flex}.wc{width:56px;flex:none;display:flex;flex-direction:column;align-items:center;padding:8px 0 7px;position:relative}.wc .wh{font-size:12px;color:var(--dim)}.wc .wh.now{color:var(--cyan);font-weight:700}.wc ha-icon{--mdc-icon-size:22px;margin-top:4px}.wc .wm{margin-top:auto;font-size:10.5px;color:var(--mute);white-space:nowrap}.wc .wm.r{color:#64A0FF}.wc.nd{border-left:1px dashed rgba(255,255,255,.18)}.wc.nd::after{content:attr(data-d);position:absolute;left:4px;bottom:24px;font-size:10px;color:var(--mute);white-space:nowrap}.wds{display:flex;flex-direction:column;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);overflow:hidden}.wd{display:grid;grid-template-columns:62px 26px 42px 30px 1fr 30px;align-items:center;gap:8px;padding:8px 12px;font-size:14px;font-variant-numeric:tabular-nums}.wd+.wd{border-top:1px solid var(--line2)}button.wd{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:0}.wd.sel{background:rgba(101,216,222,.14);box-shadow:inset 3px 0 0 var(--cyan)}.wd.nh{opacity:.6}.wd .dn{font-weight:600}.wd .dn small{display:block;font-weight:400;font-size:11px;color:var(--mute)}.wd ha-icon{--mdc-icon-size:22px}.wd .pp{font-size:12px;color:#64A0FF;text-align:right}.wd .lo{color:var(--dim);text-align:right}.wd .hi{font-weight:600}.wd .rg{height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative}.wd .rg i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7DD3FC,#FBBF24,#FF7841)}</style>
+    return `<style>.wxal{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;margin-bottom:10px;background:color-mix(in srgb,var(--ac) 16%,transparent);border:1px solid color-mix(in srgb,var(--ac) 55%,transparent)}.wxal ha-icon{color:var(--ac);--mdc-icon-size:24px;flex:none}.wxal b{display:block;font-size:14.5px;color:var(--ac)}.wxal small{display:block;font-size:12px;color:var(--dim)}.wxr{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--dim);padding:0 2px}.wxr ha-icon{--mdc-icon-size:18px;flex:none}.wxr.on{color:#64A0FF}.wc .ww{font-size:10px;color:var(--mute);white-space:nowrap;margin-top:1px}.wc .ww.hi{color:#FB923C;font-weight:700}.wxn{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:18px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px}.wxa{display:flex;align-items:center;gap:10px}.wxa>ha-icon{--mdc-icon-size:46px}.wxa .big{font-size:46px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}.wxa b{display:block;font-size:15px}.wxa small{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}.wxc{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}@media (min-width:521px){.wxc{grid-template-columns:repeat(4,1fr)}}.wxc div{padding:7px 9px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line2)}.wxc span{display:block;font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.wxc b{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}.wst{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:4px 2px 6px}.wst em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}.wxh{overflow-x:auto;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);margin-bottom:12px;-webkit-overflow-scrolling:touch}.wxt{position:relative;height:166px;display:flex}.wc{width:56px;flex:none;display:flex;flex-direction:column;align-items:center;padding:8px 0 7px;position:relative}.wc .wh{font-size:12px;color:var(--dim)}.wc .wh.now{color:var(--cyan);font-weight:700}.wc ha-icon{--mdc-icon-size:22px;margin-top:4px}.wc .wm{margin-top:auto;font-size:10.5px;color:var(--mute);white-space:nowrap}.wc .wm.r{color:#64A0FF}.wc.nd{border-left:1px dashed rgba(255,255,255,.18)}.wc.nd::after{content:attr(data-d);position:absolute;left:4px;bottom:38px;font-size:10px;color:var(--mute);white-space:nowrap}.wds{display:flex;flex-direction:column;border-radius:16px;background:rgba(0,0,0,.2);border:1px solid var(--line);overflow:hidden}.wd{display:grid;grid-template-columns:62px 26px 42px 30px 1fr 30px;align-items:center;gap:8px;padding:8px 12px;font-size:14px;font-variant-numeric:tabular-nums}.wd+.wd{border-top:1px solid var(--line2)}button.wd{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:0}.wd.sel{background:rgba(101,216,222,.14);box-shadow:inset 3px 0 0 var(--cyan)}.wd.nh{opacity:.6}.wd .dn{font-weight:600}.wd .dn small{display:block;font-weight:400;font-size:11px;color:var(--mute)}.wd ha-icon{--mdc-icon-size:22px}.wd .pp{font-size:12px;color:#64A0FF;text-align:right}.wd .lo{color:var(--dim);text-align:right}.wd .hi{font-weight:600}.wd .rg{height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative}.wd .rg i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7DD3FC,#FBBF24,#FF7841)}</style>
 <div class="sh"><div><b>Meteorologia</b>${nome ? `<small>${esc(nome)}</small>` : ""}</div><button class="x" data-close>Fechar</button></div>
-<div class="wxn"><div class="wxa">${ico(o?.state)}<span class="big">${r0(a.temperature)}°</span><div><b>${esc(PT[o?.state] || o?.state || "")}</b>${hoje ? `<small>Máx. ${r0(hoje.temperature)}° · Mín. ${r0(hoje.templow)}°</small>` : ""}</div></div>
-<div class="wxc">${chips.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div></div>
+${alHtml}<div class="wxn"><div class="wxa">${ico(o?.state)}<span class="big">${r0(a.temperature)}°</span><div><b>${esc(PT[o?.state] || o?.state || "")}</b>${hoje ? `<small>Máx. ${r0(hoje.temperature)}° · Mín. ${r0(hoje.templow)}°</small>` : ""}</div></div>
+<div class="wxc">${chips.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>${chuva}</div>
 ${resto}`;
   }
   // ---------- histórico de temperatura / humidade (toque em "21,4° média") ----------
