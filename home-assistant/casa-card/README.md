@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=24`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=25`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.8.1).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.8.2).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -87,3 +87,7 @@ As três opções novas foram postas no YAML do cartão do telemóvel e do table
 ## TV: toque liga/desliga, manter premido abre o popup (?v=24)
 
 No painel da Sala (telemóvel e tablet), o botão TV faz `media_player.toggle` num toque; manter premido (~0,5 s) abre o popup nativo do HA, sem ligar/desligar. O texto mostra a app aberta (ou "ligada"/"desligada"). Qualquer botão com `data-hold` passa a ter este comportamento. Trocas: `tv-toggle-trocas.json`.
+
+## Brancos só com intensidade (?v=25)
+
+Nos `led_whites` das fitas Shelly RGBW os brancos são só o canal branco (`rgbw: [0, 0, 0, N]`), com N = 7, 50, 110, 180, 255 (Vela, Quente, Natural, Dia, Frio), no telemóvel e no tablet. Como têm todos as mesmas cores, o cartão passou a escolher o branco cujo valor está mais próximo do da fita (antes marcava sempre "Vela"). Trocas: `fitas-brancos-trocas.json`.

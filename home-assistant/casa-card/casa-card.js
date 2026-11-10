@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.8.1";
+const VERSAO = "2.8.2";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -572,7 +572,12 @@ ${al.length > 3 ? `<button class="more" data-allalerts>Ver todos os alertas (${a
     if (a.color_mode === "rgbw" && Array.isArray(a.rgbw_color)) {
       const v = a.rgbw_color;
       // o branco (4.º canal) pode estar mais baixo que na predefinição: compara só as cores e se há branco
-      const wi = W.findIndex((w) => Array.isArray(w.rgbw) && dist(w.rgbw.slice(0, 3), v.slice(0, 3)) < 30 && (w.rgbw[3] > 0) === (v[3] > 0));
+      // se vários brancos têm as mesmas cores (ex.: só o canal branco, a mudar a intensidade), fica o de branco mais próximo
+      let wi = -1;
+      W.forEach((w, i) => {
+        if (!Array.isArray(w.rgbw) || dist(w.rgbw.slice(0, 3), v.slice(0, 3)) >= 30 || (w.rgbw[3] > 0) !== (v[3] > 0)) return;
+        if (wi < 0 || Math.abs(w.rgbw[3] - v[3]) < Math.abs(W[wi].rgbw[3] - v[3])) wi = i;
+      });
       if (wi >= 0) return "w" + wi;
       const ci = C.findIndex((c) => dist4([...c.rgb, 0], v) < 30);
       return ci >= 0 ? "c" + ci : null;
