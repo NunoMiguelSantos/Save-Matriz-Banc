@@ -1,6 +1,6 @@
-# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=23`)
+# Ecrã principal (casa-card) – histórico de temperatura e humidade (recurso `?v=24`)
 
-`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.8.0).
+`casa-card.js` e `estilos.js` nesta pasta são as cópias completas de `/config/www/casa-card/` (versão 2.8.1).
 O `casa-card.js.bak` no HA é a versão anterior (2.0.0, `?v=8`).
 
 ## O que faz
@@ -83,3 +83,7 @@ Na janela da meteorologia, tocar num dia da lista mostra na faixa de cima as hor
 - Vento em cada hora, a laranja a partir de 40 km/h.
 
 As três opções novas foram postas no YAML do cartão do telemóvel e do tablet. Trocas: `meteo-extras-trocas.json`.
+
+## TV: toque liga/desliga, manter premido abre o popup (?v=24)
+
+No painel da Sala (telemóvel e tablet), o botão TV faz `media_player.toggle` num toque; manter premido (~0,5 s) abre o popup nativo do HA, sem ligar/desligar. O texto mostra a app aberta (ou "ligada"/"desligada"). Qualquer botão com `data-hold` passa a ter este comportamento. Trocas: `tv-toggle-trocas.json`.

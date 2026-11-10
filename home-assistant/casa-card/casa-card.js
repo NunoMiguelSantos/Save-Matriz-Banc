@@ -15,7 +15,7 @@
 // os estilos vêm do estilos.js (com o mesmo ?v= deste ficheiro, para o browser não usar uma cópia antiga)
 const ESTILOS = await import(new URL("./estilos.js", import.meta.url).href + new URL(import.meta.url).search);
 
-const VERSAO = "2.8.0";
+const VERSAO = "2.8.1";
 
 // ---------------------------------------------------------------------
 //  Valores por omissão. Tudo o que estiver no YAML do cartão substitui
@@ -162,6 +162,26 @@ class CasaTlmCard extends HTMLElement {
     sr.addEventListener("pointermove", (e) => this._dragMove(e));
     sr.addEventListener("pointerup", () => this._dragEnd());
     sr.addEventListener("pointercancel", () => this._dragCancel());
+    // manter premido num botão com data-hold abre o popup do HA (um toque normal faz a ação do botão)
+    sr.addEventListener("pointerdown", (e) => {
+      const h = e.target.closest?.("[data-hold]");
+      if (!h) return;
+      clearTimeout(this._holdT);
+      this._hold = { x: e.clientX, y: e.clientY, fired: false };
+      this._holdT = setTimeout(() => {
+        this._hold.fired = true;
+        navigator.vibrate?.(25);
+        this._more(h.dataset.hold);
+      }, 550);
+    });
+    sr.addEventListener("pointermove", (e) => {
+      if (this._hold && Math.hypot(e.clientX - this._hold.x, e.clientY - this._hold.y) > 10) clearTimeout(this._holdT);
+    });
+    sr.addEventListener("pointerup", () => clearTimeout(this._holdT));
+    sr.addEventListener("pointercancel", () => clearTimeout(this._holdT));
+    sr.addEventListener("contextmenu", (e) => {
+      if (e.target.closest?.("[data-hold]")) e.preventDefault();
+    });
   }
   setConfig(config) {
     this._cfg = { ...PADRAO, ...(config || {}) };
@@ -834,7 +854,7 @@ ${gr ? `<button class="tg ${gc === false ? "dang" : ""}" data-gatepop><ha-icon i
       const o = this._st(r.media),
         on = o && !["off", "standby", "unavailable"].includes(o.state);
       x.push(
-        `<button class="tg ${on ? "on" : ""}" data-more="${r.media}"><ha-icon icon="mdi:television"></ha-icon>TV<em>${on ? esc(o.attributes.app_name ? "ligada" : o.state) : "desligada"} ›</em></button>`,
+        `<button class="tg ${on ? "on" : ""}" data-mtog="${r.media}" data-hold="${r.media}" style="-webkit-user-select:none;user-select:none;-webkit-touch-callout:none"><ha-icon icon="mdi:television"></ha-icon>TV<em>${on ? esc(o.attributes.app_name || "ligada") : "desligada"}</em></button>`,
       );
     }
     if (x.length) out += `<div class="extras">${x.join("")}</div>`;
@@ -2033,6 +2053,11 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
   // ---------- TOQUES NOS BOTÕES ----------
   // cada botão tem um data-... que diz o que fazer (data-light, data-q, data-mode, ...)
   _onClick(e) {
+    // o toque que acabou de abrir o popup (manter premido) não faz também a ação normal
+    if (this._hold?.fired) {
+      this._hold = null;
+      return;
+    }
     if (e.target.closest?.("[data-ppl]")) return this._openPpl();
     const b = e.target.closest?.("button");
     if (!b) {
@@ -2077,6 +2102,7 @@ ${pres.length ? `<div class="sg"><label>Preset</label><div class="seg">${pres.ma
     if (d.pick) return this._select(d.pick);
     if (d.light) return this._call("light", "toggle", { entity_id: d.light });
     if (d.toggle) return this._call("homeassistant", "toggle", { entity_id: d.toggle });
+    if (d.mtog) return this._call("media_player", "toggle", { entity_id: d.mtog });
     if (d.more) return this._more(d.more);
     if (d.led) {
       const [room, i] = d.led.split(":");
